@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base target="_top">
+<title>e-Tapak Standard 4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: sticky app bar with tabs, rubric form left + live score rail right (stacks on phone) */
+:root{
+  --bg:#f3f5f2; --surface:#ffffff; --sunk:#e8ece6; --line:#d5dbd2;
+  --fg:#18222c; --muted:#5b6670; --accent:#1c5d8c; --accent-fg:#ffffff; --accent-soft:#dce8f2;
+  --crit:#f6e7b8; --std:#f3dccb; --band:#343a40; --band-fg:#ffffff; --th:#1f87c4; --th-fg:#ffffff;
+  --ok:#2e7d4f; --warn:#9a6512; --bad:#b4413a; --ok-soft:#dff0e5; --warn-soft:#f6ead2; --bad-soft:#f5dddb;
+  --f-display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12171c; --surface:#1a2128; --sunk:#222b33; --line:#2f3a44;
+  --fg:#e6ebef; --muted:#9aa6b1; --accent:#6fb0e0; --accent-fg:#0d1720; --accent-soft:#1f3346;
+  --crit:#3a321a; --std:#3a2a20; --band:#0b0f13; --band-fg:#e6ebef; --th:#1d5f8a; --th-fg:#ffffff;
+  --ok:#6cc58f; --warn:#e2b25a; --bad:#ec8a82; --ok-soft:#1d3427; --warn-soft:#3a2f1a; --bad-soft:#3d2321; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12171c; --surface:#1a2128; --sunk:#222b33; --line:#2f3a44;
+  --fg:#e6ebef; --muted:#9aa6b1; --accent:#6fb0e0; --accent-fg:#0d1720; --accent-soft:#1f3346;
+  --crit:#3a321a; --std:#3a2a20; --band:#0b0f13; --band-fg:#e6ebef; --th:#1d5f8a; --th-fg:#ffffff;
+  --ok:#6cc58f; --warn:#e2b25a; --bad:#ec8a82; --ok-soft:#1d3427; --warn-soft:#3a2f1a; --bad-soft:#3d2321; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+img{max-width:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;padding-block:12px}
+.brandWrap{display:flex;align-items:center;gap:10px;margin-right:auto;min-width:0}
+.brandWrap .logo{height:40px;width:auto;flex:none}
+.brand{display:flex;flex-direction:column;line-height:1.15;min-width:0}
+.login-logo{height:84px;width:auto;display:block;margin-bottom:10px}
+.brand b{font-family:var(--f-display);font-size:20px;letter-spacing:-.01em}
+.brand span{font-size:12px;color:var(--muted)}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;max-width:100%}
+nav.tabs a{padding:7px 12px;border-radius:999px;color:var(--muted);text-decoration:none;font-weight:500;white-space:nowrap}
+nav.tabs a[aria-current="page"]{background:var(--accent-soft);color:var(--fg)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+main{padding-block:20px 60px}
+.notice{padding:10px 14px;border-radius:var(--r);background:var(--warn-soft);color:var(--fg);margin-bottom:16px;font-size:14px}
+.notice[data-kind="info"]{background:var(--accent-soft)}
+h1{font-family:var(--f-display);font-size:26px;margin:0 0 4px;text-wrap:balance;letter-spacing:-.01em}
+h2{font-family:var(--f-display);font-size:19px;margin:0;text-wrap:balance}
+.sub{color:var(--muted);margin:0 0 18px;max-width:65ch}
+.label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.grid-form{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start}
+@media (max-width:900px){.grid-form{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.meta{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px 16px}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field label{font-size:13px;font-weight:600}
+.span2{grid-column:span 2}
+@media (max-width:460px){.span2{grid-column:auto}}
+input,select,textarea{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;min-width:0}
+textarea{min-height:80px;resize:vertical}
+.arahan{font-size:13px;color:var(--muted);margin:0 0 4px}
+
+/* rubric */
+.role{margin-top:26px}
+.role:first-child{margin-top:8px}
+.role-head{display:flex;align-items:baseline;gap:10px;padding-bottom:8px;border-bottom:2px solid var(--fg)}
+.role-head .kod{font-family:var(--f-mono);font-weight:600;color:var(--accent)}
+.kritikal{background:var(--crit);border-radius:8px;padding:10px 12px;margin-top:10px;font-size:14px}
+.kritikal b{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
+.aspek{margin-top:14px}
+.aspek-head{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;justify-content:space-between}
+.aspek-head .t{font-weight:700;font-family:var(--f-mono)}
+.aspek-head .w{font-family:var(--f-mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.std{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:0;background:var(--std);border-radius:8px;margin-top:6px;font-size:13px}
+.std>div{padding:10px 12px}
+.std>div+div{border-left:1px solid var(--line)}
+.std b{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
+@media (max-width:620px){.std{grid-template-columns:minmax(0,1fr)}.std>div+div{border-left:0;border-top:1px solid var(--line)}}
+.lead{font-size:13px;font-weight:600;color:var(--muted);margin:12px 0 2px}
+.item{padding:12px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.item:last-child{border-bottom:0}
+.item-t{display:grid;grid-template-columns:22px minmax(0,1fr);gap:6px;font-weight:600}
+.item-t .h{font-family:var(--f-mono);color:var(--muted);font-weight:500}
+.krit{display:flex;flex-wrap:wrap;gap:6px;padding-left:28px}
+.chip{font:500 13px/1.3 var(--f-body);text-align:left;padding:6px 10px;border-radius:8px;border:1px dashed var(--line);background:transparent;color:var(--muted);cursor:pointer;max-width:100%}
+.chip .r{font-family:var(--f-mono);margin-right:4px}
+.chip[aria-pressed="true"]{border-style:solid;border-color:var(--accent);background:var(--accent-soft);color:var(--fg)}
+.chip[aria-pressed="true"]::before{content:"✓ ";color:var(--accent);font-weight:700}
+.krit select{width:auto;max-width:100%;font-size:13px;padding:6px 8px}
+.skor-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding-left:28px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;flex:none}
+.seg button{font:600 14px var(--f-mono);width:40px;height:34px;border:0;border-left:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.seg button:first-child{border-left:0}
+.seg button:hover{background:var(--sunk)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg)}
+.seg button:disabled,.chip:disabled{cursor:not-allowed;opacity:.6}
+.desc{font-size:13px;color:var(--muted);min-width:0;flex:1 1 220px}
+.desc em{font-style:normal;color:var(--warn);font-weight:600}
+@media (max-width:460px){.krit,.skor-row{padding-left:0}}
+
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 90px);display:flex;flex-direction:column;gap:14px}
+@media (max-width:900px){.rail{position:static}}
+.big{display:flex;align-items:baseline;gap:6px}
+.big .n{font:600 46px/1 var(--f-mono);font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.big .pct{font:600 20px var(--f-mono);color:var(--muted)}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.t-ok{background:var(--ok-soft);color:var(--ok)}.t-warn{background:var(--warn-soft);color:var(--warn)}.t-bad{background:var(--bad-soft);color:var(--bad)}.t-none{background:var(--sunk);color:var(--muted)}
+.meter{height:6px;border-radius:3px;background:var(--sunk);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--accent);border-radius:3px;transition:width .25s}
+@media (prefers-reduced-motion:reduce){.meter i{transition:none}}
+.brk{display:flex;flex-direction:column;gap:8px;font-size:13px}
+.brk-row{display:grid;grid-template-columns:40px minmax(0,1fr) 54px 64px;gap:6px;align-items:center}
+.brk-row .v.w{color:var(--muted)}
+.brk-row .k{font-family:var(--f-mono);color:var(--muted)}
+.brk-row .v{font-family:var(--f-mono);text-align:right;font-variant-numeric:tabular-nums}
+.raw{font:500 13px var(--f-mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button.btn{font:600 14px var(--f-body);padding:9px 16px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+button.btn.primary{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+button.btn.danger{color:var(--bad)}
+button.btn:disabled{opacity:.55;cursor:not-allowed}
+.msg{font-size:13px;min-height:1.2em}
+.msg.err{color:var(--bad)}.msg.ok{color:var(--ok)}
+.filters{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;align-items:end}
+.filters .field{flex:1 1 180px}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:720px;font-size:14px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:600;background:var(--sunk)}
+td.num,th.num{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--sunk)}
+tbody tr.sel{background:var(--accent-soft)}
+tr:last-child td{border-bottom:0}
+.empty{padding:36px 20px;text-align:center;color:var(--muted)}
+.empty b{display:block;color:var(--fg);font-size:16px;margin-bottom:4px}
+.confirm{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 12px;border-radius:8px;background:var(--bad-soft)}
+.detail{margin-top:18px}
+.cmp{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+.cmp-row{display:grid;grid-template-columns:minmax(0,240px) minmax(0,1fr);gap:12px;align-items:center;font-size:13px}
+@media (max-width:560px){.cmp-row{grid-template-columns:minmax(0,1fr)}}
+.bars{display:flex;flex-direction:column;gap:4px}
+.bar-l{display:grid;grid-template-columns:86px minmax(0,1fr) 46px;gap:8px;align-items:center}
+.bar-l .v{font-family:var(--f-mono);text-align:right;font-variant-numeric:tabular-nums}
+.bar-l .m{height:10px;background:var(--sunk);border-radius:3px;overflow:hidden}
+.bar-l .m i{display:block;height:100%}
+.s-k{background:var(--muted)}.s-p1{background:var(--accent)}.s-p2{background:var(--ok)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+.wt{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px 16px}
+.radio{display:flex;flex-direction:column;gap:8px}
+.radio label{display:flex;gap:8px;align-items:flex-start;font-size:14px}
+.radio input{width:auto;margin-top:4px}
+.profil{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:16px}
+.profil .who{flex:1 1 260px;min-width:0}
+.profil .who b{font-size:16px}
+.profil form{display:flex;flex-wrap:wrap;gap:8px;flex:1 1 320px}
+.profil form input{flex:1 1 200px;width:auto}
+.login{max-width:440px;margin:28px auto 0}
+.login h1{margin-top:6px}
+.login-f{display:flex;flex-direction:column;gap:12px}
+.btn-sm{padding:5px 10px!important;font-size:13px!important;white-space:nowrap}
+a.btn{display:inline-block;font:600 14px var(--f-body);padding:9px 16px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);text-decoration:none}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.an-wrap{margin-bottom:16px}
+.an-std{font-size:13px}
+.an-std th{background:var(--band);color:var(--band-fg);text-transform:none;letter-spacing:0;font-size:13px;font-weight:600}
+.an-std th:first-child,.an-std td:first-child{width:180px}
+.an-std td{background:var(--surface);color:var(--fg);line-height:1.6}
+.an-std tr,.an-std tbody tr{cursor:default}
+.an-std tbody tr:hover{background:none}
+.an{min-width:1100px;font-size:13.5px;table-layout:fixed}
+.an .pill{white-space:normal;text-align:center;line-height:1.25}
+.an td{overflow-wrap:anywhere}
+.an th,.an td{padding-left:6px;padding-right:6px}
+.an td.num,.an th.num{white-space:nowrap;overflow-wrap:normal;font-size:12.5px}
+.an thead th{background:var(--th);color:var(--th-fg);text-transform:none;letter-spacing:0;font-size:13px;font-weight:700;text-align:center}
+.an td.c,.an th.c{text-align:center}
+.an td.z{color:var(--muted)}
+.an td.jm{font-weight:700}
+.an td.nm{font-weight:600}
+.an tfoot td{background:var(--sunk);font-weight:600;font-family:var(--f-body)}
+.an tfoot td.num{font-family:var(--f-mono)}
+.an .act{white-space:nowrap}
+.ik{display:inline-grid;margin:2px!important;place-items:center;width:34px;height:34px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg);cursor:pointer;margin:0 2px;vertical-align:middle}
+.ik:hover{background:var(--accent-soft);color:var(--accent)}
+.foot{font-size:12px;color:var(--muted);margin-top:24px;max-width:70ch}
+#cetak{display:none}
+@media print{body>*:not(#cetak){display:none!important}#cetak{display:block!important}body{background:#fff}}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="wrap">
+    <div class="brandWrap"><img class="logo" id="logoImg" src="data:image/png;base64,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" alt="Logo SMK Felda Kahang Timur" width="28" height="40"><div class="brand"><b>e-Tapak Standard 4</b><span id="brandSchool">SKPM Kualiti@Sekolah · PdPc</span></div></div>
+    <nav class="tabs" id="nav" aria-label="Menu utama" hidden>
+      <a href="#" role="button" data-v="baharu">Isi Borang</a>
+      <a href="#" role="button" data-v="rekod">Analisis Skor</a>
+      <a href="#" role="button" data-v="rumusan">Rumusan (Gabung)</a>
+      <a href="#" role="button" data-v="tetapan" id="navSet" hidden>Tetapan</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="status" class="notice" data-kind="info">Memuatkan sistem…</div>
+  <div class="panel profil" id="profil" hidden></div>
+
+  <!-- ===== LOG MASUK ===== -->
+  <section id="v-masuk">
+    <div class="login panel">
+      <img class="login-logo" id="loginLogo" alt="Logo SMK Felda Kahang Timur" width="58" height="84">
+      <div class="label" id="loginSchool">SKPM Kualiti@Sekolah</div>
+      <h1>Log masuk</h1>
+      <p class="sub">Gunakan ID pengguna dan PIN yang diberi oleh pentadbir sekolah. Tiada akaun Google atau Claude diperlukan.</p>
+      <form id="loginForm" class="login-f">
+        <div class="field"><label for="l-id">ID pengguna</label><input id="l-id" autocomplete="username" autocapitalize="characters" spellcheck="false" placeholder="cth. no. kad pengenalan"></div>
+        <div class="field"><label for="l-pin">PIN</label><input id="l-pin" type="password" inputmode="numeric" autocomplete="current-password"></div>
+        <button class="btn primary" type="submit" id="l-btn">Log masuk</button>
+        <div class="msg" id="l-msg" role="status"></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== ISI BORANG ===== -->
+  <section id="v-baharu" hidden>
+    <h1 id="formTitle">Tapak Standard 4 · Rekod Baharu</h1>
+    <p class="sub">Pembelajaran dan Pemudahcaraan (PdPc). Tandakan kriteria (i)–(iv) yang dipenuhi; skor 0–4 dicadangkan secara automatik mengikut pernyataan penskoran, dan boleh diubah dengan menekan nombor skor.</p>
+    <div class="btns" id="topAct" hidden style="margin:-6px 0 16px"><button class="btn primary" id="btnCetak2" type="button">Cetak / Simpan PDF</button></div>
+    <div class="grid-form">
+      <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+        <div class="notice" id="lockNote" hidden>Rekod pencerapan ini dimasukkan oleh pentadbir. Anda boleh melihatnya sahaja.</div>
+        <div class="panel">
+          <div class="label" style="margin-bottom:10px">Muka depan</div>
+          <div class="meta">
+            <div class="field"><label for="f-tahun">Kalendar akademik sesi</label><input id="f-tahun" inputmode="numeric"></div>
+            <div class="field"><label for="f-kod">Kod sekolah</label><input id="f-kod" readonly></div>
+            <div class="field span2"><label for="f-sekolah">Nama sekolah</label><input id="f-sekolah" readonly></div>
+            <div class="field"><label for="f-guru">Nama guru</label><input id="f-guru" readonly><select id="f-guruSel" aria-label="Pilih guru" hidden></select></div>
+            <div class="field"><label for="f-subjek">Mata pelajaran</label><input id="f-subjek" list="dl-subjek" autocomplete="off"></div>
+            <div class="field"><label for="f-kelas">Kelas</label><input id="f-kelas"></div>
+            <div class="field"><label for="f-sesi">Sesi pengisian</label>
+              <select id="f-sesi"><option>Kendiri</option><option>Pencerapan 1</option><option>Pencerapan 2</option></select></div>
+            <div class="field"><label for="f-tarikh">Tarikh</label><input id="f-tarikh" type="date"></div>
+            <div class="field" id="pencerapBox"><label for="f-pencerap">Nama pencerap</label><input id="f-pencerap"></div>
+          </div>
+          <datalist id="dl-subjek"></datalist><p class="arahan" id="guruHint" hidden style="margin-top:10px">Senarai guru diambil daripada helaian PENGGUNA dalam Google Sheet. Tambah guru baharu di situ.</p>
+        </div>
+
+        <div class="panel">
+          <p class="arahan">Arahan: tandakan kriteria yang dipenuhi bagi setiap tindakan. Skor sekolah dipilih mengikut pernyataan penskoran yang tertera.</p>
+          <div id="rubrik"></div>
+        </div>
+
+        <div class="panel">
+          <div class="field"><label for="f-catatan">Ulasan / cadangan penambahbaikan</label><textarea id="f-catatan" placeholder="Contoh: Aktiviti kolaboratif berjalan lancar; tambah soalan KBAT semasa penutup."></textarea></div>
+        </div>
+      </div>
+
+      <aside class="rail">
+        <div class="panel">
+          <div class="label">Skor Standard 4</div>
+          <div class="big"><span class="n" id="sum-n">0.00</span><span class="pct">%</span></div>
+          <div class="raw" id="sum-raw" style="margin-top:4px"></div>
+          <div style="display:flex;gap:8px;align-items:center;margin:8px 0 12px"><span class="pill t-none" id="sum-tahap">Belum lengkap</span><span class="label" id="sum-count" style="margin-left:auto"></span></div>
+          <div class="meter"><i id="sum-meter" style="width:0"></i></div>
+        </div>
+        <div class="panel">
+          <div class="label" style="margin-bottom:10px" id="brk-label">Skor setiap aspek</div>
+          <div class="brk" id="brk"></div>
+        </div>
+        <div class="panel" style="display:flex;flex-direction:column;gap:10px">
+          <div class="btns">
+            <button class="btn primary" id="btnSave" type="button">Simpan rekod</button>
+            <button class="btn" id="btnReset" type="button">Kosongkan borang</button>
+          </div>
+          <button class="btn" id="btnCetak" type="button" hidden>Cetak / Simpan PDF</button>
+          <div id="delBox"></div>
+          <div class="msg" id="saveMsg" role="status"></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ===== SENARAI REKOD ===== -->
+  <section id="v-rekod" hidden>
+    <h1>Analisis Skor</h1>
+    <p class="sub" id="listSub">Klik satu baris untuk membuka rekod.</p>
+    <div class="filters">
+      <div class="field"><label for="q-cari">Cari guru / subjek / kelas</label><input id="q-cari" placeholder="cth. Biologi"></div>
+      <div class="field" style="flex:0 1 180px"><label for="q-sesi">Sesi</label><select id="q-sesi"><option value="">Semua sesi</option><option>Kendiri</option><option>Pencerapan 1</option><option>Pencerapan 2</option></select></div>
+      <div class="field" style="flex:0 1 130px"><label for="q-tahun">Tahun</label><select id="q-tahun"><option value="">Semua</option></select></div>
+      <a class="btn" id="lnkSheet" target="_blank" rel="noopener" hidden>Buka Google Sheet (REKOD)</a>
+    </div>
+    <div id="analisis"></div>
+  </section>
+
+  <!-- ===== RUMUSAN ===== -->
+  <section id="v-rumusan" hidden>
+    <h1>Rumusan Standard 4</h1>
+    <p class="sub">Gabungan skor setiap guru mengikut mata pelajaran dan kelas. Skor gabung ialah purata semua sesi yang telah direkodkan (rekod terkini bagi setiap sesi). Klik satu baris untuk melihat pecahan aspek.</p>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Guru</th><th>Mata pelajaran</th><th>Kelas</th><th>Tahun</th><th class="num">Kendiri</th><th class="num">Pencerapan 1</th><th class="num">Pencerapan 2</th><th class="num">Gabung</th><th>Taraf</th></tr></thead>
+      <tbody id="tb-rumusan"></tbody>
+    </table></div>
+    <div id="detail" class="panel detail" hidden></div>
+  </section>
+
+  <!-- ===== TETAPAN ===== -->
+  <section id="v-tetapan" hidden>
+    <h1>Tetapan Sekolah</h1>
+    <p class="sub">Maklumat ini diisi automatik pada setiap rekod baharu. Hanya pentadbir boleh melihat dan mengubah tetapan ini.</p>
+    <div class="panel" style="display:flex;flex-direction:column;gap:18px">
+      <div class="meta">
+        <div class="field"><label for="s-tahun">Kalendar akademik sesi</label><input id="s-tahun"></div>
+        <div class="field"><label for="s-kod">Kod sekolah</label><input id="s-kod"></div>
+        <div class="field span2"><label for="s-sekolah">Nama sekolah</label><input id="s-sekolah"></div>
+      </div>
+      <p class="arahan" style="margin:0">Skor aspek = (markah ÷ markah maksimum aspek) × wajaran. Skor Standard 4 = jumlah skor semua aspek, sama seperti tab GABUNG.</p>
+      <div id="wtBox"><div class="label" style="margin-bottom:8px">Wajaran aspek (%) · <span id="wt-total"></span></div><div class="wt" id="wt"></div></div>
+      <div class="btns"><button class="btn primary" id="btnSet" type="button">Simpan tetapan</button></div>
+      <div class="msg" id="setMsg" role="status"></div>
+    </div>
+    <p class="foot">Taraf PdP: 85.00–100 Cemerlang · 70.00–84.99 Baik · 55.00–69.99 Sederhana · 0–54.99 Perlu Tindakan Segera.</p>
+  </section>
+</main>
+<div id="cetak"></div>
+<script>
+/* ---------- Kandungan Tapak Standard 4 (dari borang sekolah) ---------- */
+const K3_PERANCANG=["mengikut pelbagai aras keupayaan murid","mengikut peruntukan masa yang ditetapkan","dengan mematuhi arahan yang berkuat kuasa/ketetapan kurikulum"];
+const K3_PENGAWAL=["dengan menepati objektif pelajaran","mengikut pelbagai aras keupayaan murid/pembelajaran terbeza","dari semasa ke semasa"];
+const K3_KOM=["secara berhemah/mengikut kesesuaian","secara menyeluruh meliputi semua murid","dari semasa ke semasa"];
+const K3_SUSUN=["mengikut kesesuaian","secara menyeluruh meliputi semua murid","dari semasa ke semasa"];
+const K4_BIMBING=["mengikut keperluan/pelbagai aras keupayaan murid","dengan betul dan tepat","secara berhemah","bersungguh-sungguh"];
+const K3_MINDA=["berdasarkan objektif pelajaran","mengikut pelbagai aras keupayaan murid","dari semasa ke semasa"];
+const K3_EMOSI=["secara berhemah","secara menyeluruh meliputi semua murid","dari semasa ke semasa"];
+const K4_NILAI_A=["berdasarkan objektif pelajaran","mengikut arahan pelaksanaan pentaksiran yang berkuat kuasa/ketetapan kurikulum","secara menyeluruh kepada semua murid","dari semasa ke semasa"];
+const K4_NILAI_B=["berdasarkan objektif pelajaran","mengikut ketetapan kurikulum","secara menyeluruh kepada semua murid","dari semasa ke semasa"];
+const K4_NILAI_C=["berdasarkan objektif pelajaran","mengikut ketetapan kurikulum","secara menyeluruh daripada segi kecukupan dan kecakupan","dari semasa ke semasa"];
+const K_MURID=["selaras dengan objektif pelajaran","dengan yakin","secara berhemah/bersungguh-sungguh"];
+
+const RUBRIK=[
+ {kod:"4.1",peranan:"Guru sebagai Perancang",kritikal:"Guru bertindak sebagai perancang untuk memastikan kesediaan dan persediaan rapi dalam melaksanakan Pembelajaran dan Pemudahcaraan (PdPc).",aspek:[
+  {kod:"4.1.1",jenis:"A",sk:"Guru merancang pelaksanaan PdPc secara profesional dan sistematik.",
+   tindakan:"Menyediakan RPH, menentukan kaedah pentaksiran dan menyediakan sumber pendidikan mengikut keupayaan murid, peruntukan masa, dan mematuhi arahan yang berkuat kuasa/ketetapan kurikulum.",
+   lead:"Guru merancang pelaksanaan PdP:",item:[
+   {t:"Menyediakan RPH yang mengandungi objektif yang boleh diukur dan aktiviti pembelajaran yang sesuai",k:K3_PERANCANG},
+   {t:"Menentukan kaedah pentaksiran",k:K3_PERANCANG},
+   {t:"Menyediakan ABM/BBM/BBB/TMK",k:K3_PERANCANG}]}]},
+ {kod:"4.2",peranan:"Guru sebagai Pengawal",kritikal:"Guru bertindak sebagai pengawal pelaksanaan PdPc untuk memastikan kelancaran proses pembelajaran mengikut perancangan.",aspek:[
+  {kod:"4.2.1",jenis:"A",sk:"Guru mengawal proses pembelajaran secara profesional dan terancang.",
+   tindakan:"Mengelola isi pelajaran dan peruntukan masa serta memberi peluang kepada penyertaan aktif murid dalam PdPc dengan menepati objektif pelajaran, mengikut keupayaan murid, dan dari semasa ke semasa.",
+   lead:"Guru mengawal proses pembelajaran:",item:[
+   {t:"Mengelola isi pelajaran/skop pembelajaran yang dirancang",k:K3_PENGAWAL},
+   {t:"Mengelola masa PdPc selaras dengan aktiviti pembelajaran",k:K3_PENGAWAL},
+   {t:"Memberi peluang kepada penyertaan aktif murid",k:K3_PENGAWAL}]},
+  {kod:"4.2.2",jenis:"A",sk:"Guru mengawal suasana pembelajaran secara profesional dan terancang.",
+   tindakan:"Mengawasi komunikasi dan perlakuan murid, menyusun atur kedudukan murid dan mewujudkan suasana pembelajaran yang menyeronokkan mengikut kesesuaian dan keperluan, secara berhemah, menyeluruh, dan dari semasa ke semasa.",
+   lead:"Guru mengawal suasana pembelajaran:",item:[
+   {t:"Mengawasi komunikasi murid dalam PdPc",k:K3_KOM},
+   {t:"Mengawasi perlakuan murid dalam PdPc",k:K3_KOM},
+   {t:"Menyusun atur kedudukan murid",k:K3_SUSUN},
+   {t:"Melaksanakan aktiviti pembelajaran yang menyeronokkan",k:K3_SUSUN}]}]},
+ {kod:"4.3",peranan:"Guru sebagai Pembimbing",kritikal:"Guru bertindak sebagai pembimbing untuk membolehkan murid menguasai pengetahuan, kemahiran dan mengamalkan nilai berdasarkan objektif pembelajaran.",aspek:[
+  {kod:"4.3.1",jenis:"B",sk:"Guru membimbing murid secara profesional dan terancang.",
+   tindakan:"Memberi tunjuk ajar dalam menguasai isi pelajaran dan kemahiran, memandu murid membuat keputusan dan menyelesaikan masalah, dan menggunakan sumber pendidikan serta menggabung jalin isi pelajaran dengan kemahiran/mata pelajaran lain mengikut keperluan dan keupayaan murid dengan betul, tepat, secara berhemah, dan bersungguh-sungguh.",
+   lead:"Guru membimbing murid:",item:[
+   {t:"Memberi tunjuk ajar/tunjuk cara/panduan menguasai isi pelajaran/konsep/fakta berkaitan pelajaran",k:K4_BIMBING},
+   {t:"Memberi tunjuk ajar/tunjuk cara/panduan menguasai kemahiran dalam aktiviti pembelajaran",k:K4_BIMBING},
+   {t:"Memandu murid membuat keputusan dan menyelesaikan masalah dalam aktiviti pembelajaran",k:K4_BIMBING},
+   {t:"Memandu murid menggunakan/memanfaatkan sumber pendidikan berkaitan pelajaran",k:K4_BIMBING},
+   {t:"Menggabung/merentas/mengaitkan isi pelajaran dengan tajuk/unit/tema/nilai/kemahiran/mata pelajaran lain dalam aktiviti pembelajaran",k:K4_BIMBING}]}]},
+ {kod:"4.4",peranan:"Guru sebagai Pendorong",kritikal:"Guru bertindak sebagai pendorong untuk meningkatkan motivasi dan kemahiran insaniah/soft skills murid.",aspek:[
+  {kod:"4.4.1",jenis:"A",sk:"Guru mendorong minda murid dalam melaksanakan aktiviti pembelajaran secara profesional dan terancang.",
+   tindakan:"Merangsang murid berkomunikasi dan berkolaboratif, mengemukakan soalan yang menjurus ke arah pemikiran kritis dan kreatif dan membuat keputusan atau menyelesaikan masalah, mewujudkan peluang untuk murid memimpin dan mengemukakan soalan berkaitan isi pelajaran serta memperoleh pengetahuan dan kemahiran secara kendiri berdasarkan objektif pelajaran, mengikut keupayaan murid, dan dari semasa ke semasa.",
+   lead:"Guru mendorong minda murid dalam melaksanakan aktiviti pembelajaran:",item:[
+   {t:"Merangsang murid berkomunikasi",k:K3_MINDA},
+   {t:"Merangsang murid berkolaboratif dalam aktiviti pembelajaran",k:K3_MINDA},
+   {t:"Mengemukakan soalan yang menjurus ke arah pemikiran kritis dan kreatif",k:K3_MINDA},
+   {t:"Mengajukan soalan/mewujudkan situasi yang menjurus ke arah membuat keputusan dan menyelesaikan masalah",k:K3_MINDA},
+   {t:"Mewujudkan peluang untuk murid memimpin",k:K3_MINDA},
+   {t:"Menggalakkan murid mengemukakan soalan berkaitan isi pelajaran",k:K3_MINDA},
+   {t:"Menggalakkan murid memperoleh pengetahuan dan kemahiran secara kendiri",k:K3_MINDA}]},
+  {kod:"4.4.2",jenis:"A",sk:"Guru mendorong emosi murid dalam melaksanakan aktiviti pembelajaran secara profesional dan terancang.",
+   tindakan:"Memberi pujian, galakan, penghargaan dan keyakinan serta prihatin terhadap keperluan murid secara berhemah, menyeluruh dan dari semasa ke semasa.",
+   lead:"Guru mendorong emosi murid dalam melaksanakan aktiviti pembelajaran:",item:[
+   {t:"Memberi pujian/galakan terhadap perlakuan positif",k:K3_EMOSI},
+   {t:"Memberi penghargaan terhadap hasil kerja/idea yang bernas",k:K3_EMOSI},
+   {t:"Memberi keyakinan dalam mengemukakan soalan/memberi respons",k:K3_EMOSI},
+   {t:"Prihatin terhadap keperluan murid",k:K3_EMOSI}]}]},
+ {kod:"4.5",peranan:"Guru sebagai Penilai",kritikal:"Guru berperanan sebagai penilai untuk mengesan tahap penguasaan murid.",aspek:[
+  {kod:"4.5.1",jenis:"B",sk:"Guru melaksanakan penilaian secara sistematik dan terancang.",
+   tindakan:"Menggunakan pelbagai kaedah pentaksiran, menjalankan aktiviti pemulihan/pengayaan, memberi tugasan, membuat refleksi serta menyemak hasil kerja murid berdasarkan objektif pelajaran, mengikut arahan pelaksanaan pentaksiran yang berkuat kuasa atau ketetapan kurikulum, secara menyeluruh, dan dari semasa ke semasa.",
+   lead:"Guru melaksanakan penilaian:",item:[
+   {t:"Menggunakan pelbagai kaedah pentaksiran dalam PdPc",k:K4_NILAI_A},
+   {t:"Menjalankan aktiviti pemulihan/pengayaan dalam PdPc",k:K4_NILAI_B},
+   {t:"Memberi latihan/tugasan berkaitan pelajaran",k:K4_NILAI_C},
+   {t:"Membuat refleksi PdPc",k:K4_NILAI_A},
+   {t:"Menyemak/menilai hasil kerja/gerak kerja/latihan/tugasan",k:K4_NILAI_B}]}]},
+ {kod:"4.6",peranan:"Murid sebagai Pembelajar Aktif",kritikal:"Murid bertindak sebagai pembelajar aktif untuk menguasai pengetahuan dan kemahiran serta mengamalkan nilai positif.",aspek:[
+  {kod:"4.6.1",jenis:"M",sk:"Murid melibatkan diri dalam proses pembelajaran secara berkesan.",
+   tindakan:"Memberi respons, berkomunikasi dan melaksanakan aktiviti secara kolaboratif, berpemikiran kritis dan kreatif, mengemukakan soalan, menyelesaikan masalah dan mengaitkan isi pelajaran dengan kehidupan berdasarkan objektif pelajaran secara aktif, yakin, dan berhemah.",
+   lead:"Murid melibatkan diri dalam proses pembelajaran:",item:[
+   {t:"Memberi respons berkaitan isi pelajaran",k:K_MURID,p:"C"},
+   {t:"Berkomunikasi dalam melaksanakan aktiviti pembelajaran",k:K_MURID,p:"C"},
+   {t:"Melaksanakan aktiviti pembelajaran secara kolaboratif",k:K_MURID,p:"C"},
+   {t:"Memberi respons yang menjurus ke arah pemikiran kritis dan kreatif berkaitan isi pelajaran",k:K_MURID,p:"D"},
+   {t:"Mengemukakan soalan berkaitan isi pelajaran",k:K_MURID,p:"D"},
+   {t:"Mengaitkan isi pelajaran dengan kehidupan murid/isu lokal/global",k:K_MURID,p:"D"},
+   {t:"Membuat keputusan/menyelesaikan masalah berkaitan aktiviti pembelajaran",k:K_MURID,p:"D"}]}]}
+];
+const BAND={
+ C:[["4","90% hingga 100% murid"],["3","80% hingga 89% murid"],["2","50% hingga 79% murid"],["1","1% hingga 49% murid"],["0","Tiada pelibatan"]],
+ D:[["4","50% hingga 100% murid"],["3","25% hingga 49% murid"],["2","10% hingga 24% murid"],["1","Kurang daripada 10% murid"],["0","Tiada pelibatan"]]
+};
+const DESC={
+ A:["Tidak mengambil kira mana-mana perkara","Mengambil kira mana-mana satu (1) perkara","Mengambil kira perkara (ii) dan (iii)","Mengambil kira perkara (i) dan (ii) atau perkara (i) dan (iii)","Memenuhi semua perkara (i), (ii) dan (iii)"],
+ B:["Tidak mengambil kira mana-mana perkara","Mengambil kira mana-mana satu (1) perkara","Mengambil kira mana-mana dua (2) perkara","Mengambil kira mana-mana tiga (3) perkara","Memenuhi semua perkara (i) hingga (iv)"],
+ C:["Tidak memenuhi mana-mana perkara","Pelibatan 1%–49% murid dan sekurang-kurangnya satu (1) daripada (ii), (iii), (iv)","Pelibatan 50%–79% murid dan sekurang-kurangnya satu (1) daripada (ii), (iii), (iv)","Pelibatan 80%–89% murid dan sekurang-kurangnya dua (2) daripada (ii), (iii), (iv)","Pelibatan 90%–100% murid, memenuhi (ii), (iii) dan (iv)"],
+ D:["Tidak memenuhi mana-mana perkara","Pelibatan kurang daripada 10% murid dan sekurang-kurangnya satu (1) daripada (ii), (iii), (iv)","Pelibatan 10%–24% murid dan sekurang-kurangnya satu (1) daripada (ii), (iii), (iv)","Pelibatan 25%–49% murid dan sekurang-kurangnya dua (2) daripada (ii), (iii), (iv)","Pelibatan 50%–100% murid, memenuhi (ii), (iii) dan (iv)"]
+};
+const ROMAN=["i","ii","iii","iv"];
+const ASPEK=RUBRIK.flatMap(r=>r.aspek);
+const MAX=ASPEK.reduce((s,a)=>s+a.item.length*4,0);
+const DEF_W={"4.1.1":10,"4.2.1":10,"4.2.2":5,"4.3.1":15,"4.4.1":25,"4.4.2":5,"4.5.1":10,"4.6.1":20};
+const HURUF="abcdefgh";
+const SESI=["Kendiri","Pencerapan 1","Pencerapan 2"];
+const jenisItem=(a,it)=>it.p||a.jenis;
+
+/* cadangan skor daripada kriteria */
+function cadang(jenis,k,band){
+  const n=k.filter(Boolean).length;
+  if(jenis==="A"){ if(n===3) return 4; if(n===2) return k[0]?3:2; return n; }
+  if(jenis==="B") return n;
+  if(band==null||band==="") return null;
+  const req={4:3,3:2,2:1,1:1}; let s=+band;
+  while(s>0&&n<req[s]) s--;
+  return s;
+}
+
+let settings={tahun:"",kodSekolah:"",namaSekolah:"",wajaran:{...DEF_W}};
+let token=null, me=null, guruList=[], records=[], sheetUrl="";
+let editing=null, locked=false, skor={}, krit={}, selKey=null;
+const isAdmin=()=>!!me&&me.peranan==="PENTADBIR";
+const seeAll=()=>!!me&&me.peranan!=="GURU";
+const PERANAN_LABEL={GURU:"Guru",PENYELARAS:"Penyelaras",PENTADBIR:"Pentadbir"};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const kid=k=>k.replace(/\./g,"_");
+const clone=o=>JSON.parse(JSON.stringify(o||{}));
+
+/* ---------- sambungan ke pelayan Apps Script ---------- */
+/* Pautan aplikasi web Apps Script (/exec). Digunakan apabila halaman ini dibuka dari GitHub Pages. */
+const API_URL="https://script.google.com/macros/s/AKfycbztdStb0Dni75sR_QgrUk3cN2kc4Lbrag4T-kJv2zX8Z67b1tBraYiL_7QcR46_TEAc/exec";
+const inAppsScript=()=>!!(window.google&&google.script&&google.script.run);
+const hasApi=()=>inAppsScript()||/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(API_URL);
+function api(fn,...args){
+  if(inAppsScript()) return new Promise((res,rej)=>{
+    google.script.run.withSuccessHandler(res).withFailureHandler(e=>rej(e instanceof Error?e:new Error(String(e&&e.message||e))))[fn](...args);
+  });
+  if(!hasApi()) return Promise.reject(new Error("Pautan pelayan (API_URL) belum ditetapkan dalam fail ini."));
+  return fetch(API_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({fn,args}),redirect:"follow",credentials:"omit"})
+    .then(r=>{ if(!r.ok) throw new Error("Pelayan tidak dapat dihubungi ("+r.status+"). Cuba lagi sebentar."); return r.json(); },
+          ()=>{ throw new Error("Tiada sambungan ke pelayan. Semak internet anda dan cuba lagi."); })
+    .then(j=>{ if(!j||!j.ok) throw new Error((j&&j.error)||"Ralat pelayan."); return j.data; });
+}
+const errText=e=>String(e&&e.message||e||"Ralat tidak diketahui").replace(/^(Exception|Error|ScriptError):\s*/i,"");
+async function call(fn,...args){
+  try{ return await api(fn,token,...args); }
+  catch(e){
+    if(/SESI_TAMAT/.test(errText(e))){ keluar("Sesi anda telah tamat. Sila log masuk semula."); const h=new Error("__handled"); throw h; }
+    throw e;
+  }
+}
+const handled=e=>e&&e.message==="__handled";
+
+function tahap(p){
+  if(p==null) return {t:"—",c:"t-none"};
+  if(p>=85) return {t:"Cemerlang",c:"t-ok"};
+  if(p>=70) return {t:"Baik",c:"t-ok"};
+  if(p>=55) return {t:"Sederhana",c:"t-warn"};
+  return {t:"Perlu Tindakan Segera",c:"t-bad"};
+}
+const r2=n=>Math.round((n+1e-9)*100)/100;
+const fmtP=n=>{const v=r2(n);return Number.isInteger(v)?String(v):v.toFixed(2);};
+function kira(sk,w){
+  const out={aspek:{},peratus:0,mentah:0,diisi:0,total:0};
+  for(const a of ASPEK){
+    const arr=sk[a.kod]||[]; const n=a.item.length; let s=0,d=0;
+    for(let i=0;i<n;i++) if(typeof arr[i]==="number"){s+=arr[i];d++;}
+    const wa=Number((w||DEF_W)[a.kod])||0;
+    out.aspek[a.kod]={s,max:4*n,d,n,w:wa,v:r2(s/(4*n)*wa),pct:r2(s/(4*n)*100)};
+    out.mentah+=s; out.diisi+=d; out.total+=n;
+  }
+  /* seperti sistem rasmi: skor setiap standard dibundarkan dahulu, kemudian dijumlahkan */
+  out.peratus=r2(Object.values(out.aspek).reduce((t,x)=>t+x.v,0));
+  return out;
+}
+const fmtTarikh=iso=>{ if(!iso) return "—"; const [y,m,d]=String(iso).split("-"); return `${d}/${m}/${y}`; };
+const today=()=>{const d=new Date(),p=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`};
+function setMsg(id,t,k){const m=$(id); if(!m) return; m.textContent=t; m.className="msg"+(k?" "+k:"");}
+function status(t,kind){ const s=$("status"); if(!t){s.hidden=true;return;} s.hidden=false; s.textContent=t; s.dataset.kind=kind||"info"; }
+
+/* ---------- borang rubrik ---------- */
+function buildRubrik(){
+  let h="";
+  for(const r of RUBRIK){
+    h+=`<div class="role"><div class="role-head"><span class="kod">Aspek ${r.kod}</span><h2>${esc(r.peranan)}</h2></div>
+      <div class="kritikal"><b>Kriteria kritikal</b>${esc(r.kritikal)}</div>`;
+    for(const a of r.aspek){
+      h+=`<div class="aspek"><div class="aspek-head"><span class="t">${a.kod}</span><span class="w" id="aw-${kid(a.kod)}"></span></div>
+        <div class="std"><div><b>Standard kualiti</b>${esc(a.sk)}</div><div><b>Tindakan untuk mencapai standard</b>${esc(a.tindakan)}</div></div>
+        <div class="lead">${esc(a.lead)}</div>`;
+      a.item.forEach((it,i)=>{
+        const base=`data-a="${a.kod}" data-i="${i}"`;
+        h+=`<div class="item"><div class="item-t"><span class="h">${HURUF[i]})</span><span>${esc(it.t)}</span></div><div class="krit">`;
+        if(it.p){
+          h+=`<select id="pb-${kid(a.kod)}-${i}" ${base} data-role="band" aria-label="Tahap pelibatan murid, perkara (i)"><option value="">(i) Pelibatan murid…</option>${BAND[it.p].map(([v,l])=>`<option value="${v}">(i) ${l}</option>`).join("")}</select>`;
+          it.k.forEach((c,x)=>h+=`<button type="button" class="chip" ${base} data-k="${x}" aria-pressed="false"><span class="r">${ROMAN[x+1]}.</span>${esc(c)}</button>`);
+        }else it.k.forEach((c,x)=>h+=`<button type="button" class="chip" ${base} data-k="${x}" aria-pressed="false"><span class="r">${ROMAN[x]}.</span>${esc(c)}</button>`);
+        h+=`</div><div class="skor-row"><span class="seg" role="group" aria-label="Skor ${a.kod} ${HURUF[i]}">`;
+        for(let s=4;s>=0;s--) h+=`<button type="button" ${base} data-s="${s}" aria-pressed="false">${s}</button>`;
+        h+=`</span><span class="desc" id="ds-${kid(a.kod)}-${i}"></span></div></div>`;
+      });
+      h+=`</div>`;
+    }
+    h+=`</div>`;
+  }
+  const host=$("rubrik"); host.innerHTML=h;
+  host.addEventListener("click",e=>{
+    const b=e.target.closest("button[data-a]"); if(!b||b.disabled) return;
+    const a=b.dataset.a,i=+b.dataset.i;
+    if(b.dataset.s!=null){ skor[a]=skor[a]||[]; skor[a][i]=(skor[a][i]===+b.dataset.s)?null:+b.dataset.s; }
+    else { const st=getK(a,i); st.k[+b.dataset.k]=!st.k[+b.dataset.k]; autoSkor(a,i); }
+    paintSkor(); draftSave();
+  });
+  host.addEventListener("change",e=>{
+    const s=e.target.closest("select[data-role=band]"); if(!s) return;
+    const st=getK(s.dataset.a,+s.dataset.i); st.p=s.value===""?null:s.value; autoSkor(s.dataset.a,+s.dataset.i); paintSkor(); draftSave();
+  });
+}
+function getK(a,i){ krit[a]=krit[a]||[]; const it=ASPEK.find(x=>x.kod===a).item[i]; if(!krit[a][i]) krit[a][i]={k:it.k.map(()=>false),p:null}; return krit[a][i]; }
+function autoSkor(a,i){
+  const asp=ASPEK.find(x=>x.kod===a), it=asp.item[i], st=getK(a,i);
+  const s=cadang(jenisItem(asp,it),st.k,st.p);
+  if(s!=null){ skor[a]=skor[a]||[]; skor[a][i]=s; }
+}
+function paintSkor(){
+  const off=locked||!me;
+  for(const a of ASPEK) a.item.forEach((it,i)=>{
+    const st=(krit[a.kod]||[])[i], v=(skor[a.kod]||[])[i], j=jenisItem(a,it);
+    document.querySelectorAll(`#rubrik [data-a="${a.kod}"][data-i="${i}"]`).forEach(el=>{
+      if(el.dataset.s!=null) el.setAttribute("aria-pressed",v===+el.dataset.s?"true":"false");
+      else if(el.dataset.k!=null) el.setAttribute("aria-pressed",st&&st.k[+el.dataset.k]?"true":"false");
+      else if(el.dataset.role==="band") el.value=st&&st.p!=null?st.p:"";
+      el.disabled=off;
+    });
+    const touched=st&&(st.k.some(Boolean)||st.p!=null);
+    const c=touched?cadang(j,st.k,st.p):null;
+    let d=typeof v==="number"?esc(DESC[j][v]):"Belum diberi skor";
+    if(c!=null&&typeof v==="number"&&c!==v) d+=` · <em>kriteria yang ditanda mencadangkan skor ${c}</em>`;
+    $(`ds-${kid(a.kod)}-${i}`).innerHTML=d;
+  });
+  const k=kira(skor,editing&&locked?editing.wajaran:settings.wajaran), lengkap=k.diisi===k.total;
+  $("sum-n").textContent=k.peratus.toFixed(2);
+  $("sum-raw").textContent=`${k.mentah} / ${MAX} markah`;
+  $("sum-meter").style.width=Math.min(100,k.peratus)+"%";
+  const tp=lengkap?tahap(k.peratus):{t:"Belum lengkap",c:"t-none"};
+  const pill=$("sum-tahap"); pill.textContent=tp.t; pill.className="pill "+tp.c;
+  $("sum-count").textContent=`${k.diisi}/${k.total} item`;
+  $("brk-label").textContent="Skor setiap standard (% · skor / wajaran)";
+  $("brk").innerHTML=ASPEK.map(a=>{const x=k.aspek[a.kod];
+    return `<div class="brk-row"><span class="k">${a.kod}</span><div class="meter"><i style="width:${x.pct}%"></i></div><span class="v">${fmtP(x.pct)}%</span><span class="v w">${x.v.toFixed(2)}/${x.w}</span></div>`}).join("");
+  for(const a of ASPEK){const x=k.aspek[a.kod]; $("aw-"+kid(a.kod)).textContent=`${x.d}/${x.n} item · ${x.s}/${x.max} markah`;}
+}
+
+/* ---------- profil pengguna ---------- */
+function renderProfile(){
+  const box=$("profil");
+  if(!me){ box.hidden=true; box.innerHTML=""; return; }
+  box.hidden=false;
+  box.innerHTML=`<div class="who"><div class="label">${PERANAN_LABEL[me.peranan]||me.peranan} · ID ${esc(me.id)}</div><b>${esc(me.nama)}</b></div>
+    <div class="btns"><button class="btn" type="button" id="p-muat">Muat semula</button><button class="btn" type="button" id="p-pin">Tukar PIN</button><button class="btn" type="button" id="p-keluar">Log keluar</button></div>
+    <form id="p-form" hidden><input id="p-lama" type="password" inputmode="numeric" placeholder="PIN semasa" autocomplete="current-password" aria-label="PIN semasa"><input id="p-baru" type="password" inputmode="numeric" placeholder="PIN baharu (4–8 digit)" autocomplete="new-password" aria-label="PIN baharu"><button class="btn primary" type="submit">Simpan PIN</button></form>
+    <div class="msg" id="p-msg" style="flex-basis:100%"></div>`;
+  $("p-keluar").onclick=()=>keluar("Anda telah log keluar.");
+  $("p-muat").onclick=()=>refresh(true);
+  $("p-pin").onclick=()=>{ $("p-form").hidden=!$("p-form").hidden; if(!$("p-form").hidden) $("p-lama").focus(); };
+  $("p-form").onsubmit=async e=>{
+    e.preventDefault();
+    try{ await call("tukarPin",$("p-lama").value,$("p-baru").value); $("p-form").hidden=true; $("p-lama").value=$("p-baru").value=""; setMsg("p-msg","PIN telah ditukar. Gunakan PIN baharu pada log masuk seterusnya.","ok"); }
+    catch(err){ if(!handled(err)) setMsg("p-msg",errText(err),"err"); }
+  };
+}
+
+/* ---------- medan borang ---------- */
+function renderGuruSel(){
+  const sel=$("f-guruSel"), cur=sel.value||(editing?editing.guruId:"");
+  sel.innerHTML=`<option value="">— Pilih guru —</option>`+guruList.map(g=>`<option value="${esc(g.id)}">${esc(g.nama)}${me&&g.id===me.id?" (saya)":""}</option>`).join("");
+  sel.value=guruList.some(g=>g.id===cur)?cur:"";
+}
+function syncGuruField(){
+  const adm=isAdmin();
+  $("f-guru").hidden=adm; $("f-guruSel").hidden=!adm; $("guruHint").hidden=!adm;
+  if(!adm) $("f-guru").value=editing?editing.guru:(me?me.nama:"");
+  const ss=$("f-sesi"), cur=ss.value;
+  const opts=editing&&!adm?[editing.sesi]:(adm?SESI:["Kendiri"]);
+  ss.innerHTML=opts.map(s=>`<option>${esc(s)}</option>`).join("");
+  ss.value=opts.includes(cur)?cur:opts[0];
+  ss.disabled=!adm||locked;
+  $("pencerapBox").hidden=ss.value==="Kendiri";
+}
+$("f-sesi").addEventListener("change",()=>{
+  $("pencerapBox").hidden=$("f-sesi").value==="Kendiri";
+  if($("f-sesi").value!=="Kendiri"&&!$("f-pencerap").value&&me) $("f-pencerap").value=me.nama;
+});
+
+const F=["tahun","subjek","kelas","sesi","tarikh","pencerap","catatan"];
+function readForm(){const o={};F.forEach(k=>o[k]=$("f-"+k).value.trim());return o;}
+function fillForm(o){F.forEach(k=>{if(o[k]!==undefined)$("f-"+k).value=o[k]??""});}
+function setLocked(v){
+  locked=v; $("lockNote").hidden=!v;
+  if(v) $("lockNote").textContent=me&&me.peranan==="GURU"?"Rekod pencerapan ini dimasukkan oleh pentadbir. Anda boleh melihatnya sahaja.":"Anda boleh melihat rekod ini sahaja. Hanya pentadbir boleh mengubahnya.";
+  ["f-tahun","f-subjek","f-kelas","f-tarikh","f-pencerap","f-catatan","f-guruSel"].forEach(id=>$(id).disabled=v);
+  $("btnSave").hidden=v;
+}
+function resetForm(keepTeacher){
+  const prev=readForm(), prevSel=$("f-guruSel").value;
+  editing=null; skor={}; krit={}; setLocked(false);
+  syncGuruField();
+  if(isAdmin()){ renderGuruSel(); $("f-guruSel").value=keepTeacher?prevSel:""; }
+  $("f-kod").value=settings.kodSekolah; $("f-sekolah").value=settings.namaSekolah;
+  fillForm({tahun:settings.tahun,subjek:keepTeacher?prev.subjek:"",kelas:keepTeacher?prev.kelas:"",
+    sesi:keepTeacher&&isAdmin()?prev.sesi:(isAdmin()?"Pencerapan 1":"Kendiri"),tarikh:today(),
+    pencerap:keepTeacher?prev.pencerap:(isAdmin()&&me?me.nama:""),catatan:""});
+  $("pencerapBox").hidden=$("f-sesi").value==="Kendiri";
+  $("formTitle").textContent="Tapak Standard 4 · Rekod Baharu";
+  $("btnSave").textContent="Simpan rekod";
+  setMsg("saveMsg",""); renderDelete(); paintSkor();
+}
+function openRecord(r){
+  editing=r; skor=clone(r.skor); krit=clone(r.kriteria);
+  const editable=isAdmin()||(r.guruId===me.id&&r.sesi==="Kendiri");
+  locked=!editable;
+  syncGuruField();
+  if(isAdmin()){ renderGuruSel(); $("f-guruSel").value=r.guruId; }
+  $("f-kod").value=r.kodSekolah||settings.kodSekolah; $("f-sekolah").value=r.namaSekolah||settings.namaSekolah;
+  fillForm({tahun:r.tahun,subjek:r.subjek,kelas:r.kelas,sesi:r.sesi,tarikh:r.tarikh,pencerap:r.pencerap,catatan:r.catatan});
+  $("pencerapBox").hidden=r.sesi==="Kendiri";
+  setLocked(!editable);
+  $("formTitle").textContent=`${locked?"Lihat":"Sunting"} rekod · ${r.guru} · ${r.sesi}`;
+  $("btnSave").textContent="Kemas kini rekod";
+  setMsg("saveMsg",""); renderDelete(); paintSkor();
+  go("baharu");
+}
+
+/* ---------- cetak / simpan PDF ---------- */
+const LOGO=document.getElementById("logoImg").src;
+document.getElementById("loginLogo").src=LOGO;
+const CETAK_CSS=`
+.ct{-webkit-print-color-adjust:exact;print-color-adjust:exact;font-family:Calibri,Carlito,"Segoe UI",Arial,sans-serif;color:#000;background:#fff;font-size:9pt;line-height:1.25}
+.ct *{box-sizing:border-box}
+.ct table{width:100%;border-collapse:collapse}
+.ct td,.ct th{border:1px solid #000;padding:3px 5px;vertical-align:middle}
+.ct .pg{break-after:page;page-break-after:always}
+.ct .pg:last-child{break-after:auto;page-break-after:auto}
+/* muka depan */
+.ct .md{padding-top:6mm}
+.ct .md-logo{display:block;width:30mm;height:auto;margin:0 auto 8mm}
+.ct .md-tajuk{border:1px solid #000;text-align:center;font-weight:bold;font-size:15pt;padding:5mm 4mm;line-height:1.35;background:#fff}
+.ct .md-tbl{margin-top:14mm}
+.ct .md-tbl td{border:0;padding:3.2mm 2mm;font-size:12pt;font-weight:bold;vertical-align:top}
+.ct .md-tbl td:first-child{width:52%}
+.ct .md-tbl td:nth-child(2){width:4%;text-align:center}
+.ct .md-nota{font-size:9pt;font-weight:normal;color:#444}
+/* standard 4 */
+.ct .tajuk{background:#77ab55;text-align:center;font-weight:bold;font-size:12pt;color:#0b2a4a;border:1px solid #000;padding:4px}
+.ct .arahan{font-weight:bold;font-size:10pt;margin:6px 0 10px}
+.ct .asp{font-weight:bold;font-size:11pt;margin:10px 0 3px}
+.ct .krit{background:#fbd96d;border:1px solid #000;padding:4px 6px;font-weight:bold;font-size:9.5pt}
+.ct .kod{font-weight:bold;font-size:10.5pt;margin:6px 0 3px}
+.ct .std td{background:#f2cbac;vertical-align:top;width:50%}
+.ct .std b{display:block;font-size:10pt}
+.ct .std span{font-weight:bold;font-size:8.8pt}
+.ct .pk{margin-top:-1px;table-layout:fixed}
+.ct .pk .h1 td{background:#b4c4e6;text-align:center;font-weight:bold}
+.ct .pk .h2 td{background:#b4c4e6;text-align:center;font-weight:bold}
+.ct .pk .h2 td:first-child{font-size:8.5pt}
+.ct .pk .it td{background:#fefcd0;font-size:8pt;vertical-align:middle}
+.ct .pk .it td.c{text-align:center}
+.ct .pk .it td:first-child{font-weight:bold;font-size:8.5pt}
+.ct .pk .it td.l{text-align:left}
+.ct .pk .sk td{background:#cde0b9;text-align:center;font-weight:bold;font-size:8.5pt;padding:2px}
+.ct .pk .sk td:first-child{background:#e3ecd8}
+.ct .pk tbody{break-inside:avoid;page-break-inside:avoid}
+.ct .cb{display:inline-block;width:11px;height:11px;border:1.3px solid #000;background:#fff;position:relative;vertical-align:middle}
+.ct .cb.on{background:#000}
+.ct .cb.on::after{content:"";position:absolute;left:3px;top:0;width:3px;height:7px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.ct .kepala{break-inside:avoid;break-after:avoid;page-break-after:avoid}
+.ct .pk thead{display:table-header-group}
+/* gabung */
+.ct .gb{page:gabung}
+.ct .taraf{width:62mm;margin:6mm auto 6mm;font-size:8pt}
+.ct .taraf td{text-align:center;background:#fdf3c8;padding:2px 4px}
+.ct .taraf tr:first-child td{background:#f2cbac;font-weight:bold}
+.ct .gtbl{font-size:7.2pt;table-layout:auto}
+.ct .gtbl td{text-align:center;padding:3px 2px}
+.ct .gtbl .gh td{background:#f2cbac;font-weight:bold}
+.ct .gtbl .gh td.b{background:#9fbfe8}
+.ct .gtbl .gd td{background:#fdf3c8;height:11mm}
+.ct .ul{border:1px solid #000;min-height:20mm;padding:5px 7px;white-space:pre-wrap;font-size:9.5pt}
+.ct .ttd{display:grid;grid-template-columns:1fr 1fr;gap:20mm;margin-top:14mm;font-size:9pt}
+.ct .ttd div{border-top:1px solid #000;padding-top:3px}
+.ct .kaki{margin-top:6mm;font-size:7.5pt;color:#555;text-align:center}
+.ct-bar{position:sticky;top:0;z-index:2;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding:10px 16px;background:#1c5d8c;color:#fff;font:14px Arial,sans-serif}
+.ct-bar button{font:600 14px Arial,sans-serif;padding:8px 14px;border:0;border-radius:6px;background:#fff;color:#1c5d8c;cursor:pointer}
+@page{size:A4 portrait;margin:10mm}
+@page gabung{size:A4 landscape;margin:10mm}
+@media screen{.ct{max-width:200mm;margin:0 auto}.ct .pg{border-bottom:2px dashed #999;padding-bottom:10mm;margin-bottom:10mm}.ct .gb{max-width:none}}
+@media print{.ct-bar{display:none!important}}
+`;
+const PENSKORAN={
+  A:["","dengan mengambil kira perkara (i) dan (ii) atau perkara (i) dan (iii)","dengan mengambil kira perkara (ii) dan (iii)","dengan mengambil kira mana-mana satu (1) perkara","tidak mengambil kira mana-mana perkara"],
+  B:["","dengan mengambil kira mana-mana tiga (3) perkara","dengan mengambil kira mana-mana dua (2) perkara","dengan mengambil kira mana-mana satu (1) perkara","tidak mengambil kira mana-mana perkara"],
+  C:["","i. dengan pelibatan 80% hingga 89% murid<br>ii. dengan memenuhi sekurang-kurangnya dua (2) daripada perkara (ii), (iii) dan (iv)","i. dengan pelibatan 50% hingga 79% murid<br>ii. dengan memenuhi sekurang-kurangnya satu (1) daripada perkara (ii), (iii) dan (iv)","i. dengan pelibatan 1% hingga 49% murid<br>ii. dengan memenuhi sekurang-kurangnya satu (1) daripada perkara (ii), (iii) dan (iv)","tidak memenuhi mana-mana perkara"],
+  D:["","i. dengan pelibatan 25% hingga 49% murid<br>ii. dengan memenuhi sekurang-kurangnya dua (2) daripada perkara (ii), (iii) dan (iv)","i. dengan pelibatan 10% hingga 24% murid<br>ii. dengan memenuhi sekurang-kurangnya satu (1) daripada perkara (ii), (iii) dan (iv)","i. dengan pelibatan kurang daripada 10% murid<br>ii. dengan memenuhi sekurang-kurangnya satu (1) daripada perkara (ii), (iii) dan (iv)","tidak memenuhi mana-mana perkara"]
+};
+const PELIBATAN4={C:"dengan pelibatan 90% hingga 100% murid",D:"dengan pelibatan 50% hingga 100% murid"};
+function cetakBody(r){
+  const w=r.wajaran||settings.wajaran, k=kira(r.skor||{},w), tp=tahap(r.peratus);
+  const cb=on=>`<span class="cb${on?" on":""}"></span>`;
+  /* MUKA DEPAN */
+  let h=`<div class="ct"><div class="pg md"><img class="md-logo" src="${LOGO}" alt="Logo sekolah">
+   <div class="md-tajuk">TAPAK STANDARD 4 SKPM Kualiti@Sekolah<br>PEMBELAJARAN DAN PEMUDAHCARAAN (PdPc)</div>
+   <table class="md-tbl">
+    <tr><td>KALENDAR AKADEMIK SESI</td><td>:</td><td>${esc(r.tahun)}</td></tr>
+    <tr><td>KOD SEKOLAH</td><td>:</td><td>${esc(r.kodSekolah)}</td></tr>
+    <tr><td>NAMA SEKOLAH</td><td>:</td><td>${esc(r.namaSekolah)}</td></tr>
+    <tr><td>NAMA GURU</td><td>:</td><td>${esc(r.guru)}</td></tr>
+    <tr><td>MATA PELAJARAN</td><td>:</td><td>${esc(r.subjek)}</td></tr>
+    <tr><td>KELAS</td><td>:</td><td>${esc(r.kelas)}</td></tr>
+    <tr><td>SESI PENGISIAN</td><td>:</td><td>${esc(String(r.sesi).toUpperCase())}</td></tr>
+    <tr><td>TARIKH</td><td>:</td><td>${fmtTarikh(r.tarikh)}</td></tr>
+    ${r.sesi!=="Kendiri"?`<tr><td>NAMA PENCERAP</td><td>:</td><td>${esc(r.pencerap||"")}</td></tr>`:""}
+   </table></div>`;
+  /* STANDARD 4 */
+  h+=`<div class="pg"><div class="tajuk">TAPAK STANDARD 4<br>PEMBELAJARAN DAN PEMUDAHCARAAN (PdPc)</div>
+   <div class="arahan">ARAHAN: SILA TANDAKAN ( / ) PADA KOTAK SKOR PILIHAN ANDA MENGIKUT PERNYATAAN PENSKORAN YANG TERTERA.</div>`;
+  for(const ro of RUBRIK){
+    ro.aspek.forEach((a,ai)=>{
+      h+=`<div class="kepala">`;
+      if(ai===0) h+=`<div class="asp">Aspek ${ro.kod}: ${esc(ro.peranan.toUpperCase())}</div><div class="krit">KRITERIA KRITIKAL:<br>${esc(ro.kritikal)}</div>`;
+      h+=`<div class="kod">${a.kod}</div>
+       <table class="std"><tr><td><b>STANDARD KUALITI</b><span>${esc(a.sk)}</span></td><td><b>TINDAKAN UNTUK MENCAPAI STANDARD</b><span>${esc(a.tindakan)}</span></td></tr></table></div>
+       <table class="pk"><colgroup><col style="width:20%"><col style="width:20%"><col style="width:15%"><col style="width:15%"><col style="width:15%"><col style="width:15%"></colgroup>
+       <thead><tr class="h1"><td>TINDAKAN</td><td colspan="5">PENSKORAN</td></tr>
+       <tr class="h2"><td>${esc(a.lead)}</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td></tr></thead>`;
+      a.item.forEach((it,i)=>{
+        const j=jenisItem(a,it), v=((r.skor||{})[a.kod]||[])[i];
+        const kr4=it.p?[PELIBATAN4[it.p],...it.k]:it.k;
+        const c4=kr4.map((t,x)=>`${ROMAN[x]}. ${esc(t)}`).join("<br>");
+        h+=`<tbody><tr class="it"><td>${HURUF[i]}) ${esc(it.t)}</td><td class="l">${c4}</td>${[1,2,3,4].map(x=>`<td class="c">${PENSKORAN[j][x]}</td>`).join("")}</tr>
+         <tr class="sk"><td>SKOR SEKOLAH</td>${[4,3,2,1,0].map(s=>`<td>${cb(v===s)}</td>`).join("")}</tr></tbody>`;
+      });
+      h+=`</table>`;
+    });
+  }
+  h+=`</div>`;
+  /* GABUNG */
+  const sesiU=String(r.sesi).toUpperCase();
+  h+=`<div class="pg gb"><div class="tajuk">TAPAK STANDARD 4<br>PEMBELAJARAN DAN PEMUDAHCARAAN (PdPc)</div>
+   <table class="taraf"><tr><td>TARAF PdP</td><td>SKOR (%)</td></tr><tr><td>CEMERLANG</td><td>85.00 - 100.00</td></tr><tr><td>BAIK</td><td>70.00 - 84.99</td></tr><tr><td>SEDERHANA</td><td>55.00 - 69.99</td></tr><tr><td>PERLU TINDAKAN SEGERA</td><td>0 - 54.99</td></tr></table>
+   <table class="gtbl"><tr class="gh"><td>KOD SEKOLAH</td><td>NAMA SEKOLAH</td><td>NAMA</td><td>SESI PENGISIAN</td><td>TARIKH</td><td>TAHAP/ KELAS</td><td>MATA PELAJARAN DICERAP</td>
+   ${ASPEK.map(a=>`<td>${a.kod}</td><td class="b">% ${a.kod}</td>`).join("")}<td>JUMLAH SKOR</td><td>TARAF</td></tr>
+   <tr class="gd"><td>${esc(r.kodSekolah)}</td><td>${esc(r.namaSekolah)}</td><td>${esc(r.guru)}</td><td>${esc(sesiU)}</td><td>${fmtTarikh(r.tarikh)}</td><td>${esc(r.kelas)}</td><td>${esc(r.subjek)}</td>
+   ${ASPEK.map(a=>{const x=k.aspek[a.kod];return `<td>${x.v.toFixed(2)}</td><td>${(x.s/x.max*100).toFixed(2)}</td>`}).join("")}<td><b>${k.peratus.toFixed(2)}</b></td><td><b>${esc(tp.t.toUpperCase())}</b></td></tr></table>
+   <div style="margin-top:6mm;font-weight:bold;font-size:10pt">ULASAN / CADANGAN PENAMBAHBAIKAN</div><div class="ul">${esc(r.catatan||"")}</div>
+   <div class="ttd"><div>Tandatangan guru<br>Nama: ${esc(r.guru)}<br>Tarikh:</div><div>Tandatangan ${r.sesi==="Kendiri"?"pentadbir":"pencerap"}<br>Nama: ${esc(r.sesi==="Kendiri"?"":(r.pencerap||""))}<br>Tarikh:</div></div>
+   <div class="kaki">Dijana daripada e-Tapak Standard 4 pada ${fmtTarikh(today())} · ID rekod ${esc(r.id)}</div></div></div>`;
+  return h;
+}
+
+function cetak(rec){
+  const r=rec&&rec.id?rec:editing;
+  if(!r) return;
+  const title=`Tapak Standard 4 - ${r.guru} - ${r.sesi} - ${fmtTarikh(r.tarikh)}`;
+  const doc=`<!DOCTYPE html><html lang="ms"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><style>body{margin:0;background:#fff}${CETAK_CSS}</style></head><body>
+<div class="ct-bar"><button type="button" onclick="window.print()">Cetak / Simpan PDF</button><span>Untuk PDF, pilih <b>Simpan sebagai PDF</b> dalam tetingkap cetak.</span></div>
+<div style="padding:12px">${cetakBody(r)}</div></body></html>`;
+  let win=null;
+  try{ const url=URL.createObjectURL(new Blob([doc],{type:"text/html"})); win=window.open(url,"_blank"); setTimeout(()=>URL.revokeObjectURL(url),60000); }catch(e){ win=null; }
+  if(!win){
+    $("cetak").innerHTML=`<style>${CETAK_CSS}</style>${cetakBody(r)}`;
+    try{ window.print(); }catch(e){ setMsg("saveMsg","Pelayar ini tidak membenarkan cetakan. Cuba buka sistem dalam Chrome.","err"); }
+  }
+}
+
+function renderDelete(){
+  const box=$("delBox");
+  $("btnCetak").hidden=!editing||!me; $("topAct").hidden=!editing||!me;
+  if(!editing||locked||!me){ box.innerHTML=""; return; }
+  box.innerHTML=`<button class="btn danger" type="button" id="btnDel">Padam rekod ini</button>`;
+  $("btnDel").onclick=()=>{
+    box.innerHTML=`<div class="confirm"><span>Padam rekod ini secara kekal?</span><button class="btn danger" id="yesDel" type="button">Ya, padam</button><button class="btn" id="noDel" type="button">Batal</button></div>`;
+    $("noDel").onclick=renderDelete;
+    $("yesDel").onclick=async()=>{
+      $("yesDel").disabled=true;
+      try{ const d=await call("padamRekod",editing.id); editing=null; applyData(d); resetForm(false); setMsg("saveMsg","Rekod dipadam.","ok"); }
+      catch(e){ if(!handled(e)){ setMsg("saveMsg","Rekod tidak dapat dipadam: "+errText(e),"err"); renderDelete(); } }
+    };
+  };
+}
+const draftKey=()=>me?"t4-draf-"+me.id:"t4-draf";
+let draftT=null;
+function draftSave(){ if(editing||!me) return; clearTimeout(draftT); draftT=setTimeout(()=>{try{localStorage.setItem(draftKey(),JSON.stringify({f:readForm(),skor,krit}))}catch(e){}},400); }
+function draftLoad(){ try{const d=JSON.parse(localStorage.getItem(draftKey())||"null"); if(d){const f={...d.f};delete f.sesi;fillForm(f); skor=d.skor||{}; krit=d.krit||{}; paintSkor();} }catch(e){} }
+function draftClear(){ try{localStorage.removeItem(draftKey())}catch(e){} }
+
+async function save(){
+  if(!me) return;
+  const f=readForm(), adm=isAdmin(), guruId=adm?$("f-guruSel").value:me.id;
+  if(!guruId){ setMsg("saveMsg","Pilih guru yang dicerap.","err"); return; }
+  if(!f.subjek||!f.kelas||!f.tarikh){ setMsg("saveMsg","Lengkapkan mata pelajaran, kelas dan tarikh.","err"); return; }
+  const k=kira(skor,settings.wajaran);
+  if(k.diisi<k.total){ setMsg("saveMsg",`Masih ada ${k.total-k.diisi} item belum diberi skor.`,"err"); return; }
+  const payload={id:editing?editing.id:null,guruId,sesi:f.sesi,tahun:f.tahun,tarikh:f.tarikh,kelas:f.kelas,subjek:f.subjek,
+    pencerap:f.sesi==="Kendiri"?"":f.pencerap,catatan:f.catatan,skor,kriteria:krit};
+  const btn=$("btnSave"), label=btn.textContent; btn.disabled=true; btn.textContent="Menyimpan…"; setMsg("saveMsg","");
+  try{
+    const wasNew=!editing, d=await call("simpanRekod",payload);
+    const nama=(guruList.find(g=>g.id===guruId)||me).nama;
+    applyData(d);
+    if(wasNew){ draftClear(); resetForm(true); setMsg("saveMsg",`Rekod disimpan untuk ${nama} · ${k.peratus.toFixed(2)}%`,"ok"); }
+    else { editing=records.find(x=>x.id===payload.id)||editing; setMsg("saveMsg",`Rekod dikemas kini · ${k.peratus.toFixed(2)}%`,"ok"); }
+  }catch(e){ if(!handled(e)) setMsg("saveMsg","Rekod tidak disimpan: "+errText(e),"err"); }
+  finally{ btn.disabled=false; if(btn.textContent==="Menyimpan…") btn.textContent=editing?"Kemas kini rekod":label; }
+}
+
+/* ---------- senarai rekod ---------- */
+function filtered(){
+  const q=$("q-cari").value.trim().toLowerCase(), s=$("q-sesi").value, y=$("q-tahun").value;
+  return records.filter(r=>(!s||r.sesi===s)&&(!y||String(r.tahun)===y)&&(!q||`${r.guru} ${r.subjek} ${r.kelas}`.toLowerCase().includes(q)))
+    .sort((a,b)=>(b.tarikh||"").localeCompare(a.tarikh||""));
+}
+const PENYATAAN="Guru berperanan sebagai pemudah cara dalam proses pengajaran dan pembelajaran (PdP) yang berkesan untuk memperkembangkan potensi murid secara menyeluruh dan meningkatkan pencapaian murid pada tahap optimum secara berterusan.";
+const IKON={
+  sunting:'<svg viewBox="0 0 20 20" width="17" height="17" aria-hidden="true"><path d="M13.6 3.2l3.2 3.2-8.9 8.9-3.9.7.7-3.9z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M11.8 5l3.2 3.2" stroke="currentColor" stroke-width="1.6"/></svg>',
+  lihat:'<svg viewBox="0 0 20 20" width="17" height="17" aria-hidden="true"><path d="M1.8 10S5 4.5 10 4.5 18.2 10 18.2 10 15 15.5 10 15.5 1.8 10 1.8 10z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="10" cy="10" r="2.6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>',
+  cetak:'<svg viewBox="0 0 20 20" width="17" height="17" aria-hidden="true"><path d="M5.5 7.5V2.8h9v4.7M5.5 14.5H3.2V8h13.6v6.5h-2.3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M5.5 11.5h9v5.7h-9z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>'
+};
+function renderList(){
+  $("listSub").textContent=seeAll()?"Skor setiap standard dalam peratus, mengikut sesi pengisian. Jumlah dikira seperti sistem rasmi.":"Skor anda dalam peratus bagi setiap standard. Rekod Pencerapan dimasukkan oleh pentadbir.";
+  const years=[...new Set(records.map(r=>String(r.tahun)).filter(Boolean))].sort().reverse();
+  const ys=$("q-tahun"), cur=ys.value;
+  ys.innerHTML=`<option value="">Semua</option>`+years.map(y=>`<option${y===cur?" selected":""}>${esc(y)}</option>`).join("");
+  $("dl-subjek").innerHTML=[...new Set(records.map(r=>r.subjek))].map(g=>`<option value="${esc(g)}">`).join("");
+  const host=$("analisis"), rows=filtered(), sesiSel=$("q-sesi").value;
+  if(!records.length){ host.innerHTML=`<div class="panel empty"><b>Belum ada rekod</b>${isAdmin()?"Rekod Kendiri guru dan rekod Pencerapan yang anda masukkan akan muncul di sini.":"Isi borang Kendiri anda. Rekod Pencerapan oleh pentadbir juga akan muncul di sini."}</div>`; return; }
+  let h=`<div class="tbl-wrap an-wrap"><table class="an-std"><tr><th>STANDARD</th><th>STANDARD 4: PEMBELAJARAN DAN PEMUDAHCARAAN (PdPc)</th></tr><tr><td>PENYATAAN STANDARD</td><td>${PENYATAAN}</td></tr></table></div>`;
+  const senarai=(sesiSel?[sesiSel]:SESI).map(s=>[s,rows.filter(r=>r.sesi===s).sort((a,b)=>String(a.guru).localeCompare(b.guru)||String(a.subjek).localeCompare(b.subjek)||(b.tarikh||"").localeCompare(a.tarikh||""))]);
+  if(!rows.length) h+=`<div class="panel empty"><b>Tiada rekod sepadan dengan carian</b>Ubah carian atau penapis sesi.</div>`;
+  for(const [s,rs] of senarai){
+    if(!rs.length) continue;
+    const ks=rs.map(r=>kira(r.skor||{},r.wajaran));
+    const avg=f=>r2(ks.reduce((t,k)=>t+f(k),0)/ks.length);
+    h+=`<div class="tbl-wrap an-wrap"><table class="an-std an-sesi"><tr><th>SESI PENGISIAN</th><th>${esc(s.toUpperCase())}</th></tr></table>
+      <table class="an"><colgroup><col style="width:4%"><col style="width:12%"><col style="width:10%"><col style="width:6%">${ASPEK.map(()=>`<col style="width:5.5%">`).join("")}<col style="width:6%"><col style="width:11%"><col style="width:7%"></colgroup><thead><tr><th class="c">Bil</th><th>Nama Guru</th><th>Mata Pelajaran</th><th>Kelas</th>${ASPEK.map(a=>`<th class="num">${a.kod}</th>`).join("")}<th class="num">Jumlah</th><th>Taraf PdP</th><th class="c">Tindakan</th></tr></thead><tbody>`;
+    rs.forEach((r,i)=>{
+      const k=ks[i], tp=tahap(k.peratus), boleh=isAdmin()||(me&&r.guruId===me.id&&r.sesi==="Kendiri");
+      h+=`<tr data-id="${esc(r.id)}"><td class="c">${i+1}</td><td class="nm">${esc(r.guru)}</td><td>${esc(r.subjek)}</td><td>${esc(r.kelas)}</td>
+        ${ASPEK.map(a=>{const p=k.aspek[a.kod].pct;return `<td class="num${p===0?" z":""}">${fmtP(p)}</td>`}).join("")}
+        <td class="num jm">${k.peratus.toFixed(2)}</td><td><span class="pill ${tp.c}">${tp.t.toUpperCase()}</span></td>
+        <td class="c act"><button type="button" class="ik" data-buka="${esc(r.id)}" title="${boleh?"Sunting":"Lihat"} rekod" aria-label="${boleh?"Sunting":"Lihat"} rekod ${esc(r.guru)}">${boleh?IKON.sunting:IKON.lihat}</button><button type="button" class="ik" data-cetak="${esc(r.id)}" title="Cetak / Simpan PDF" aria-label="Cetak rekod ${esc(r.guru)}">${IKON.cetak}</button></td></tr>`;
+    });
+    h+=`</tbody>`;
+    if(rs.length>1){ const pj=avg(k=>k.peratus), tp=tahap(pj);
+      h+=`<tfoot><tr><td></td><td colspan="3">PURATA (${rs.length} rekod)</td>${ASPEK.map(a=>`<td class="num">${fmtP(avg(k=>k.aspek[a.kod].pct))}</td>`).join("")}<td class="num jm">${pj.toFixed(2)}</td><td><span class="pill ${tp.c}">${tp.t.toUpperCase()}</span></td><td></td></tr></tfoot>`; }
+    h+=`</table></div>`;
+  }
+  host.innerHTML=h;
+}
+$("analisis").addEventListener("click",e=>{
+  const pb=e.target.closest("[data-cetak]"); if(pb){const rc=records.find(x=>x.id===pb.dataset.cetak); if(rc) cetak(rc); return;}
+  const tr=e.target.closest("tr[data-id]"); if(!tr) return;
+  const r=records.find(x=>x.id===tr.dataset.id); if(r) openRecord(r);
+});
+["q-cari","q-sesi","q-tahun"].forEach(id=>$(id).addEventListener("input",renderList));
+
+/* ---------- rumusan (gabung) ---------- */
+function groups(){
+  const m=new Map();
+  for(const r of records){
+    const key=[r.guruId,r.subjek,r.kelas,r.tahun].join("|");
+    if(!m.has(key)) m.set(key,{key,guru:r.guru,subjek:r.subjek,kelas:r.kelas,tahun:r.tahun,s:{}});
+    const g=m.get(key), prev=g.s[r.sesi];
+    if(!prev||(r.tarikh||"")>(prev.tarikh||"")) g.s[r.sesi]=r;
+  }
+  return [...m.values()].map(g=>{const v=SESI.map(s=>g.s[s]?.peratus).filter(x=>typeof x==="number");g.gabung=v.length?v.reduce((a,b)=>a+b,0)/v.length:null;return g;})
+    .sort((a,b)=>String(a.guru).localeCompare(b.guru)||String(a.subjek).localeCompare(b.subjek));
+}
+function renderRumusan(){
+  const gs=groups(), tb=$("tb-rumusan"), c=v=>v==null?"—":Number(v).toFixed(2);
+  if(!gs.length){ tb.innerHTML=`<tr><td colspan="9"><div class="empty"><b>Belum ada data untuk digabungkan</b>Rumusan muncul selepas sekurang-kurangnya satu rekod Kendiri atau Pencerapan disimpan.</div></td></tr>`; $("detail").hidden=true; return; }
+  tb.innerHTML=gs.map(g=>{const tp=tahap(g.gabung);return `<tr data-k="${esc(g.key)}" class="${g.key===selKey?"sel":""}"><td>${esc(g.guru)}</td><td>${esc(g.subjek)}</td><td>${esc(g.kelas)}</td><td>${esc(g.tahun)}</td><td class="num">${c(g.s["Kendiri"]?.peratus)}</td><td class="num">${c(g.s["Pencerapan 1"]?.peratus)}</td><td class="num">${c(g.s["Pencerapan 2"]?.peratus)}</td><td class="num"><b>${c(g.gabung)}</b></td><td><span class="pill ${tp.c}">${tp.t}</span></td></tr>`}).join("");
+  const g=gs.find(x=>x.key===selKey), d=$("detail");
+  if(!g){ d.hidden=true; return; }
+  const cls={"Kendiri":"s-k","Pencerapan 1":"s-p1","Pencerapan 2":"s-p2"};
+  let h=`<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;justify-content:space-between"><h2>${esc(g.guru)} · ${esc(g.subjek)} · ${esc(g.kelas)}</h2>
+   <div class="legend">${SESI.map(s=>`<span style="--c:var(--${s==="Kendiri"?"muted":s==="Pencerapan 1"?"accent":"ok"})">${s}</span>`).join("")}</div></div>
+   <p class="sub" style="margin:4px 0 0">Peratus markah setiap aspek, seperti lajur % dalam tab GABUNG.</p><div class="cmp">`;
+  for(const r of RUBRIK) for(const a of r.aspek){
+    h+=`<div class="cmp-row"><div><span style="font-family:var(--f-mono);color:var(--muted)">${a.kod}</span> ${esc(r.peranan)}</div><div class="bars">`;
+    for(const s of SESI){ const rc=g.s[s]; if(!rc) continue; const x=kira(rc.skor||{},rc.wajaran).aspek[a.kod]; const p=x.s/x.max*100;
+      h+=`<div class="bar-l"><span style="color:var(--muted)">${s}</span><div class="m"><i class="${cls[s]}" style="width:${p}%"></i></div><span class="v">${p.toFixed(0)}%</span></div>`; }
+    h+=`</div></div>`;
+  }
+  h+=`</div>`;
+  const notes=SESI.map(s=>g.s[s]).filter(r=>r&&r.catatan);
+  if(notes.length) h+=`<div style="margin-top:16px"><div class="label">Ulasan</div>${notes.map(r=>`<p style="margin:6px 0;max-width:70ch"><b>${esc(r.sesi)}${r.pencerap?" ("+esc(r.pencerap)+")":""}:</b> ${esc(r.catatan)}</p>`).join("")}</div>`;
+  d.innerHTML=h; d.hidden=false;
+}
+$("tb-rumusan").addEventListener("click",e=>{const tr=e.target.closest("tr[data-k]");if(!tr)return;selKey=selKey===tr.dataset.k?null:tr.dataset.k;renderRumusan();});
+
+/* ---------- tetapan (pentadbir) ---------- */
+function renderSettings(){
+  $("navSet").hidden=!isAdmin();
+  $("s-tahun").value=settings.tahun; $("s-kod").value=settings.kodSekolah; $("s-sekolah").value=settings.namaSekolah;
+  $("wt").innerHTML=ASPEK.map(a=>`<div class="field"><label for="w-${kid(a.kod)}"><span style="font-family:var(--f-mono);color:var(--muted)">${a.kod}</span> ${esc(RUBRIK.find(r=>r.aspek.includes(a)).peranan)}</label><input id="w-${kid(a.kod)}" type="number" min="0" max="100" step="1" value="${settings.wajaran[a.kod]??0}"></div>`).join("");
+  $("wt").querySelectorAll("input").forEach(i=>i.addEventListener("input",wtTotal));
+  wtTotal();
+  $("brandSchool").textContent=settings.namaSekolah?`${settings.namaSekolah} · ${settings.kodSekolah} · Sesi ${settings.tahun}`:"SKPM Kualiti@Sekolah · PdPc";
+}
+function wtTotal(){ let t=0; ASPEK.forEach(a=>t+=Number($("w-"+kid(a.kod)).value)||0); const el=$("wt-total"); el.textContent=`jumlah ${t}%`+(t!==100?" (mesti 100%)":""); el.style.color=t===100?"":"var(--bad)"; return t; }
+$("btnSet").onclick=async()=>{
+  if(wtTotal()!==100){ setMsg("setMsg","Jumlah wajaran mesti tepat 100%.","err"); return; }
+  const w={}; ASPEK.forEach(a=>w[a.kod]=Number($("w-"+kid(a.kod)).value)||0);
+  const body={tahun:$("s-tahun").value.trim(),kodSekolah:$("s-kod").value.trim(),namaSekolah:$("s-sekolah").value.trim(),wajaran:w};
+  $("btnSet").disabled=true;
+  try{ applyData(await call("simpanTetapan",body)); setMsg("setMsg","Tetapan disimpan. Rekod lama mengekalkan skor asalnya; buka dan kemas kini rekod untuk mengira semula.","ok"); }
+  catch(e){ if(!handled(e)) setMsg("setMsg","Tetapan tidak disimpan: "+errText(e),"err"); }
+  finally{ $("btnSet").disabled=false; }
+};
+
+/* ---------- data, log masuk & log keluar ---------- */
+function applyData(d){
+  me=d.user;
+  settings={...settings,...(d.tetapan||{}),wajaran:{...DEF_W,...((d.tetapan&&d.tetapan.wajaran)||{})}};
+  guruList=d.guru||[]; records=d.rekod||[]; sheetUrl=d.sheetUrl||"";
+  $("lnkSheet").hidden=!sheetUrl; if(sheetUrl) $("lnkSheet").href=sheetUrl;
+  renderProfile(); renderSettings(); if(isAdmin()) renderGuruSel(); renderList(); renderRumusan();
+  if(editing){ const r=records.find(x=>x.id===editing.id); if(r) editing=r; else { resetForm(false); setMsg("saveMsg","Rekod yang dibuka telah dipadam oleh pengguna lain.","err"); } }
+  else syncGuruField();
+  paintSkor();
+}
+let refreshing=false;
+async function refresh(loud){
+  if(!me||refreshing) return; refreshing=true;
+  if(loud) status("Memuatkan data terkini…","info");
+  try{ applyData(await call("getData")); status(null); }
+  catch(e){ if(!handled(e)) status("Data tidak dapat dimuatkan: "+errText(e),"warn"); else status(null); }
+  finally{ refreshing=false; }
+}
+function keluar(msg){
+  status(null);
+  const t=token; token=null; me=null; guruList=[]; records=[]; sheetUrl=""; editing=null; selKey=null;
+  try{sessionStorage.removeItem("t4tok")}catch(e){}
+  if(t) api("logout",t).catch(()=>{});
+  renderProfile(); renderList(); renderRumusan(); resetForm(false);
+  $("l-pin").value=""; setMsg("l-msg",msg||"",msg&&/tamat/.test(msg)?"err":"");
+  view="baharu"; route();
+}
+$("loginForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const btn=$("l-btn"); btn.disabled=true; btn.textContent="Menyemak…"; setMsg("l-msg","");
+  try{
+    const d=await api("login",$("l-id").value,$("l-pin").value);
+    token=d.token; try{sessionStorage.setItem("t4tok",token)}catch(_){}
+    $("l-pin").value="";
+    applyData(d); resetForm(false); draftLoad();
+    go("baharu");
+  }catch(err){ setMsg("l-msg",errText(err),"err"); }
+  finally{ btn.disabled=false; btn.textContent="Log masuk"; }
+});
+
+/* ---------- navigasi ---------- */
+const VIEWS=["baharu","rekod","rumusan","tetapan"];
+function route(){
+  if(!me){
+    VIEWS.forEach(x=>$("v-"+x).hidden=true); $("v-masuk").hidden=false; $("nav").hidden=true; return;
+  }
+  $("v-masuk").hidden=true; $("nav").hidden=false;
+  let v=VIEWS.includes(view)?view:"baharu";
+  if(v==="tetapan"&&!isAdmin()) v="baharu";
+  VIEWS.forEach(x=>$("v-"+x).hidden=x!==v);
+  document.querySelectorAll("nav.tabs a").forEach(a=>{ if(a.dataset.v===v) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
+}
+/* Navigasi tanpa # pada alamat: Apps Script memaparkan halaman dalam iframe, jadi pautan # tidak sampai ke halaman ini. */
+let view="baharu";
+function go(v){ view=v; route(); window.scrollTo(0,0); if(me&&(v==="rekod"||v==="rumusan")) refresh(false); }
+document.getElementById("nav").addEventListener("click",e=>{ const a=e.target.closest("a[data-v]"); if(!a) return; e.preventDefault(); go(a.dataset.v); });
+
+/* ---------- mula ---------- */
+$("btnSave").onclick=save;
+$("btnCetak").onclick=()=>cetak(); $("btnCetak2").onclick=()=>cetak();
+$("btnReset").onclick=()=>{ draftClear(); resetForm(false); };
+F.forEach(k=>$("f-"+k).addEventListener("input",draftSave));
+buildRubrik(); resetForm(false); renderSettings(); renderList(); renderRumusan(); route();
+(async()=>{
+  if(!hasApi()){ status("Pautan pelayan (API_URL) belum ditetapkan dalam fail ini.","warn"); return; }
+  api("infoAwam").then(i=>{ settings={...settings,...i}; $("loginSchool").textContent=`${i.namaSekolah} · ${i.kodSekolah}`; renderSettings(); if(!me) resetForm(false); }).catch(e=>status(errText(e),"warn"));
+  let t=null; try{t=sessionStorage.getItem("t4tok")}catch(e){}
+  if(t){
+    token=t; status("Memuatkan data…","info");
+    try{ applyData(await api("getData",t)); resetForm(false); draftLoad(); status(null); }
+    catch(e){ token=null; try{sessionStorage.removeItem("t4tok")}catch(_){} status(null); }
+    route();
+  }else status(null);
+})();
+</script>
+</body>
+</html>
