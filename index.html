@@ -319,7 +319,6 @@ a.btn{display:inline-block;font:600 14px var(--f-body);padding:9px 16px;border-r
     <p class="sub">Maklumat ini diisi automatik pada setiap rekod baharu. Hanya pentadbir boleh melihat dan mengubah tetapan ini.</p>
     <div class="panel" style="display:flex;flex-direction:column;gap:18px">
       <div class="meta">
-        <div class="field"><label for="s-tahun">Kalendar akademik sesi</label><input id="s-tahun"></div>
         <div class="field"><label for="s-kod">Kod sekolah</label><input id="s-kod"></div>
         <div class="field span2"><label for="s-sekolah">Nama sekolah</label><input id="s-sekolah"></div>
       </div>
@@ -637,7 +636,7 @@ function resetForm(keepTeacher){
   syncGuruField();
   if(isAdmin()){ renderGuruSel(); $("f-guruSel").value=keepTeacher?prevSel:""; }
   $("f-kod").value=settings.kodSekolah; $("f-sekolah").value=settings.namaSekolah;
-  fillForm({tahun:settings.tahun,subjek:keepTeacher?prev.subjek:"",kelas:keepTeacher?prev.kelas:"",
+  fillForm({tahun:String(new Date().getFullYear()),subjek:keepTeacher?prev.subjek:"",kelas:keepTeacher?prev.kelas:"",
     sesi:keepTeacher&&isAdmin()?prev.sesi:(isAdmin()?"Pencerapan 1":"Kendiri"),tarikh:today(),
     pencerap:keepTeacher?prev.pencerap:(isAdmin()&&me?me.nama:""),catatan:""});
   $("pencerapBox").hidden=$("f-sesi").value==="Kendiri";
@@ -931,17 +930,17 @@ $("tb-rumusan").addEventListener("click",e=>{const tr=e.target.closest("tr[data-
 /* ---------- tetapan (pentadbir) ---------- */
 function renderSettings(){
   $("navSet").hidden=!isAdmin();
-  $("s-tahun").value=settings.tahun; $("s-kod").value=settings.kodSekolah; $("s-sekolah").value=settings.namaSekolah;
+  $("s-kod").value=settings.kodSekolah; $("s-sekolah").value=settings.namaSekolah;
   $("wt").innerHTML=ASPEK.map(a=>`<div class="field"><label for="w-${kid(a.kod)}"><span style="font-family:var(--f-mono);color:var(--muted)">${a.kod}</span> ${esc(RUBRIK.find(r=>r.aspek.includes(a)).peranan)}</label><input id="w-${kid(a.kod)}" type="number" min="0" max="100" step="1" value="${settings.wajaran[a.kod]??0}"></div>`).join("");
   $("wt").querySelectorAll("input").forEach(i=>i.addEventListener("input",wtTotal));
   wtTotal();
-  $("brandSchool").textContent=settings.namaSekolah?`${settings.namaSekolah} · ${settings.kodSekolah} · Sesi ${settings.tahun}`:"SKPM Kualiti@Sekolah · PdPc";
+  $("brandSchool").textContent=settings.namaSekolah?`${settings.namaSekolah} · ${settings.kodSekolah}`:"SKPM Kualiti@Sekolah · PdPc";
 }
 function wtTotal(){ let t=0; ASPEK.forEach(a=>t+=Number($("w-"+kid(a.kod)).value)||0); const el=$("wt-total"); el.textContent=`jumlah ${t}%`+(t!==100?" (mesti 100%)":""); el.style.color=t===100?"":"var(--bad)"; return t; }
 $("btnSet").onclick=async()=>{
   if(wtTotal()!==100){ setMsg("setMsg","Jumlah wajaran mesti tepat 100%.","err"); return; }
   const w={}; ASPEK.forEach(a=>w[a.kod]=Number($("w-"+kid(a.kod)).value)||0);
-  const body={tahun:$("s-tahun").value.trim(),kodSekolah:$("s-kod").value.trim(),namaSekolah:$("s-sekolah").value.trim(),wajaran:w};
+  const body={tahun:"",kodSekolah:$("s-kod").value.trim(),namaSekolah:$("s-sekolah").value.trim(),wajaran:w};
   $("btnSet").disabled=true;
   try{ applyData(await call("simpanTetapan",body)); setMsg("setMsg","Tetapan disimpan. Rekod lama mengekalkan skor asalnya; buka dan kemas kini rekod untuk mengira semula.","ok"); }
   catch(e){ if(!handled(e)) setMsg("setMsg","Tetapan tidak disimpan: "+errText(e),"err"); }
