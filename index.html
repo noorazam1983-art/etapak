@@ -205,6 +205,10 @@ a.btn{display:inline-block;font:600 14px var(--f-body);padding:9px 16px;border-r
 .kj-d ol{margin:6px 0 0;padding-left:22px;columns:2 220px;column-gap:24px}
 @media (max-width:560px){.kj-row{grid-template-columns:minmax(0,1fr) auto}.kj-bar{grid-column:1 / -1;grid-row:2}.kj-d{grid-column:1 / -1}}
 .dup{font-size:11px;color:var(--warn);margin-top:3px;white-space:nowrap}
+.tagline{font-family:var(--f-display);font-size:17px;font-style:italic;font-weight:600;color:var(--accent);margin:0 0 12px;line-height:1.35;text-wrap:balance}
+.kaki-sistem{border-top:1px solid var(--line);color:var(--muted);font-size:12.5px;text-align:center}
+.kaki-sistem .wrap{padding-block:16px 24px}
+.kaki-sistem em{font-style:italic;color:var(--fg)}
 .foot{font-size:12px;color:var(--muted);margin-top:24px;max-width:70ch}
 #cetak{display:none}
 @media print{body>*:not(#cetak){display:none!important}#cetak{display:block!important}body{background:#fff}}
@@ -231,9 +235,10 @@ a.btn{display:inline-block;font:600 14px var(--f-body);padding:9px 16px;border-r
   <section id="v-masuk">
     <div class="login panel">
       <img class="login-logo" id="loginLogo" alt="Logo SMK Felda Kahang Timur" width="58" height="84">
+      <p class="tagline">“Memanusiakan manusia dengan kemanusiaan”</p>
       <div class="label" id="loginSchool">SKPM Kualiti@Sekolah</div>
       <h1>Log masuk</h1>
-      <p class="sub">Gunakan ID pengguna dan PIN yang diberi oleh pentadbir sekolah. Tiada akaun Google atau Claude diperlukan.</p>
+      <p class="sub">Gunakan ID pengguna dan PIN yang diberi oleh pentadbir sekolah. Tiada akaun Google diperlukan.</p>
       <form id="loginForm" class="login-f">
         <div class="field"><label for="l-id">ID pengguna</label><input id="l-id" autocomplete="username" autocapitalize="characters" spellcheck="false" placeholder="cth. no. kad pengenalan"></div>
         <div class="field"><label for="l-pin">PIN</label><input id="l-pin" type="password" inputmode="numeric" autocomplete="current-password"></div>
@@ -345,6 +350,7 @@ a.btn{display:inline-block;font:600 14px var(--f-body);padding:9px 16px;border-r
     <p class="foot">Taraf PdP: 85.00–100 Cemerlang · 70.00–84.99 Baik · 55.00–69.99 Sederhana · 0–54.99 Perlu Tindakan Segera.</p>
   </section>
 </main>
+<footer class="kaki-sistem"><div class="wrap">SMK Felda Kahang Timur · <em>“Memanusiakan manusia dengan kemanusiaan”</em></div></footer>
 <div id="cetak"></div>
 <script>
 /* ---------- Kandungan Tapak Standard 4 (dari borang sekolah) ---------- */
