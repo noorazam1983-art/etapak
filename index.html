@@ -503,19 +503,21 @@ function tahap(p){
   return {t:"Perlu Tindakan Segera",c:"t-bad"};
 }
 const r2=n=>Math.round((n+1e-9)*100)/100;
+const potong=n=>Math.floor(n*100)/100;
 const normK=x=>String(x||"").toUpperCase().replace(/[\s\-_.]/g,"");
-const fmtP=n=>{const v=r2(n);return Number.isInteger(v)?String(v):v.toFixed(2);};
+const fmtP=n=>String(parseFloat(Number(n).toFixed(2))); /* seperti sistem rasmi: 90, 87.5, 91.66 */
 function kira(sk,w){
   const out={aspek:{},peratus:0,mentah:0,diisi:0,total:0};
   for(const a of ASPEK){
     const arr=sk[a.kod]||[]; const n=a.item.length; let s=0,d=0;
     for(let i=0;i<n;i++) if(typeof arr[i]==="number"){s+=arr[i];d++;}
     const wa=Number((w||DEF_W)[a.kod])||0;
-    out.aspek[a.kod]={s,max:4*n,d,n,w:wa,v:r2(s/(4*n)*wa),pct:r2(s/(4*n)*100)};
+    const pct=potong(s/(4*n)*100);
+    out.aspek[a.kod]={s,max:4*n,d,n,w:wa,pct,v:potong(pct*wa/100)};
     out.mentah+=s; out.diisi+=d; out.total+=n;
   }
-  /* seperti sistem rasmi: skor setiap standard dibundarkan dahulu, kemudian dijumlahkan */
-  out.peratus=r2(Object.values(out.aspek).reduce((t,x)=>t+x.v,0));
+  /* seperti sistem rasmi KPM: peratus, skor wajaran dan jumlah semuanya dipotong (bukan dibundarkan) ke 2 t.p. */
+  out.peratus=potong(Object.values(out.aspek).reduce((t,x)=>t+x.v,0));
   return out;
 }
 const fmtTarikh=iso=>{ if(!iso) return "—"; const [y,m,d]=String(iso).split("-"); return `${d}/${m}/${y}`; };
@@ -804,7 +806,7 @@ function cetakBody(r){
    <table class="gtbl"><tr class="gh"><td>KOD SEKOLAH</td><td>NAMA SEKOLAH</td><td>NAMA</td><td>SESI PENGISIAN</td><td>TARIKH</td><td>TAHAP/ KELAS</td><td>MATA PELAJARAN DICERAP</td>
    ${ASPEK.map(a=>`<td>${a.kod}</td><td class="b">% ${a.kod}</td>`).join("")}<td>JUMLAH SKOR</td><td>TARAF</td></tr>
    <tr class="gd"><td>${esc(r.kodSekolah)}</td><td>${esc(r.namaSekolah)}</td><td>${esc(r.guru)}</td><td>${esc(sesiU)}</td><td>${fmtTarikh(r.tarikh)}</td><td>${esc(r.kelas)}</td><td>${esc(r.subjek)}</td>
-   ${ASPEK.map(a=>{const x=k.aspek[a.kod];return `<td>${x.v.toFixed(2)}</td><td>${(x.s/x.max*100).toFixed(2)}</td>`}).join("")}<td><b>${k.peratus.toFixed(2)}</b></td><td><b>${esc(tp.t.toUpperCase())}</b></td></tr></table>
+   ${ASPEK.map(a=>{const x=k.aspek[a.kod];return `<td>${x.v.toFixed(2)}</td><td>${x.pct.toFixed(2)}</td>`}).join("")}<td><b>${k.peratus.toFixed(2)}</b></td><td><b>${esc(tp.t.toUpperCase())}</b></td></tr></table>
    <div style="margin-top:6mm;font-weight:bold;font-size:10pt">ULASAN / CADANGAN PENAMBAHBAIKAN</div><div class="ul">${esc(r.catatan||"")}</div>
    <div class="ttd"><div>Tandatangan guru<br>Nama: ${esc(r.guru)}<br>Tarikh:</div><div>Tandatangan ${r.sesi==="Kendiri"?"pentadbir":"pencerap"}<br>Nama: ${esc(r.sesi==="Kendiri"?"":(r.pencerap||""))}<br>Tarikh:</div></div>
    <div class="kaki">Dijana daripada e-Tapak Standard 4 pada ${fmtTarikh(today())} · ID rekod ${esc(r.id)}</div></div></div>`;
@@ -972,8 +974,8 @@ function renderRumusan(){
    <p class="sub" style="margin:4px 0 0">Peratus markah setiap aspek, seperti lajur % dalam tab GABUNG.</p><div class="cmp">`;
   for(const r of RUBRIK) for(const a of r.aspek){
     h+=`<div class="cmp-row"><div><span style="font-family:var(--f-mono);color:var(--muted)">${a.kod}</span> ${esc(r.peranan)}</div><div class="bars">`;
-    for(const s of SESI){ const rc=g.s[s]; if(!rc) continue; const x=kira(rc.skor||{},rc.wajaran).aspek[a.kod]; const p=x.s/x.max*100;
-      h+=`<div class="bar-l"><span style="color:var(--muted)">${s}</span><div class="m"><i class="${cls[s]}" style="width:${p}%"></i></div><span class="v">${p.toFixed(0)}%</span></div>`; }
+    for(const s of SESI){ const rc=g.s[s]; if(!rc) continue; const x=kira(rc.skor||{},rc.wajaran).aspek[a.kod]; const p=x.pct;
+      h+=`<div class="bar-l"><span style="color:var(--muted)">${s}</span><div class="m"><i class="${cls[s]}" style="width:${p}%"></i></div><span class="v">${fmtP(p)}%</span></div>`; }
     h+=`</div></div>`;
   }
   h+=`</div>`;
