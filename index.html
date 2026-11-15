@@ -204,6 +204,7 @@ a.btn{display:inline-block;font:600 14px var(--f-body);padding:9px 16px;border-r
 .kj-d summary{cursor:pointer;color:var(--accent);font-weight:600}
 .kj-d ol{margin:6px 0 0;padding-left:22px;columns:2 220px;column-gap:24px}
 @media (max-width:560px){.kj-row{grid-template-columns:minmax(0,1fr) auto}.kj-bar{grid-column:1 / -1;grid-row:2}.kj-d{grid-column:1 / -1}}
+.dup{font-size:11px;color:var(--warn);margin-top:3px;white-space:nowrap}
 .foot{font-size:12px;color:var(--muted);margin-top:24px;max-width:70ch}
 #cetak{display:none}
 @media print{body>*:not(#cetak){display:none!important}#cetak{display:block!important}body{background:#fff}}
@@ -258,7 +259,7 @@ a.btn{display:inline-block;font:600 14px var(--f-body);padding:9px 16px;border-r
             <div class="field span2"><label for="f-sekolah">Nama sekolah</label><input id="f-sekolah" readonly></div>
             <div class="field"><label for="f-guru">Nama guru</label><input id="f-guru" readonly><select id="f-guruSel" aria-label="Pilih guru" hidden></select></div>
             <div class="field"><label for="f-subjek">Mata pelajaran</label><input id="f-subjek" list="dl-subjek" autocomplete="off"></div>
-            <div class="field"><label for="f-kelas">Kelas</label><input id="f-kelas"></div>
+            <div class="field"><label for="f-kelas">Kelas</label><select id="f-kelas"><option value="">— Pilih kelas —</option></select></div>
             <div class="field"><label for="f-sesi">Sesi pengisian</label>
               <select id="f-sesi"><option>Kendiri</option><option>Pencerapan 1</option><option>Pencerapan 2</option></select></div>
             <div class="field"><label for="f-tarikh">Tarikh</label><input id="f-tarikh" type="date"></div>
@@ -502,6 +503,7 @@ function tahap(p){
   return {t:"Perlu Tindakan Segera",c:"t-bad"};
 }
 const r2=n=>Math.round((n+1e-9)*100)/100;
+const normK=x=>String(x||"").toUpperCase().replace(/[\s\-_.]/g,"");
 const fmtP=n=>{const v=r2(n);return Number.isInteger(v)?String(v):v.toFixed(2);};
 function kira(sk,w){
   const out={aspek:{},peratus:0,mentah:0,diisi:0,total:0};
@@ -637,7 +639,16 @@ $("f-sesi").addEventListener("change",()=>{
 
 const F=["tahun","subjek","kelas","sesi","tarikh","pencerap","catatan"];
 function readForm(){const o={};F.forEach(k=>o[k]=$("f-"+k).value.trim());return o;}
-function fillForm(o){F.forEach(k=>{if(o[k]!==undefined)$("f-"+k).value=o[k]??""});}
+function fillForm(o){F.forEach(k=>{ if(o[k]===undefined) return; if(k==="kelas") setKelas(o[k]); else $("f-"+k).value=o[k]??""; });}
+/* Dropdown kelas daripada helaian KELAS. Kelas lama yang tiada dalam senarai dikekalkan sebagai pilihan tambahan. */
+let kelasList=[];
+function setKelas(v){
+  v=String(v??"").trim();
+  const sel=$("f-kelas"), padan=kelasList.find(k=>normK(k)===normK(v));
+  let h=`<option value="">— Pilih kelas —</option>`+kelasList.map(k=>`<option value="${esc(k)}">${esc(k)}</option>`).join("");
+  if(v&&!padan) h+=`<option value="${esc(v)}">${esc(v)} (kelas lama)</option>`;
+  sel.innerHTML=h; sel.value=padan||v;
+}
 function setLocked(v){
   locked=v; $("lockNote").hidden=!v;
   if(v) $("lockNote").textContent=me&&me.peranan==="GURU"?"Rekod pencerapan ini dimasukkan oleh pentadbir. Anda boleh melihatnya sahaja.":"Anda boleh melihat rekod ini sahaja. Hanya pentadbir boleh mengubahnya.";
@@ -872,7 +883,7 @@ function renderKemajuan(){
   const host=$("kemajuan");
   if(!seeAll()){ host.innerHTML=""; return; }
   const tahun=$("q-tahun").value||String(new Date().getFullYear());
-  const guru=guruList.filter(g=>g.id!=="ADMIN");
+  const guru=guruList.filter(g=>!(g.id==="ADMIN"&&g.nama==="PENTADBIR SISTEM")); /* kecualikan baris contoh setup yang belum diubah sahaja */
   const total=guru.length;
   if(!total){ host.innerHTML=`<div class="panel empty"><b>Belum ada guru berdaftar</b>Tambah guru dalam helaian PENGGUNA di Google Sheet.</div>`; return; }
   const rows=SESI.map(s=>{
@@ -893,7 +904,7 @@ function renderList(){
   const years=[...new Set(records.map(r=>String(r.tahun)).filter(Boolean))].sort().reverse();
   const ys=$("q-tahun"), cur=ys.value;
   ys.innerHTML=`<option value="">Semua</option>`+years.map(y=>`<option${y===cur?" selected":""}>${esc(y)}</option>`).join("");
-  $("dl-subjek").innerHTML=[...new Set(records.map(r=>r.subjek))].map(g=>`<option value="${esc(g)}">`).join("");
+  $("dl-subjek").innerHTML=senaraiUnik(records.map(r=>r.subjek)).map(g=>`<option value="${esc(g)}">`).join("");
   const host=$("analisis"), rows=filtered(), sesiSel=$("q-sesi").value;
   if(!records.length){ host.innerHTML=`<div class="panel empty"><b>Belum ada rekod</b>${isAdmin()?"Rekod Kendiri guru dan rekod Pencerapan yang anda masukkan akan muncul di sini.":"Isi borang Kendiri anda. Rekod Pencerapan oleh pentadbir juga akan muncul di sini."}</div>`; return; }
   let h=`<div class="tbl-wrap an-wrap"><table class="an-std"><tr><th>STANDARD</th><th>STANDARD 4: PEMBELAJARAN DAN PEMUDAHCARAAN (PdPc)</th></tr><tr><td>PENYATAAN STANDARD</td><td>${PENYATAAN}</td></tr></table></div>`;
@@ -927,26 +938,37 @@ $("analisis").addEventListener("click",e=>{
 ["q-cari","q-sesi","q-tahun"].forEach(id=>$(id).addEventListener("input",renderList));
 
 /* ---------- rumusan (gabung) ---------- */
+/* Rumusan: satu baris bagi setiap guru setiap tahun. Kendiri, P1 dan P2 boleh dibuat di kelas/mata pelajaran berbeza. */
+function senaraiUnik(arr){ const seen=new Map(); arr.forEach(x=>{ const k=normK(x); if(k&&!seen.has(k)) seen.set(k,String(x).trim()); }); return [...seen.values()]; }
 function groups(){
   const m=new Map();
   for(const r of records){
-    const key=[r.guruId,r.subjek,r.kelas,r.tahun].join("|");
-    if(!m.has(key)) m.set(key,{key,guru:r.guru,subjek:r.subjek,kelas:r.kelas,tahun:r.tahun,s:{}});
+    const key=[r.guruId,r.tahun].join("|");
+    if(!m.has(key)) m.set(key,{key,guru:r.guru,tahun:r.tahun,s:{},semua:[]});
     const g=m.get(key), prev=g.s[r.sesi];
-    if(!prev||(r.tarikh||"")>(prev.tarikh||"")) g.s[r.sesi]=r;
+    g.semua.push(r);
+    if(!prev||(r.tarikh||"")>(prev.tarikh||"")||((r.tarikh||"")===(prev.tarikh||"")&&(r.dikemaskini||"")>(prev.dikemaskini||""))) g.s[r.sesi]=r;
   }
-  return [...m.values()].map(g=>{const v=SESI.map(s=>g.s[s]?.peratus).filter(x=>typeof x==="number");g.gabung=v.length?v.reduce((a,b)=>a+b,0)/v.length:null;return g;})
-    .sort((a,b)=>String(a.guru).localeCompare(b.guru)||String(a.subjek).localeCompare(b.subjek));
+  return [...m.values()].map(g=>{
+    const dipakai=SESI.map(s=>g.s[s]).filter(Boolean);
+    g.subjek=senaraiUnik(dipakai.map(r=>r.subjek)).join(", ");
+    g.kelas=senaraiUnik(dipakai.map(r=>r.kelas)).join(", ");
+    g.lebih=SESI.filter(s=>g.semua.filter(r=>r.sesi===s).length>1);
+    const v=dipakai.map(r=>r.peratus).filter(x=>typeof x==="number");
+    g.gabung=v.length?r2(v.reduce((a,b)=>a+b,0)/v.length):null; return g;})
+    .sort((a,b)=>String(a.guru).localeCompare(b.guru)||String(b.tahun).localeCompare(String(a.tahun)));
 }
 function renderRumusan(){
   const gs=groups(), tb=$("tb-rumusan"), c=v=>v==null?"—":Number(v).toFixed(2);
   if(!gs.length){ tb.innerHTML=`<tr><td colspan="9"><div class="empty"><b>Belum ada data untuk digabungkan</b>Rumusan muncul selepas sekurang-kurangnya satu rekod Kendiri atau Pencerapan disimpan.</div></td></tr>`; $("detail").hidden=true; return; }
-  tb.innerHTML=gs.map(g=>{const tp=tahap(g.gabung);return `<tr data-k="${esc(g.key)}" class="${g.key===selKey?"sel":""}"><td>${esc(g.guru)}</td><td>${esc(g.subjek)}</td><td>${esc(g.kelas)}</td><td>${esc(g.tahun)}</td><td class="num">${c(g.s["Kendiri"]?.peratus)}</td><td class="num">${c(g.s["Pencerapan 1"]?.peratus)}</td><td class="num">${c(g.s["Pencerapan 2"]?.peratus)}</td><td class="num"><b>${c(g.gabung)}</b></td><td><span class="pill ${tp.c}">${tp.t}</span></td></tr>`}).join("");
+  tb.innerHTML=gs.map(g=>{const tp=tahap(g.gabung);return `<tr data-k="${esc(g.key)}" class="${g.key===selKey?"sel":""}"><td>${esc(g.guru)}</td><td>${esc(g.subjek)}</td><td>${esc(g.kelas)}</td><td>${esc(g.tahun)}</td><td class="num">${c(g.s["Kendiri"]?.peratus)}</td><td class="num">${c(g.s["Pencerapan 1"]?.peratus)}</td><td class="num">${c(g.s["Pencerapan 2"]?.peratus)}</td><td class="num"><b>${c(g.gabung)}</b></td><td><span class="pill ${tp.c}">${tp.t}</span>${g.lebih.length?`<div class="dup" title="Lebih daripada satu rekod bagi ${esc(g.lebih.join(", "))}. Rekod terkini digunakan.">${g.lebih.length} sesi ada rekod berulang</div>`:""}</td></tr>`}).join("");
   const g=gs.find(x=>x.key===selKey), d=$("detail");
   if(!g){ d.hidden=true; return; }
   const cls={"Kendiri":"s-k","Pencerapan 1":"s-p1","Pencerapan 2":"s-p2"};
-  let h=`<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;justify-content:space-between"><h2>${esc(g.guru)} · ${esc(g.subjek)} · ${esc(g.kelas)}</h2>
+  let h=`<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;justify-content:space-between"><h2>${esc(g.guru)} · ${esc(g.tahun)}</h2>
    <div class="legend">${SESI.map(s=>`<span style="--c:var(--${s==="Kendiri"?"muted":s==="Pencerapan 1"?"accent":"ok"})">${s}</span>`).join("")}</div></div>
+   <p class="sub" style="margin:4px 0 0">${SESI.filter(s=>g.s[s]).map(s=>`${s}: ${esc(g.s[s].subjek)}, ${esc(g.s[s].kelas)}, ${fmtTarikh(g.s[s].tarikh)}`).join(" · ")}</p>
+   ${g.lebih.length?`<p class="sub" style="margin:4px 0 0;color:var(--warn)">Ada lebih daripada satu rekod bagi ${esc(g.lebih.join(", "))}. Rumusan menggunakan rekod terkini. Padam rekod yang tidak diperlukan di tab Analisis Skor.</p>`:""}
    <p class="sub" style="margin:4px 0 0">Peratus markah setiap aspek, seperti lajur % dalam tab GABUNG.</p><div class="cmp">`;
   for(const r of RUBRIK) for(const a of r.aspek){
     h+=`<div class="cmp-row"><div><span style="font-family:var(--f-mono);color:var(--muted)">${a.kod}</span> ${esc(r.peranan)}</div><div class="bars">`;
@@ -986,6 +1008,7 @@ function applyData(d){
   me=d.user;
   settings={...settings,...(d.tetapan||{}),wajaran:{...DEF_W,...((d.tetapan&&d.tetapan.wajaran)||{})}};
   guruList=d.guru||[]; records=d.rekod||[]; sheetUrl=d.sheetUrl||"";
+  kelasList=d.kelas||[]; setKelas($("f-kelas").value);
   $("lnkSheet").hidden=!sheetUrl; if(sheetUrl) $("lnkSheet").href=sheetUrl;
   renderProfile(); renderSettings(); if(isAdmin()) renderGuruSel(); renderList(); renderRumusan();
   if(editing){ const r=records.find(x=>x.id===editing.id); if(r) editing=r; else { resetForm(false); setMsg("saveMsg","Rekod yang dibuka telah dipadam oleh pengguna lain.","err"); } }
