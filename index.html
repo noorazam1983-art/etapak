@@ -211,6 +211,8 @@ a.btn{display:inline-block;font:600 14px var(--f-body);padding:9px 16px;border-r
 .kaki-sistem{border-top:1px solid var(--line);color:var(--muted);font-size:12.5px;text-align:center}
 .kaki-sistem .wrap{padding-block:16px 24px}
 .kaki-sistem em{font-style:italic;color:var(--fg)}
+.tag-gpk{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:4px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.gpk-note{margin:0 0 6px}
 .foot{font-size:12px;color:var(--muted);margin-top:24px;max-width:70ch}
 #cetak{display:none}
 @media print{body>*:not(#cetak){display:none!important}#cetak{display:block!important}body{background:#fff}}
@@ -456,12 +458,107 @@ const DEF_W={"4.1.1":10,"4.2.1":10,"4.2.2":5,"4.3.1":15,"4.4.1":25,"4.4.2":5,"4.
 const HURUF="abcdefgh";
 const SESI=["Kendiri","Pencerapan 1","Pencerapan 2"];
 const jenisItem=(a,it)=>it.p||a.jenis;
+/* ---------- Borang Pendidikan Khas (GPKhas) — dipilih apabila kelas bermula dengan "PPKI" ---------- */
+const PK_PERANCANG=["mengikut pelbagai tahap kebolehan/ketidakupayaan MBPK","mengikut peruntukan masa yang ditetapkan","dengan mematuhi arahan yang berkuat kuasa/ketetapan kurikulum Pendidikan Khas"];
+const PK_PENGAWAL=["dengan menepati objektif pelajaran","mengikut pelbagai tahap kebolehan/ketidakupayaan MBPK/pembelajaran terbeza","secara berterusan/konsisten"];
+const PK_SUASANA=["secara berhemah/mengikut kesesuaian","secara menyeluruh meliputi semua MBPK","secara berterusan/konsisten"];
+const PK_BIMBING=["dengan betul dan tepat","mengikut pelbagai tahap kebolehan/ketidakupayaan MBPK","secara berhemah","bersungguh-sungguh"];
+const PK_MINDA=["berdasarkan objektif pelajaran","mengikut pelbagai tahap kebolehan/ketidakupayaan MBPK","dari semasa ke semasa melibatkan interaksi murid-guru/murid-murid/murid-bahan"];
+const PK_EMOSI=["secara berhemah","secara menyeluruh meliputi semua MBPK","secara berterusan/konsisten dari semasa ke semasa"];
+const PK_NILAI=["berdasarkan objektif pelajaran MBPK","mengikut ketetapan pelaksanaan pentaksiran yang berkuat kuasa/ketetapan kurikulum Pendidikan Khas","secara menyeluruh dari segi kecukupan, kecakupan dan meliputi semua MBPK","secara fleksibel/berterusan/konsisten/segera"];
+const PK_MURID=["selaras dengan objektif pelajaran","dengan yakin","secara berhemah/bersungguh-sungguh"];
+
+const RUBRIK_PPKI=[
+ {kod:"4.1",peranan:"GPKhas sebagai Perancang",kritikal:"GPKhas bertindak sebagai perancang untuk memastikan kesediaan MBPK dan persediaan rapi dalam melaksanakan Pembelajaran dan Pemudahcaraan (PdPc).",aspek:[
+  {kod:"4.1.1",jenis:"A",sk:"GPKhas merancang pelaksanaan PdPc secara profesional dan sistematik.",
+   tindakan:"Menyediakan RPH, menentukan kaedah pentaksiran dan menyediakan sumber pendidikan mengikut pelbagai tahap kebolehan atau ketidakupayaan MBPK, peruntukan masa, dan mematuhi arahan yang berkuat kuasa/ketetapan kurikulum.",
+   lead:"GPKhas merancang pelaksanaan PdP:",item:[
+   {t:"Menyediakan RPH yang mengandungi objektif yang boleh diukur dan aktiviti pembelajaran yang sesuai",k:PK_PERANCANG},
+   {t:"Menentukan kaedah pentaksiran",k:PK_PERANCANG},
+   {t:"Menyediakan ABM/BBM/BBB/TMK/Alat Sokongan",k:PK_PERANCANG}]}]},
+ {kod:"4.2",peranan:"GPKhas sebagai Pengawal",kritikal:"GPKhas bertindak sebagai pengawal pelaksanaan PdPc untuk memastikan kelancaran proses pembelajaran mengikut perancangan.",aspek:[
+  {kod:"4.2.1",jenis:"A",sk:"GPKhas mengawal proses pembelajaran secara profesional dan terancang.",
+   tindakan:"Mengelola isi pelajaran dan peruntukan masa serta memberi peluang kepada penyertaan aktif MBPK dalam PdPc dengan menepati objektif pelajaran, mengikut pelbagai tahap kebolehan atau ketidakupayaan MBPK dan secara berterusan.",
+   lead:"GPKhas mengawal proses pembelajaran:",item:[
+   {t:"Mengelola isi pelajaran/skop pembelajaran yang dirancang",k:PK_PENGAWAL},
+   {t:"Mengelola masa PdPc selaras dengan aktiviti pembelajaran",k:PK_PENGAWAL},
+   {t:"Memberi peluang kepada penyertaan aktif MBPK",k:PK_PENGAWAL}]},
+  {kod:"4.2.2",jenis:"A",sk:"GPKhas mengawal suasana pembelajaran secara profesional dan terancang.",
+   tindakan:"Mengawasi komunikasi dan perlakuan MBPK, menyusun atur kedudukan MBPK dan mewujudkan suasana pembelajaran yang menyeronokkan mengikut kesesuaian dan keperluan, secara berhemah, menyeluruh, dan berterusan.",
+   lead:"GPKhas mengawal suasana pembelajaran:",item:[
+   {t:"Mengawasi komunikasi MBPK dalam PdPc",k:PK_SUASANA},
+   {t:"Mengawasi perlakuan MBPK dalam PdPc",k:PK_SUASANA},
+   {t:"Menyusun atur kedudukan MBPK",k:PK_SUASANA},
+   {t:"Melaksanakan aktiviti pembelajaran yang menyeronokkan",k:PK_SUASANA}]}]},
+ {kod:"4.3",peranan:"GPKhas sebagai Pembimbing",kritikal:"GPKhas bertindak sebagai pembimbing untuk membolehkan MBPK menguasai pengetahuan, kemahiran dan mengamalkan nilai berdasarkan objektif pembelajaran.",aspek:[
+  {kod:"4.3.1",jenis:"E",sk:"GPKhas membimbing MBPK secara profesional dan terancang.",
+   tindakan:"Memberi tunjuk ajar dalam menguasai isi pelajaran dan kemahiran, membimbing MBPK membuat keputusan dan menyelesaikan masalah, dan menggunakan sumber pendidikan serta menggabung jalin isi pelajaran dengan kemahiran/mata pelajaran lain mengikut keperluan dan keupayaan MBPK dengan betul, tepat, secara berhemah, dan bersungguh-sungguh.",
+   lead:"GPKhas memberi bimbingan dan panduan kepada MBPK:",item:[
+   {t:"Memberi tunjuk ajar/tunjuk cara/panduan menguasai isi pelajaran/konsep/fakta berkaitan pelajaran",k:PK_BIMBING},
+   {t:"Memberi tunjuk ajar/tunjuk cara/panduan menguasai kemahiran dalam aktiviti pembelajaran",k:PK_BIMBING},
+   {t:"Membuat keputusan dan menyelesaikan masalah dalam aktiviti pembelajaran",k:PK_BIMBING},
+   {t:"Menggunakan/memanfaatkan sumber pendidikan berkaitan pelajaran",k:PK_BIMBING},
+   {t:"Menggabung/merentas/mengaitkan isi pelajaran dengan tajuk/unit/tema/nilai/kemahiran/mata pelajaran lain dalam aktiviti pembelajaran",k:PK_BIMBING}]}]},
+ {kod:"4.4",peranan:"GPKhas sebagai Pendorong",kritikal:"GPKhas bertindak sebagai pendorong untuk meningkatkan motivasi dan kemahiran insaniah MBPK.",aspek:[
+  {kod:"4.4.1",jenis:"A",sk:"GPKhas mendorong minda MBPK dalam melaksanakan aktiviti pembelajaran secara profesional dan terancang.",
+   tindakan:"Merangsang MBPK berkomunikasi dan berkolaboratif, mengemukakan soalan untuk merangsang MBPK berfikir secara logik dan membuat keputusan atau menyelesaikan masalah, mewujudkan peluang untuk MBPK memimpin dan merangsang MBPK mengemukakan soalan berkaitan isi pelajaran serta memperoleh pengetahuan dan kemahiran secara kendiri berdasarkan objektif pelajaran, mengikut pelbagai tahap kebolehan/ketidakupayaan MBPK dan secara berterusan.",
+   lead:"GPKhas mendorong minda MBPK dalam melaksanakan aktiviti pembelajaran:",item:[
+   {t:"Merangsang MBPK berkomunikasi/bertindak balas dengan memberi reaksi (visual/auditori/kinestetik/sensorimotor) dalam melaksanakan aktiviti pembelajaran",k:PK_MINDA},
+   {t:"Merangsang MBPK berkolaboratif dalam aktiviti pembelajaran mengikut keupayaan dan kesediaan MBPK (guru/rakan/sumber/bahan pendidikan)",k:PK_MINDA},
+   {t:"Mengemukakan soalan kepada MBPK untuk berfikir secara logik/mengemukakan idea yang kreatif/kritis mengikut kemampuan/keupayaan",k:PK_MINDA},
+   {t:"Mengajukan soalan/mewujudkan situasi yang menjurus ke arah membuat keputusan/menyelesaikan masalah",k:PK_MINDA},
+   {t:"Mewujudkan peluang untuk MBPK memimpin",k:PK_MINDA},
+   {t:"Menggalakkan/merangsang MBPK mengemukakan soalan mudah berkaitan isi pelajaran mengikut tahap keupayaan MBPK (secara lisan/menggunakan gambar/tulisan ringkas/bahasa isyarat/alat bantuan komunikasi)",k:PK_MINDA},
+   {t:"Menggalakkan MBPK memperoleh pengetahuan dan kemahiran secara kendiri",k:PK_MINDA}]},
+  {kod:"4.4.2",jenis:"A",sk:"GPKhas mendorong emosi MBPK dalam melaksanakan aktiviti pembelajaran secara profesional dan terancang.",
+   tindakan:"Memberi pujian, galakan, penghargaan dan keyakinan serta prihatin terhadap keperluan MBPK secara berhemah, menyeluruh dan berterusan/konsisten.",
+   lead:"GPKhas mendorong emosi MBPK dalam melaksanakan aktiviti pembelajaran:",item:[
+   {t:"Memberi pujian/galakan terhadap perlakuan positif",k:PK_EMOSI},
+   {t:"Memberi penghargaan terhadap hasil kerja/idea yang bermakna",k:PK_EMOSI},
+   {t:"Memberi keyakinan dalam mengemukakan soalan/memberi respons",k:PK_EMOSI},
+   {t:"Prihatin terhadap keperluan semasa MBPK",k:PK_EMOSI}]}]},
+ {kod:"4.5",peranan:"GPKhas sebagai Penilai",kritikal:"GPKhas berperanan sebagai penilai untuk mengesan tahap penguasaan MBPK.",aspek:[
+  {kod:"4.5.1",jenis:"E",sk:"GPKhas melaksanakan penilaian MBPK secara berterusan, profesional, sistematik dan terancang.",
+   tindakan:"Menggunakan pelbagai kaedah pentaksiran, menjalankan aktiviti pemulihan/pengayaan, memberi tugasan, membuat refleksi serta menyemak hasil kerja MBPK berdasarkan objektif pelajaran, mengikut arahan pelaksanaan pentaksiran yang berkuat kuasa atau ketetapan kurikulum, secara menyeluruh mengikut pelbagai tahap/ketidakupayaan MBPK dan secara berterusan.",
+   lead:"GPKhas melaksanakan penilaian:",item:[
+   {t:"Menggunakan pelbagai kaedah pentaksiran dalam PdPc MBPK",k:PK_NILAI},
+   {t:"Menjalankan aktiviti pemulihan/pengayaan dalam PdPc MBPK",k:PK_NILAI},
+   {t:"Memberi latihan/tugasan berkaitan pelajaran MBPK",k:PK_NILAI},
+   {t:"Membuat refleksi PdPc MBPK",k:PK_NILAI},
+   {t:"Menyemak/menilai hasil kerja/gerak kerja/latihan/tugasan MBPK",k:PK_NILAI}]}]},
+ {kod:"4.6",peranan:"MBPK sebagai Pembelajar Aktif",kritikal:"MBPK bertindak sebagai pembelajar aktif untuk menguasai pengetahuan dan kemahiran serta mengamalkan nilai positif.",aspek:[
+  {kod:"4.6.1",jenis:"M",sk:"MBPK melibatkan diri dalam proses pembelajaran secara berterusan.",
+   tindakan:"Memberi respons, berkomunikasi dan melaksanakan aktiviti secara kolaboratif, berfikir secara logik, mengemukakan soalan, menyelesaikan masalah dan mengaitkan isi pelajaran dengan kehidupan berdasarkan objektif pelajaran secara aktif, yakin dan berhemah selaras dengan keupayaan MBPK.",
+   lead:"MBPK melibatkan diri dalam proses pembelajaran:",item:[
+   {t:"Memberi respons/kerjasama berkaitan isi pelajaran (tindak balas MBPK terhadap rangsangan/peristiwa/komunikasi dalam bentuk verbal, non-verbal, emosi, fizikal/tingkah laku)",k:PK_MURID,p:"C"},
+   {t:"Berkomunikasi/bertindak balas dengan reaksi visual/auditori/kinestetik/sensori motor/penggunaan bahasa isyarat dalam melaksanakan aktiviti pembelajaran",k:PK_MURID,p:"C"},
+   {t:"Melaksanakan aktiviti pembelajaran secara kolaboratif mengikut keupayaan dan kesediaan MBPK (guru/rakan/sumber/bahan pendidikan)",k:PK_MURID,p:"C"},
+   {t:"MBPK berfikir secara logik/mengemukakan idea yang kreatif/kritis mengikut kemampuan/keupayaan",k:PK_MURID,p:"D"},
+   {t:"Mengemukakan soalan mudah berkaitan isi pelajaran mengikut tahap keupayaan MBPK (secara lisan/menggunakan gambar/tulisan ringkas/bahasa isyarat/alat bantuan komunikasi)",k:PK_MURID,p:"D"},
+   {t:"Mengaitkan isi pelajaran dengan kehidupan harian MBPK",k:PK_MURID,p:"D"},
+   {t:"Menyelesaikan masalah/tugas/latihan berkaitan aktiviti pembelajaran",k:PK_MURID,p:"D"}]}]}
+];
+/* Jenis E (4.3.1 & 4.5.1 PPKI): perkara (i) wajib — 4 = semua; 3 = (i) + dua; 2 = (i) + satu; 1 = (i) sahaja; 0 = tiada (i) */
+DESC.E=["Tidak mengambil kira mana-mana perkara (perkara (i) wajib)","Mengambil kira perkara (i) sahaja","Mengambil kira perkara (i) dan mana-mana satu (1) perkara","Mengambil kira perkara (i) dan mana-mana dua (2) perkara","Memenuhi semua perkara (i) hingga (iv)"];
+const keMBPK=s=>s.replace(/murid/g,"MBPK");
+const BAND_PPKI={C:BAND.C.map(([v,l])=>[v,keMBPK(l)]),D:BAND.D.map(([v,l])=>[v,keMBPK(l)])};
+const BORANG={
+  BIASA:{kod:"BIASA",rubrik:RUBRIK,band:BAND,label:"Borang biasa"},
+  PPKI:{kod:"PPKI",rubrik:RUBRIK_PPKI,band:BAND_PPKI,label:"Borang Guru Pendidikan Khas (GPKhas)"}
+};
+const jenisBorang=kelas=>/^\s*PPKI/i.test(String(kelas||""))?"PPKI":"BIASA";
+let borangNow="BIASA";
+const curB=()=>BORANG[borangNow];
+const curAspek=()=>curB().rubrik.flatMap(r=>r.aspek);
+const descFor=j=>borangNow==="PPKI"&&(j==="C"||j==="D")?DESC[j].map(keMBPK):DESC[j];
+
 
 /* cadangan skor daripada kriteria */
 function cadang(jenis,k,band){
   const n=k.filter(Boolean).length;
   if(jenis==="A"){ if(n===3) return 4; if(n===2) return k[0]?3:2; return n; }
   if(jenis==="B") return n;
+  if(jenis==="E"){ if(!k[0]) return 0; return 1+Math.min(3,k.slice(1).filter(Boolean).length); }
   if(band==null||band==="") return null;
   const req={4:3,3:2,2:1,1:1}; let s=+band;
   while(s>0&&n<req[s]) s--;
@@ -536,8 +633,8 @@ function status(t,kind){ const s=$("status"); if(!t){s.hidden=true;return;} s.hi
 
 /* ---------- borang rubrik ---------- */
 function buildRubrik(){
-  let h="";
-  for(const r of RUBRIK){
+  let h=borangNow==="PPKI"?`<div class="notice gpk-note"><b>Borang Guru Pendidikan Khas (GPKhas)</b> digunakan kerana kelas PPKI dipilih. Bagi 4.3.1 dan 4.5.1, perkara (i) wajib ditanda.</div>`:"";
+  for(const r of curB().rubrik){
     h+=`<div class="role"><div class="role-head"><span class="kod">Aspek ${r.kod}</span><h2>${esc(r.peranan)}</h2></div>
       <div class="kritikal"><b>Kriteria kritikal</b>${esc(r.kritikal)}</div>`;
     for(const a of r.aspek){
@@ -548,7 +645,7 @@ function buildRubrik(){
         const base=`data-a="${a.kod}" data-i="${i}"`;
         h+=`<div class="item"><div class="item-t"><span class="h">${HURUF[i]})</span><span>${esc(it.t)}</span></div><div class="krit">`;
         if(it.p){
-          h+=`<select id="pb-${kid(a.kod)}-${i}" ${base} data-role="band" aria-label="Tahap pelibatan murid, perkara (i)"><option value="">(i) Pelibatan murid…</option>${BAND[it.p].map(([v,l])=>`<option value="${v}">(i) ${l}</option>`).join("")}</select>`;
+          h+=`<select id="pb-${kid(a.kod)}-${i}" ${base} data-role="band" aria-label="Tahap pelibatan, perkara (i)"><option value="">(i) Pelibatan ${borangNow==="PPKI"?"MBPK":"murid"}…</option>${curB().band[it.p].map(([v,l])=>`<option value="${v}">(i) ${l}</option>`).join("")}</select>`;
           it.k.forEach((c,x)=>h+=`<button type="button" class="chip" ${base} data-k="${x}" aria-pressed="false"><span class="r">${ROMAN[x+1]}.</span>${esc(c)}</button>`);
         }else it.k.forEach((c,x)=>h+=`<button type="button" class="chip" ${base} data-k="${x}" aria-pressed="false"><span class="r">${ROMAN[x]}.</span>${esc(c)}</button>`);
         h+=`</div><div class="skor-row"><span class="seg" role="group" aria-label="Skor ${a.kod} ${HURUF[i]}">`;
@@ -559,7 +656,10 @@ function buildRubrik(){
     }
     h+=`</div>`;
   }
-  const host=$("rubrik"); host.innerHTML=h;
+  $("rubrik").innerHTML=h;
+}
+function initRubrikEvents(){
+  const host=$("rubrik");
   host.addEventListener("click",e=>{
     const b=e.target.closest("button[data-a]"); if(!b||b.disabled) return;
     const a=b.dataset.a,i=+b.dataset.i;
@@ -572,15 +672,15 @@ function buildRubrik(){
     const st=getK(s.dataset.a,+s.dataset.i); st.p=s.value===""?null:s.value; autoSkor(s.dataset.a,+s.dataset.i); paintSkor(); draftSave();
   });
 }
-function getK(a,i){ krit[a]=krit[a]||[]; const it=ASPEK.find(x=>x.kod===a).item[i]; if(!krit[a][i]) krit[a][i]={k:it.k.map(()=>false),p:null}; return krit[a][i]; }
+function getK(a,i){ krit[a]=krit[a]||[]; const it=curAspek().find(x=>x.kod===a).item[i]; if(!krit[a][i]) krit[a][i]={k:it.k.map(()=>false),p:null}; return krit[a][i]; }
 function autoSkor(a,i){
-  const asp=ASPEK.find(x=>x.kod===a), it=asp.item[i], st=getK(a,i);
+  const asp=curAspek().find(x=>x.kod===a), it=asp.item[i], st=getK(a,i);
   const s=cadang(jenisItem(asp,it),st.k,st.p);
   if(s!=null){ skor[a]=skor[a]||[]; skor[a][i]=s; }
 }
 function paintSkor(){
   const off=locked||!me;
-  for(const a of ASPEK) a.item.forEach((it,i)=>{
+  for(const a of curAspek()) a.item.forEach((it,i)=>{
     const st=(krit[a.kod]||[])[i], v=(skor[a.kod]||[])[i], j=jenisItem(a,it);
     document.querySelectorAll(`#rubrik [data-a="${a.kod}"][data-i="${i}"]`).forEach(el=>{
       if(el.dataset.s!=null) el.setAttribute("aria-pressed",v===+el.dataset.s?"true":"false");
@@ -590,7 +690,7 @@ function paintSkor(){
     });
     const touched=st&&(st.k.some(Boolean)||st.p!=null);
     const c=touched?cadang(j,st.k,st.p):null;
-    let d=typeof v==="number"?esc(DESC[j][v]):"Belum diberi skor";
+    let d=typeof v==="number"?esc(descFor(j)[v]):"Belum diberi skor";
     if(c!=null&&typeof v==="number"&&c!==v) d+=` · <em>kriteria yang ditanda mencadangkan skor ${c}</em>`;
     $(`ds-${kid(a.kod)}-${i}`).innerHTML=d;
   });
@@ -653,12 +753,19 @@ function readForm(){const o={};F.forEach(k=>o[k]=$("f-"+k).value.trim());return 
 function fillForm(o){F.forEach(k=>{ if(o[k]===undefined) return; if(k==="kelas") setKelas(o[k]); else $("f-"+k).value=o[k]??""; });}
 /* Dropdown kelas daripada helaian KELAS. Kelas lama yang tiada dalam senarai dikekalkan sebagai pilihan tambahan. */
 let kelasList=[];
+function setBorang(b){
+  if(b===borangNow) return;
+  const adaSkor=Object.values(skor||{}).some(a=>(a||[]).some(x=>typeof x==="number"));
+  borangNow=b; buildRubrik(); paintSkor();
+  if(adaSkor&&!locked) setMsg("saveMsg",`Borang ditukar kepada ${BORANG[b].label.toLowerCase()}. Semak semula skor sebelum menyimpan.`,"err");
+}
 function setKelas(v){
   v=String(v??"").trim();
   const sel=$("f-kelas"), padan=kelasList.find(k=>normK(k)===normK(v));
   let h=`<option value="">— Pilih kelas —</option>`+kelasList.map(k=>`<option value="${esc(k)}">${esc(k)}</option>`).join("");
   if(v&&!padan) h+=`<option value="${esc(v)}">${esc(v)} (kelas lama)</option>`;
   sel.innerHTML=h; sel.value=padan||v;
+  setBorang(jenisBorang(sel.value));
 }
 function setLocked(v){
   locked=v; $("lockNote").hidden=!v;
@@ -754,6 +861,8 @@ const CETAK_CSS=`
 .ct .ttd{display:grid;grid-template-columns:1fr 1fr;gap:20mm;margin-top:14mm;font-size:9pt}
 .ct .ttd div{border-top:1px solid #000;padding-top:3px}
 .ct .kaki{margin-top:6mm;font-size:7.5pt;color:#555;text-align:center}
+.ct.gpk .tajuk{background:#1a35c8;color:#fff}
+.ct.gpk .krit,.ct.gpk .std td{background:#f6ccf8}
 .ct-bar{position:sticky;top:0;z-index:2;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding:10px 16px;background:#1c5d8c;color:#fff;font:14px Arial,sans-serif}
 .ct-bar button{font:600 14px Arial,sans-serif;padding:8px 14px;border:0;border-radius:6px;background:#fff;color:#1c5d8c;cursor:pointer}
 @page{size:A4 portrait;margin:10mm}
@@ -768,12 +877,21 @@ const PENSKORAN={
   D:["","i. dengan pelibatan 25% hingga 49% murid<br>ii. dengan memenuhi sekurang-kurangnya dua (2) daripada perkara (ii), (iii) dan (iv)","i. dengan pelibatan 10% hingga 24% murid<br>ii. dengan memenuhi sekurang-kurangnya satu (1) daripada perkara (ii), (iii) dan (iv)","i. dengan pelibatan kurang daripada 10% murid<br>ii. dengan memenuhi sekurang-kurangnya satu (1) daripada perkara (ii), (iii) dan (iv)","tidak memenuhi mana-mana perkara"]
 };
 const PELIBATAN4={C:"dengan pelibatan 90% hingga 100% murid",D:"dengan pelibatan 50% hingga 100% murid"};
+const PENSKORAN_PPKI={
+  A:["","dilaksanakan dengan mengambil kira perkara (i) dan (ii) atau perkara (i) dan (iii)","dilaksanakan dengan mengambil kira perkara (ii) dan (iii)","dilaksanakan dengan mengambil kira mana-mana satu (1) perkara","tidak mengambil kira mana-mana perkara"],
+  E:["","dilaksanakan dengan mengambil kira perkara (i) dan mana-mana dua (2) perkara","dilaksanakan dengan mengambil kira perkara (i) dan mana-mana satu (1) perkara","dilaksanakan dengan mengambil kira perkara (i)","tidak mengambil kira mana-mana perkara"],
+  C:PENSKORAN.C.map(keMBPK), D:PENSKORAN.D.map(keMBPK)
+};
+const PELIBATAN4_PPKI={C:"dengan pelibatan 90% hingga 100% MBPK",D:"dengan pelibatan 50% hingga 100% MBPK"};
 function cetakBody(r){
   const w=r.wajaran||settings.wajaran, k=kira(r.skor||{},w), tp=tahap(r.peratus);
+  const gpk=jenisBorang(r.kelas)==="PPKI", B=BORANG[gpk?"PPKI":"BIASA"];
+  const SKOR_T=gpk?PENSKORAN_PPKI:PENSKORAN, PEL4=gpk?PELIBATAN4_PPKI:PELIBATAN4;
+  const TAJUK=`TAPAK STANDARD 4<br>PEMBELAJARAN DAN PEMUDAHCARAAN (PdPc)${gpk?"<br>GURU PENDIDIKAN KHAS (GPKhas)":""}`;
   const cb=on=>`<span class="cb${on?" on":""}"></span>`;
   /* MUKA DEPAN */
-  let h=`<div class="ct"><div class="pg md"><img class="md-logo" src="${LOGO}" alt="Logo sekolah">
-   <div class="md-tajuk">TAPAK STANDARD 4 SKPM Kualiti@Sekolah<br>PEMBELAJARAN DAN PEMUDAHCARAAN (PdPc)</div>
+  let h=`<div class="ct${gpk?" gpk":""}"><div class="pg md"><img class="md-logo" src="${LOGO}" alt="Logo sekolah">
+   <div class="md-tajuk">TAPAK STANDARD 4 SKPM Kualiti@Sekolah<br>PEMBELAJARAN DAN PEMUDAHCARAAN (PdPc)${gpk?"<br>GURU PENDIDIKAN KHAS (GPKhas)":""}</div>
    <table class="md-tbl">
     <tr><td>KALENDAR AKADEMIK SESI</td><td>:</td><td>${esc(r.tahun)}</td></tr>
     <tr><td>KOD SEKOLAH</td><td>:</td><td>${esc(r.kodSekolah)}</td></tr>
@@ -786,9 +904,9 @@ function cetakBody(r){
     ${r.sesi!=="Kendiri"?`<tr><td>NAMA PENCERAP</td><td>:</td><td>${esc(r.pencerap||"")}</td></tr>`:""}
    </table></div>`;
   /* STANDARD 4 */
-  h+=`<div class="pg"><div class="tajuk">TAPAK STANDARD 4<br>PEMBELAJARAN DAN PEMUDAHCARAAN (PdPc)</div>
-   <div class="arahan">ARAHAN: SILA TANDAKAN ( / ) PADA KOTAK SKOR PILIHAN ANDA MENGIKUT PERNYATAAN PENSKORAN YANG TERTERA.</div>`;
-  for(const ro of RUBRIK){
+  h+=`<div class="pg"><div class="tajuk">${TAJUK}</div>
+   <div class="arahan">ARAHAN: SILA TANDAKAN ${gpk?"(•)":"( / )"} PADA ${gpk?"":"KOTAK "}SKOR PILIHAN ANDA MENGIKUT PERNYATAAN PENSKORAN YANG TERTERA.</div>`;
+  for(const ro of B.rubrik){
     ro.aspek.forEach((a,ai)=>{
       h+=`<div class="kepala">`;
       if(ai===0) h+=`<div class="asp">Aspek ${ro.kod}: ${esc(ro.peranan.toUpperCase())}</div><div class="krit">KRITERIA KRITIKAL:<br>${esc(ro.kritikal)}</div>`;
@@ -799,9 +917,9 @@ function cetakBody(r){
        <tr class="h2"><td>${esc(a.lead)}</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td></tr></thead>`;
       a.item.forEach((it,i)=>{
         const j=jenisItem(a,it), v=((r.skor||{})[a.kod]||[])[i];
-        const kr4=it.p?[PELIBATAN4[it.p],...it.k]:it.k;
+        const kr4=it.p?[PEL4[it.p],...it.k]:it.k;
         const c4=kr4.map((t,x)=>`${ROMAN[x]}. ${esc(t)}`).join("<br>");
-        h+=`<tbody><tr class="it"><td>${HURUF[i]}) ${esc(it.t)}</td><td class="l">${c4}</td>${[1,2,3,4].map(x=>`<td class="c">${PENSKORAN[j][x]}</td>`).join("")}</tr>
+        h+=`<tbody><tr class="it"><td>${HURUF[i]}) ${esc(it.t)}</td><td class="l">${c4}</td>${[1,2,3,4].map(x=>`<td class="c">${SKOR_T[j][x]}</td>`).join("")}</tr>
          <tr class="sk"><td>SKOR SEKOLAH</td>${[4,3,2,1,0].map(s=>`<td>${cb(v===s)}</td>`).join("")}</tr></tbody>`;
       });
       h+=`</table>`;
@@ -810,7 +928,7 @@ function cetakBody(r){
   h+=`</div>`;
   /* GABUNG */
   const sesiU=String(r.sesi).toUpperCase();
-  h+=`<div class="pg gb"><div class="tajuk">TAPAK STANDARD 4<br>PEMBELAJARAN DAN PEMUDAHCARAAN (PdPc)</div>
+  h+=`<div class="pg gb"><div class="tajuk">${TAJUK}</div>
    <table class="taraf"><tr><td>TARAF PdP</td><td>SKOR (%)</td></tr><tr><td>CEMERLANG</td><td>85.00 - 100.00</td></tr><tr><td>BAIK</td><td>70.00 - 84.99</td></tr><tr><td>SEDERHANA</td><td>55.00 - 69.99</td></tr><tr><td>PERLU TINDAKAN SEGERA</td><td>0 - 54.99</td></tr></table>
    <table class="gtbl"><tr class="gh"><td>KOD SEKOLAH</td><td>NAMA SEKOLAH</td><td>NAMA</td><td>SESI PENGISIAN</td><td>TARIKH</td><td>TAHAP/ KELAS</td><td>MATA PELAJARAN DICERAP</td>
    ${ASPEK.map(a=>`<td>${a.kod}</td><td class="b">% ${a.kod}</td>`).join("")}<td>JUMLAH SKOR</td><td>TARAF</td></tr>
@@ -929,7 +1047,7 @@ function renderList(){
       <table class="an"><colgroup><col style="width:4%"><col style="width:12%"><col style="width:10%"><col style="width:6%">${ASPEK.map(()=>`<col style="width:5.5%">`).join("")}<col style="width:6%"><col style="width:11%"><col style="width:7%"></colgroup><thead><tr><th class="c">Bil</th><th>Nama Guru</th><th>Mata Pelajaran</th><th>Kelas</th>${ASPEK.map(a=>`<th class="num">${a.kod}</th>`).join("")}<th class="num">Jumlah</th><th>Taraf PdP</th><th class="c">Tindakan</th></tr></thead><tbody>`;
     rs.forEach((r,i)=>{
       const k=ks[i], tp=tahap(k.peratus), boleh=isAdmin()||(me&&r.guruId===me.id&&r.sesi==="Kendiri");
-      h+=`<tr data-id="${esc(r.id)}"><td class="c">${i+1}</td><td class="nm">${esc(r.guru)}</td><td>${esc(r.subjek)}</td><td>${esc(r.kelas)}</td>
+      h+=`<tr data-id="${esc(r.id)}"><td class="c">${i+1}</td><td class="nm">${esc(r.guru)}</td><td>${esc(r.subjek)}</td><td>${esc(r.kelas)}${jenisBorang(r.kelas)==="PPKI"?` <span class="tag-gpk">GPKhas</span>`:""}</td>
         ${ASPEK.map(a=>{const p=k.aspek[a.kod].pct;return `<td class="num${p===0?" z":""}">${fmtP(p)}</td>`}).join("")}
         <td class="num jm">${k.peratus.toFixed(2)}</td><td><span class="pill ${tp.c}">${tp.t.toUpperCase()}</span></td>
         <td class="c act"><button type="button" class="ik" data-buka="${esc(r.id)}" title="${boleh?"Sunting":"Lihat"} rekod" aria-label="${boleh?"Sunting":"Lihat"} rekod ${esc(r.guru)}">${boleh?IKON.sunting:IKON.lihat}</button><button type="button" class="ik" data-cetak="${esc(r.id)}" title="Cetak / Simpan PDF" aria-label="Cetak rekod ${esc(r.guru)}">${IKON.cetak}</button></td></tr>`;
@@ -1078,7 +1196,8 @@ $("btnSave").onclick=save;
 $("btnCetak").onclick=()=>cetak(); $("btnCetak2").onclick=()=>cetak();
 $("btnReset").onclick=()=>{ draftClear(); resetForm(false); };
 F.forEach(k=>$("f-"+k).addEventListener("input",draftSave));
-buildRubrik(); resetForm(false); renderSettings(); renderList(); renderRumusan(); route();
+buildRubrik(); initRubrikEvents(); resetForm(false); renderSettings(); renderList(); renderRumusan(); route();
+$("f-kelas").addEventListener("change",()=>setBorang(jenisBorang($("f-kelas").value)));
 (async()=>{
   if(!hasApi()){ status("Pautan pelayan (API_URL) belum ditetapkan dalam fail ini.","warn"); return; }
   api("infoAwam").then(i=>{ settings={...settings,...i}; $("loginSchool").textContent=`${i.namaSekolah} · ${i.kodSekolah}`; renderSettings(); if(!me) resetForm(false); }).catch(e=>status(errText(e),"warn"));
