@@ -70,7 +70,7 @@ textarea{min-height:80px;resize:vertical}
 /* rubric */
 .role{margin-top:26px}
 .role:first-child{margin-top:8px}
-.role-head{display:flex;align-items:baseline;gap:10px;padding-bottom:8px;border-bottom:2px solid var(--fg)}
+.role-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;padding-bottom:8px;border-bottom:2px solid var(--fg)}
 .role-head .kod{font-family:var(--f-mono);font-weight:600;color:var(--accent)}
 .kritikal{background:var(--crit);border-radius:8px;padding:10px 12px;margin-top:10px;font-size:14px}
 .kritikal b{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
@@ -185,6 +185,30 @@ a.btn{display:inline-block;font:600 14px var(--f-body);padding:9px 16px;border-r
 .an td.c,.an th.c{text-align:center}
 .an td.z{color:var(--muted)}
 .an td.jm{font-weight:700}
+.an.pan{min-width:720px;table-layout:auto}
+.an.pan input.pan-nm{width:100%;min-width:180px;font:inherit;font-size:13px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg)}
+.an.pan select.pan-sk{font:inherit;font-size:13px;padding:5px 4px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg)}
+.an.pan tfoot td{font-weight:700}
+.st-std td,.st-std th{vertical-align:top}
+.st-std tr.st-kini td{background:var(--accent-soft,rgba(31,95,138,.08))}
+.st-pilih{font:inherit;font-weight:600;color:var(--accent);background:none;border:0;padding:0;cursor:pointer;text-align:left;text-decoration:underline;text-underline-offset:3px}
+.st-oleh{font-size:12px;color:var(--muted)}
+.pg-box{display:flex;flex-direction:column;gap:12px}
+.pg-row{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:10px;align-items:start;padding-top:12px;border-top:1px solid var(--line)}
+.pg-row:first-child{border-top:0;padding-top:0}
+.pg-std b{display:block}.pg-std span{font-size:12.5px;color:var(--muted)}
+.pg-buku{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:12px 14px;border:1px dashed var(--line);border-radius:10px}
+.pg-buku>div{flex:1 1 260px;min-width:0}.pg-buku b{display:block;font-size:14px}.pg-buku span{font-size:12.5px;color:var(--muted)}
+.pg-lbl{font-size:12.5px;color:var(--muted);margin-bottom:6px}
+.pg-asp{margin-top:12px}.pg-asp summary{cursor:pointer;font-size:13.5px;font-weight:600;color:var(--accent)}
+.pg-arow{padding:10px 0 0 12px;border-left:2px solid var(--line);margin-top:10px}
+.asp-pg{margin-left:auto;font-size:12.5px;color:var(--muted);font-weight:500}
+.role.asp-kunci{opacity:.62}
+.pg-isi{display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-width:0}
+.pg-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 6px 4px 10px;border:1px solid var(--line);border-radius:999px;font-size:13px;background:var(--surface)}
+.pg-chip button{border:0;background:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;padding:2px 4px}
+.pg-isi select{font:inherit;font-size:13px;padding:5px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg);max-width:100%}
+@media (max-width:640px){.pg-row{grid-template-columns:1fr}}
 .an td.nm{font-weight:600}
 .an tfoot td{background:var(--sunk);font-weight:600;font-family:var(--f-body)}
 .an tfoot td.num{font-family:var(--f-mono)}
@@ -213,6 +237,9 @@ a.btn{display:inline-block;font:600 14px var(--f-body);padding:9px 16px;border-r
 .kaki-sistem em{font-style:italic;color:var(--fg)}
 .tag-gpk{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:4px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
 .gpk-note{margin:0 0 6px}
+.s1-asp{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--muted);margin-top:6px}
+.s1-asp:first-child{margin-top:0}
+.brk-row.s1r{grid-template-columns:auto minmax(0,1fr) 54px}
 .foot{font-size:12px;color:var(--muted);margin-top:24px;max-width:70ch}
 #cetak{display:none}
 @media print{body>*:not(#cetak){display:none!important}#cetak{display:block!important}body{background:#fff}}
@@ -226,6 +253,7 @@ a.btn{display:inline-block;font:600 14px var(--f-body);padding:9px 16px;border-r
       <a href="#" role="button" data-v="baharu">Isi Borang</a>
       <a href="#" role="button" data-v="rekod">Analisis Skor</a>
       <a href="#" role="button" data-v="rumusan">Rumusan (Gabung)</a>
+      <a href="#" role="button" data-v="std1" id="navS1" hidden>Standard Sekolah</a>
       <a href="#" role="button" data-v="tetapan" id="navSet" hidden>Tetapan</a>
     </nav>
   </div>
@@ -339,6 +367,39 @@ a.btn{display:inline-block;font:600 14px var(--f-body);padding:9px 16px;border-r
   </section>
 
   <!-- ===== TETAPAN ===== -->
+  <!-- ===== STANDARD SEKOLAH (Standard 1, Standard 2) ===== -->
+  <section id="v-std1" hidden>
+    <h1 id="s1-h1">Standard 1: Kepimpinan</h1>
+    <p class="sub" id="s1-sub"></p>
+    <div class="filters">
+      <div class="field" style="flex:1 1 260px"><label for="s1-std">Standard</label><select id="s1-std"></select></div>
+      <div class="field" style="flex:0 1 200px"><label for="s1-tahun">Tahun</label><select id="s1-tahun"></select></div>
+      <span class="label" id="s1-info" style="align-self:center"></span>
+    </div>
+    <div class="panel" id="s1-status" hidden style="margin-bottom:16px"></div>
+    <div class="grid-form">
+      <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+        <div class="tbl-wrap an-wrap" style="margin:0"><table class="an-std"><tr><th>STANDARD</th><th id="s1-tajuk">STANDARD 1: KEPIMPINAN</th></tr><tr><td>PENYATAAN STANDARD</td><td id="s1-penyataan"></td></tr></table></div>
+        <div class="panel"><p class="arahan">Tandakan kriteria yang dipenuhi bagi setiap tindakan. Skor 0–4 dicadangkan mengikut pernyataan penskoran MOEIS dan boleh diubah dengan menekan nombor skor.</p><div id="s1-rubrik"></div></div>
+        <div class="panel"><div class="field"><label for="s1-catatan">Ulasan / eviden utama</label><textarea id="s1-catatan" placeholder="Contoh: Analisis SWOT dibentang dalam mesyuarat Januari; RPS 2026 dimuat naik."></textarea></div></div>
+      </div>
+      <aside class="rail">
+        <div class="panel">
+          <div class="label" id="s1-label">Peratus skor Standard 1</div>
+          <div class="big"><span class="n" id="s1-n">0.00</span><span class="pct">%</span></div>
+          <div class="label" id="s1-count" style="margin:6px 0 12px"></div>
+          <div class="meter"><i id="s1-meter" style="width:0"></i></div>
+          <p id="s1-nota" hidden style="margin:12px 0 0;font-size:12.5px;line-height:1.5;color:var(--muted)">Peratus skor setiap standard sama seperti MOEIS. Jumlah keseluruhan ini purata wajaran sama dan mungkin berbeza sedikit daripada MOEIS. <span id="s1-nota2"></span> Cetakan memaparkan "Rujuk MOEIS".</p>
+        </div>
+        <div class="panel"><div class="label" style="margin-bottom:10px">Rumusan skor (seperti MOEIS)</div><div class="brk" id="s1-brk"></div></div>
+        <div class="panel" style="display:flex;flex-direction:column;gap:10px">
+          <div class="btns"><button class="btn primary" id="s1-save" type="button">Simpan</button><button class="btn" id="s1-print" type="button">Cetak / Simpan PDF</button></div>
+          <div class="msg" id="s1-msg" role="status"></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
   <section id="v-tetapan" hidden>
     <h1>Tetapan Sekolah</h1>
     <p class="sub">Maklumat ini diisi automatik pada setiap rekod baharu. Hanya pentadbir boleh melihat dan mengubah tetapan ini.</p>
@@ -351,6 +412,14 @@ a.btn{display:inline-block;font:600 14px var(--f-body);padding:9px 16px;border-r
       <div id="wtBox"><div class="label" style="margin-bottom:8px">Wajaran aspek (%) · <span id="wt-total"></span></div><div class="wt" id="wt"></div></div>
       <div class="btns"><button class="btn primary" id="btnSet" type="button">Simpan tetapan</button></div>
       <div class="msg" id="setMsg" role="status"></div>
+    </div>
+    <div class="panel" style="display:flex;flex-direction:column;gap:14px;margin-top:16px">
+      <div><h2 style="margin:0 0 4px;font-size:17px">Pengisi Standard Sekolah</h2><p class="sub" style="margin:0">Tetapkan guru yang wajib mengisi seluruh standard, atau buka "Pengisi ikut aspek" untuk menetapkan guru bagi aspek tertentu sahaja (contoh: kaunselor bagi Aspek 3.3.6). Guru hanya boleh mengisi bahagian yang ditetapkan. Pentadbir sentiasa boleh mengisi semua.</p></div>
+      <div class="pg-buku"><div><b>Isi daripada Buku Pengurusan Sekolah 2026</b><span>Setiausaha dan penyelaras setiap jawatankuasa dimasukkan sebagai pengisi aspek berkaitan. Semak dahulu, kemudian tekan Simpan pengisi.</span></div><button class="btn" id="btnPgBuku" type="button">Isi automatik</button></div>
+      <div class="msg" id="pgBukuMsg" role="status"></div>
+      <div id="pgBox" class="pg-box"></div>
+      <div class="btns"><button class="btn primary" id="btnPg" type="button">Simpan pengisi</button></div>
+      <div class="msg" id="pgMsg" role="status"></div>
     </div>
     <p class="foot">Taraf PdP: 85.00–100 Cemerlang · 70.00–84.99 Baik · 55.00–69.99 Sederhana · 0–54.99 Perlu Tindakan Segera.</p>
   </section>
@@ -558,6 +627,8 @@ function cadang(jenis,k,band){
   const n=k.filter(Boolean).length;
   if(jenis==="A"){ if(n===3) return 4; if(n===2) return k[0]?3:2; return n; }
   if(jenis==="B") return n;
+  if(jenis==="F"){ const [a,b,c]=k; if(a&&b&&c) return 4; if(a&&(b||c)) return 3; if(a) return 2; return (b||c)?1:0; }
+  if(jenis==="G"){ if(n===4) return 4; if(k[0]&&n>=2) return n; return n?1:0; }
   if(jenis==="E"){ if(!k[0]) return 0; return 1+Math.min(3,k.slice(1).filter(Boolean).length); }
   if(band==null||band==="") return null;
   const req={4:3,3:2,2:1,1:1}; let s=+band;
@@ -729,7 +800,7 @@ function renderProfile(){
 /* ---------- medan borang ---------- */
 function renderGuruSel(){
   const sel=$("f-guruSel"), cur=sel.value||(editing?editing.guruId:"");
-  sel.innerHTML=`<option value="">— Pilih guru —</option>`+guruList.map(g=>`<option value="${esc(g.id)}">${esc(g.nama)}${me&&g.id===me.id?" (saya)":""}</option>`).join("");
+  sel.innerHTML=`<option value="">— Pilih guru —</option>`+guruList.filter(g=>!g.kecuali||g.id===cur).map(g=>`<option value="${esc(g.id)}">${esc(g.nama)}${me&&g.id===me.id?" (saya)":""}</option>`).join("");
   sel.value=guruList.some(g=>g.id===cur)?cur:"";
 }
 function syncGuruField(){
@@ -860,6 +931,11 @@ const CETAK_CSS=`
 .ct .ul{border:1px solid #000;min-height:20mm;padding:5px 7px;white-space:pre-wrap;font-size:9.5pt}
 .ct .ttd{display:grid;grid-template-columns:1fr 1fr;gap:20mm;margin-top:14mm;font-size:9pt}
 .ct .ttd div{border-top:1px solid #000;padding-top:3px}
+.ct .s1-rum{margin-top:3mm;font-size:9.5pt}
+.ct .s1-rum th{background:#dfe6f2;text-align:left}
+.ct .s1-rum .num{text-align:right;font-variant-numeric:tabular-nums}
+.ct .s1-rum .ra td{background:#eef1f6;font-weight:bold}
+.ct .s1-rum .rj td{font-weight:bold;font-size:11pt;background:#fdf3c8}
 .ct .kaki{margin-top:6mm;font-size:7.5pt;color:#555;text-align:center}
 .ct.gpk .tajuk{background:#1a35c8;color:#fff}
 .ct.gpk .krit,.ct.gpk .std td{background:#f6ccf8}
@@ -1012,7 +1088,8 @@ function renderKemajuan(){
   const host=$("kemajuan");
   if(!seeAll()){ host.innerHTML=""; return; }
   const tahun=$("q-tahun").value||String(new Date().getFullYear());
-  const guru=guruList.filter(g=>!(g.id==="ADMIN"&&g.nama==="PENTADBIR SISTEM")); /* kecualikan baris contoh setup yang belum diubah sahaja */
+  const semuaG=guruList.filter(g=>!(g.id==="ADMIN"&&g.nama==="PENTADBIR SISTEM")); /* kecualikan baris contoh setup yang belum diubah */
+  const guru=semuaG.filter(g=>!g.kecuali), dikecuali=semuaG.length-guru.length; /* KECUALI = YA (cth. guru Bimbingan & Kaunseling) */
   const total=guru.length;
   if(!total){ host.innerHTML=`<div class="panel empty"><b>Belum ada guru berdaftar</b>Tambah guru dalam helaian PENGGUNA di Google Sheet.</div>`; return; }
   const rows=SESI.map(s=>{
@@ -1024,7 +1101,7 @@ function renderKemajuan(){
       <div class="kj-v"><b>${done}</b> / ${total} guru <span>${pct}%</span></div>
       <details class="kj-d"${belum.length?"":" hidden"}><summary>Belum selesai (${belum.length})</summary><ol>${belum.map(g=>`<li>${esc(g.nama)}</li>`).join("")}</ol></details></div>`;
   }).join("");
-  host.innerHTML=`<div class="panel kj"><div class="kj-head"><h2>Kemajuan pengisian · Tahun ${esc(tahun)}</h2><span class="label">Jumlah guru: ${total}</span></div>
+  host.innerHTML=`<div class="panel kj"><div class="kj-head"><h2>Kemajuan pengisian · Tahun ${esc(tahun)}</h2><span class="label">Jumlah guru: ${total}${dikecuali?` · ${dikecuali} dikecualikan`:""}</span></div>
     <p class="sub" style="margin:2px 0 14px">Guru dikira selesai apabila ada sekurang-kurangnya satu rekod bagi sesi itu pada tahun ${esc(tahun)}. Tukar tahun menggunakan penapis Tahun di atas.</p>${rows}</div>`;
 }
 function renderList(){
@@ -1119,8 +1196,95 @@ function renderSettings(){
   $("wt").innerHTML=ASPEK.map(a=>`<div class="field"><label for="w-${kid(a.kod)}"><span style="font-family:var(--f-mono);color:var(--muted)">${a.kod}</span> ${esc(RUBRIK.find(r=>r.aspek.includes(a)).peranan)}</label><input id="w-${kid(a.kod)}" type="number" min="0" max="100" step="1" value="${settings.wajaran[a.kod]??0}"></div>`).join("");
   $("wt").querySelectorAll("input").forEach(i=>i.addEventListener("input",wtTotal));
   wtTotal();
+  pgDraf={}; Object.entries(settings.pengisi||{}).forEach(([k,v])=>{ pgDraf[k]=[...(v||[])]; }); renderPengisi();
   $("brandSchool").textContent=settings.namaSekolah?`${settings.namaSekolah} · ${settings.kodSekolah}`:"SKPM Kualiti@Sekolah · PdPc";
 }
+let pgDraf={};
+function pgPilih(key,label){
+  const ids=pgDraf[key]||[], aktif=guruList.filter(g=>!(g.id==="ADMIN"&&g.nama==="PENTADBIR SISTEM"));
+  return `<div class="pg-isi">${ids.map(id=>`<span class="pg-chip">${esc(namaGuru(id))}<button type="button" data-k="${key}" data-buang="${esc(id)}" aria-label="Buang ${esc(namaGuru(id))} daripada ${esc(label)}">✕</button></span>`).join("")}
+    <select data-k="${key}" aria-label="Tambah pengisi ${esc(label)}"><option value="">+ Tambah pengisi…</option>${aktif.filter(g=>!ids.includes(g.id)).map(g=>`<option value="${esc(g.id)}">${esc(g.nama)}</option>`).join("")}</select></div>`;
+}
+function renderPengisi(){
+  if(!isAdmin()) return;
+  const host=$("pgBox"), buka=new Set([...host.querySelectorAll("details[open]")].map(d=>d.dataset.k));
+  host.innerHTML=Object.values(SS).map(c=>{
+    const nAsp=c.aspek.filter(a=>(pgDraf[c.kod+":"+a.kod]||[]).length).length;
+    return `<div class="pg-row"><div class="pg-std"><b>${esc(c.nama)}</b><span>${esc(c.tajuk.replace(/^STANDARD [\d.]+: /,""))}</span></div><div style="min-width:0">
+      <div class="pg-lbl">Seluruh standard</div>${pgPilih(c.kod,c.nama)}
+      <details class="pg-asp" data-k="${c.kod}"${buka.has(c.kod)?" open":""}><summary>Pengisi ikut aspek${nAsp?` · ${nAsp} aspek ditetapkan`:""}</summary>
+      ${c.aspek.map(a=>`<div class="pg-arow"><div class="pg-lbl"><b>${a.kod}</b> ${esc(a.peranan)}</div>${pgPilih(c.kod+":"+a.kod,"Aspek "+a.kod)}</div>`).join("")}</details></div></div>`; }).join("");
+}
+$("pgBox").addEventListener("change",e=>{ const s=e.target.closest("select[data-k]"); if(!s||!s.value) return; (pgDraf[s.dataset.k]=pgDraf[s.dataset.k]||[]).push(s.value); setMsg("pgMsg","Belum disimpan."); renderPengisi(); });
+$("pgBox").addEventListener("click",e=>{ const b=e.target.closest("button[data-buang]"); if(!b) return; pgDraf[b.dataset.k]=(pgDraf[b.dataset.k]||[]).filter(x=>x!==b.dataset.buang); setMsg("pgMsg","Belum disimpan."); renderPengisi(); });
+/* Setiausaha/penyelaras setiap aspek daripada Buku Pengurusan Sekolah 2026 (Senarai Nama PPS SKPM) */
+const PENGISI_BUKU={
+  "S1:1.1":["Suhana Hasnah binti Abd Sukur","Hajah Rosnah binti Othman"],
+  "S1:1.2":["Rohana binti Saliman"],
+  "S1:1.3":["Hajah Wan Rosshiah binti Wan Daud"],
+  "S2:2.1":["Hajah Rosnah binti Othman","Faraziana binti Usnan","Noor Azam bin Rahim","Nor Aisah binti A.Jalil","Andey Salehuddin bin Badura Sakek"],
+  "S2:2.2":["Muhamad Bukhari bin Ismail"],
+  "S2:2.3":["Nurul Salwaashikin binti Yahaya"],
+  "S2:2.4":["Afandi bin Hassan","Azmi bin Ismail","Yusridah binti Mohd Yusof","Md Salleh bin Gunong","Harizan binti Shamsudin","Nora Fasihah binti Omar Ali","Arifah binti Aziz"],
+  "S2:2.5":["Rohana binti Saliman","Nik Mohammad Khusairi bin Dollah","Harizan binti Shamsudin","Azmi bin Ismail","Mohd Nazri bin Mohd Sah"],
+  "S2:2.6":["Norafifah binti Jalil"],
+  "S2:2.7":["Mohd Mahyuddin bin Ismail","Nor Aini binti Gaman"],
+  "S31:3.1.1":["Roszalina binti Abdullah"],
+  "S31:3.1.2":["Roszalina binti Abdullah","Rohana binti Saliman","Suhana Hasnah binti Abd Sukur","Hajah Rosnah binti Othman","Hajah Wan Rosshiah binti Wan Daud","Nurul Salwaashikin binti Yahaya"],
+  "S31:3.1.3":["Yusridah binti Mohd Yusof"],
+  "S31:3.1.4":["Roszalina binti Abdullah","Arifah binti Aziz","Rohana binti Saliman"],
+  "S32:3.2.1":["Nik Mohammad Khusairi bin Dollah","Zanariah binti Abdullah","Mohd Mahyuddin bin Ismail"],
+  "S32:3.2.2":["Mohd Redzuan bin Husin"],
+  "S32:3.2.3":["Nora Fasihah binti Omar Ali"],
+  "S32:3.2.4":["Muhamad Yazid bin Tumari"],
+  "S32:3.2.5":["Nik Mohammad Khusairi bin Dollah"],
+  "S32:3.2.6":["Mohd Mahyuddin bin Ismail"],
+  "S32:3.2.7":["Nik Mohammad Khusairi bin Dollah"],
+  "S33:3.3.1":["Norafizah binti Ramli","Zanariah binti Abdullah","Noor Azam bin Rahim","Muhamad Yazid bin Tumari"],
+  "S33:3.3.2":["Andey Salehuddin bin Badura Sakek","Kaliyamal a/p Subramaniam"],
+  "S33:3.3.3":["Mohd Nazri bin Mohd Sah","Rosmazila binti Keliwon","Mohd Mahyuddin bin Ismail","Zainuddin bin Saad"],
+  "S33:3.3.4":["Md Salleh bin Gunong"],
+  "S33:3.3.5":["Norafifah binti Jalil","Muhamad Faizal bin Keliwon","Rosmawati binti Abdullah"],
+  "S33:3.3.6":["Nor Aini binti Gaman","Harizan binti Shamsudin"],
+  "S33:3.3.7":["Zainuddin bin Saad"]
+};
+/* Padankan nama buku dengan PENGGUNA: abaikan gelaran (Pn., En., Hajah…) dan bin/binti/a/p; MOHD = MOHAMMAD = MUHAMAD dsb. */
+const NAMA_ABAI=new Set(["PN","EN","CIK","TUAN","PUAN","ENCIK","HAJAH","HAJI","HJ","HJH","DR","BIN","BINTI","BT","BTE","B","A/P","A/L","AP","AL"]);
+const tokNama=n=>String(n||"").toUpperCase().replace(/@/g," ").replace(/A\/P|A\/L/g," ").replace(/[^A-Z\s]/g," ").split(/\s+/).filter(t=>t&&!NAMA_ABAI.has(t))
+  .map(t=>/^(MOHD|MOHAMAD|MOHAMMAD|MOHAMED|MUHAMAD|MUHAMMAD|MUHAMMED|MUHD|MD)$/.test(t)?"MUHAMMAD":t);
+function cariGuru(nama,senarai){
+  const k=tokNama(nama); if(!k.length) return {jenis:"tiada"};
+  const padan=senarai.filter(g=>{ const t=new Set(tokNama(g.nama)); return k.every(x=>t.has(x)); });
+  if(padan.length===1) return {jenis:"ok",g:padan[0]};
+  if(padan.length>1) return {jenis:"kabur",calon:padan};
+  /* nama di PENGGUNA mungkin ringkas: cuba dua perkataan pertama + perkataan terakhir */
+  const k2=[...new Set([k[0],k[1],k[k.length-1]].filter(Boolean))];
+  const p2=senarai.filter(g=>{ const t=new Set(tokNama(g.nama)); return k2.every(x=>t.has(x)); });
+  if(p2.length===1) return {jenis:"ok",g:p2[0]};
+  return p2.length>1?{jenis:"kabur",calon:p2}:{jenis:"tiada"};
+}
+$("btnPgBuku").onclick=()=>{
+  const senarai=guruList.filter(g=>!(g.id==="ADMIN"&&g.nama==="PENTADBIR SISTEM"));
+  const tiada=new Set(), kabur=new Set(); let tambah=0;
+  for(const [key,nama] of Object.entries(PENGISI_BUKU)){
+    const sedia=pgDraf[key]=pgDraf[key]||[];
+    for(const n of nama){ const r=cariGuru(n,senarai);
+      if(r.jenis==="ok"){ if(!sedia.includes(r.g.id)){ sedia.push(r.g.id); tambah++; } }
+      else (r.jenis==="kabur"?kabur:tiada).add(n); }
+  }
+  renderPengisi();
+  $("pgBox").querySelectorAll("details").forEach(d=>{ if(Object.keys(PENGISI_BUKU).some(k=>k.startsWith(d.dataset.k+":")&&(pgDraf[k]||[]).length)) d.open=true; });
+  let m=`${tambah} penetapan ditambah. Semak senarai di atas, kemudian tekan Simpan pengisi.`;
+  if(tiada.size) m+=` Tidak dijumpai dalam PENGGUNA (tambah guru ini dahulu atau semak ejaan): ${[...tiada].join("; ")}.`;
+  if(kabur.size) m+=` Lebih daripada satu padanan, sila pilih sendiri: ${[...kabur].join("; ")}.`;
+  setMsg("pgBukuMsg",m,tiada.size||kabur.size?"err":"ok"); setMsg("pgMsg","Belum disimpan.");
+};
+$("btnPg").onclick=async()=>{
+  $("btnPg").disabled=true;
+  try{ applyData(await call("simpanPengisi",pgDraf)); setMsg("pgMsg","Pengisi standard disimpan. Guru yang ditetapkan akan nampak tab Standard Sekolah selepas log masuk semula atau muat semula halaman.","ok"); }
+  catch(e){ if(!handled(e)) setMsg("pgMsg","Tidak disimpan: "+errText(e),"err"); }
+  finally{ $("btnPg").disabled=false; }
+};
 function wtTotal(){ let t=0; ASPEK.forEach(a=>t+=Number($("w-"+kid(a.kod)).value)||0); const el=$("wt-total"); el.textContent=`jumlah ${t}%`+(t!==100?" (mesti 100%)":""); el.style.color=t===100?"":"var(--bad)"; return t; }
 $("btnSet").onclick=async()=>{
   if(wtTotal()!==100){ setMsg("setMsg","Jumlah wajaran mesti tepat 100%.","err"); return; }
@@ -1136,10 +1300,10 @@ $("btnSet").onclick=async()=>{
 function applyData(d){
   me=d.user;
   settings={...settings,...(d.tetapan||{}),wajaran:{...DEF_W,...((d.tetapan&&d.tetapan.wajaran)||{})}};
-  guruList=d.guru||[]; records=d.rekod||[]; sheetUrl=d.sheetUrl||"";
+  guruList=d.guru||[]; records=d.rekod||[]; sheetUrl=d.sheetUrl||""; tugasStd=d.tugasStd||[]; Object.keys(ssList).forEach(k=>{ ssList[k]=d["std"+String(SS[k].no).replace(".","")]||[]; });
   kelasList=d.kelas||[]; setKelas($("f-kelas").value);
   $("lnkSheet").hidden=!sheetUrl; if(sheetUrl) $("lnkSheet").href=sheetUrl;
-  renderProfile(); renderSettings(); if(isAdmin()) renderGuruSel(); renderList(); renderRumusan();
+  renderProfile(); renderSettings(); if(isAdmin()) renderGuruSel(); renderList(); renderRumusan(); renderStd1();
   if(editing){ const r=records.find(x=>x.id===editing.id); if(r) editing=r; else { resetForm(false); setMsg("saveMsg","Rekod yang dibuka telah dipadam oleh pengguna lain.","err"); } }
   else syncGuruField();
   paintSkor();
@@ -1154,7 +1318,7 @@ async function refresh(loud){
 }
 function keluar(msg){
   status(null);
-  const t=token; token=null; me=null; guruList=[]; records=[]; sheetUrl=""; editing=null; selKey=null;
+  const t=token; token=null; me=null; guruList=[]; records=[]; sheetUrl=""; editing=null; selKey=null; Object.keys(ssList).forEach(x=>ssList[x]=[]); tugasStd=[]; s1tahun=""; s1ubah=false; ssTukar=null; $("navS1").hidden=true;
   try{sessionStorage.removeItem("t4tok")}catch(e){}
   if(t) api("logout",t).catch(()=>{});
   renderProfile(); renderList(); renderRumusan(); resetForm(false);
@@ -1174,8 +1338,652 @@ $("loginForm").addEventListener("submit",async e=>{
   finally{ btn.disabled=false; btn.textContent="Log masuk"; }
 });
 
+
+/* ================= STANDARD 1: KEPIMPINAN (penilaian sekolah, satu rekod setiap tahun) ================= */
+const S1_MENU="secara menyeluruh dalam bidang kurikulum, kokurikulum, hal ehwal murid, kewangan, sumber manusia, prasarana sekolah dan sumber pendidikan";
+const S1_PENYATAAN="Pengetua/Guru Besar (PGB) berperanan sebagai pemimpin berimpak tinggi yang berupaya menggembleng dan menggerakkan warga sekolah secara bersepadu untuk memajukan sekolah dan meningkatkan kualiti pengajaran dan pembelajaran (PdP).";
+const S1=[
+ {kod:"1.1",peranan:"PGB sebagai Peneraju",kritikal:"PGB bertindak sebagai peneraju dalam semua aspek pengurusan dan pendidikan di sekolah untuk memastikan matlamat dan objektif yang ditetapkan tercapai.",std:[
+  {kod:"1.1.1",jenis:"F",teks:"F1",sk:"PGB menetapkan hala tuju sekolah secara terancang.",
+   tindakan:"Menetapkan hala tuju sekolah dengan membuat analisis, menentukan sasaran, mendokumen dan menyebarluaskan hala tuju secara menyeluruh, jelas, serta mengikut keperluan dan kesesuaian sekolah.",
+   lead:"PGB menetapkan hala tuju sekolah dengan:",item:[
+   {t:"Membuat analisis SWOT/analisis lain yang bersesuaian",k:[S1_MENU,"mengikut keperluan sekolah seperti latar belakang murid, sumber, prasarana sekolah dan perkembangan pendidikan semasa","secara jelas"]},
+   {t:"Menentukan sasaran/Petunjuk Prestasi Utama",k:[S1_MENU,"mengikut keperluan sekolah seperti latar belakang murid, sumber dan prasarana sekolah, perkembangan pendidikan semasa dan sebagainya","secara jelas"]},
+   {t:"Mendokumenkan hala tuju yang ditetapkan",k:[S1_MENU,"mengikut kesesuaian sekolah","secara jelas"]},
+   {t:"Menyebarluaskan hala tuju yang ditetapkan",k:[S1_MENU,"mengikut kesesuaian sekolah","secara jelas"]}]},
+  {kod:"1.1.2",jenis:"F",teks:"F1",sk:"PGB mengetuai penyediaan Rancangan Pemajuan Sekolah secara terancang dan sistematik.",
+   tindakan:"Mengetuai penyediaan perancangan strategik dengan menyediakan garis panduan/format perancangan strategik, merangka strategi pencapaian sasaran, memantau dan menyiapkan dokumen perancangan strategik dengan mekanisme yang sesuai, mengikut ketetapan, keperluan sekolah, dan secara menyeluruh.",
+   lead:"PGB mengetuai penyediaan perancangan strategik:",item:[
+   {t:"Menyediakan garis panduan/format perancangan strategik",k:["mengikut ketetapan sekolah",S1_MENU,"dengan mekanisme yang sesuai"]},
+   {t:"Merangka strategi pencapaian sasaran",k:["mengikut keperluan sekolah",S1_MENU,"dengan mekanisme yang sesuai"]},
+   {t:"Memantau penyediaan perancangan strategik",k:["mengikut ketetapan sekolah",S1_MENU,"dengan mekanisme yang sesuai"]},
+   {t:"Menyiapkan dokumen perancangan strategik",k:["mengikut ketetapan sekolah",S1_MENU,"dengan mekanisme yang sesuai"]}]},
+  {kod:"1.1.3",jenis:"F",teks:"F1",sk:"PGB mengetuai pemantauan pengoperasian sekolah secara terancang dan sistematik.",
+   tindakan:"Mengetuai pemantauan pengoperasian sekolah dengan melaksanakan pemantauan, menyediakan rumusan pemantauan, dan mengambil tindakan susulan mengikut ketetapan, secara menyeluruh, dan dari semasa ke semasa.",
+   lead:"PGB mengetuai pemantauan pengoperasian sekolah:",item:[
+   {t:"Melaksanakan pemantauan",k:["mengikut ketetapan sekolah",S1_MENU,"dari semasa ke semasa"]},
+   {t:"Menyediakan rumusan pemantauan",k:["mengikut ketetapan sekolah",S1_MENU,"dari semasa ke semasa"]},
+   {t:"Mengambil tindakan susulan",k:["mengikut ketetapan sekolah","secara menyeluruh kepada semua perkara","dari semasa ke semasa"]}]},
+  {kod:"1.1.4",jenis:"E",teks:"E",sk:"PGB menerajui aktiviti instruksional dalam pelaksanaan PdP secara profesional dan terancang.",
+   tindakan:"Menerajui aktiviti instruksional dengan melaksanakan PdP, menyediakan Rancangan Pelajaran Harian (RPH), melaksanakan peperiksaan/pentaksiran terhadap tahap penguasaan murid dan menyemak hasil kerja murid mengikut arahan yang berkuat kuasa, mematuhi jadual dan perancangan, secara tekal, dan menyeluruh.",
+   lead:"PGB menerajui aktiviti instruksional:",item:[
+   {t:"Melaksanakan PdP",k:["mengikut arahan yang berkuat kuasa","dengan mematuhi jadual","secara tekal","secara menyeluruh kepada semua murid"]},
+   {t:"Menyediakan Rancangan Pelajaran Harian (RPH)",k:["mengikut arahan yang berkuat kuasa","dengan mematuhi jadual","secara tekal","secara menyeluruh dalam semua perkara"]},
+   {t:"Melaksanakan peperiksaan/pentaksiran terhadap tahap penguasaan murid",k:["mengikut arahan yang berkuat kuasa","dengan mematuhi perancangan","secara tekal","secara menyeluruh kepada semua murid"]},
+   {t:"Menyemak hasil kerja murid",k:["mengikut arahan yang berkuat kuasa","dengan mematuhi perancangan","secara tekal","secara menyeluruh semua murid"]}]},
+  {kod:"1.1.5",jenis:"F",teks:"F1",sk:"PGB menerajui aktiviti instruksional dalam pelaksanaan pencerapan PdP secara profesional dan terancang.",
+   tindakan:"Menerajui aktiviti instruksional dengan mengetuai pelaksanaan pencerapan PdP, memberi maklum balas dan bimbingan serta mengambil tindakan susulan mengikut ketetapan, secara menyeluruh, dan dari semasa ke semasa.",
+   lead:"PGB menerajui aktiviti instruksional:",item:[
+   {t:"Melaksanakan pencerapan PdP",k:["mengikut ketetapan sekolah","secara menyeluruh kepada semua guru","dari semasa ke semasa"]},
+   {t:"Memberi maklum balas dan bimbingan",k:["mengikut ketetapan sekolah","secara menyeluruh kepada semua guru","dari semasa ke semasa"]},
+   {t:"Mengambil tindakan susulan",k:["mengikut ketetapan sekolah","secara menyeluruh kepada semua perkara","dari semasa ke semasa"]}]},
+  {kod:"1.1.6",jenis:"F",teks:"F1",sk:"PGB menerajui aktiviti instruksional dalam pelaksanaan pemantauan kemajuan dan pencapaian murid secara sistematik dan terancang.",
+   tindakan:"Mengetuai pemantauan kemajuan dan pencapaian murid dengan menganalisis pencapaian murid, menyediakan rumusan kemajuan pencapaian murid, mengadakan dialog prestasi dan mengambil tindakan susulan mengikut ketetapan, secara menyeluruh, dan dari semasa ke semasa.",
+   lead:"PGB mengetuai pemantauan kemajuan dan pencapaian murid:",item:[
+   {t:"Menganalisis pencapaian murid",k:["mengikut ketetapan sekolah","secara menyeluruh dalam bidang kurikulum, kokurikulum dan hal ehwal murid","dari semasa ke semasa"]},
+   {t:"Menyediakan rumusan kemajuan dan pencapaian murid",k:["mengikut ketetapan sekolah","secara menyeluruh dalam bidang kurikulum, kokurikulum dan hal ehwal murid","dari semasa ke semasa"]},
+   {t:"Mengadakan dialog prestasi",k:["mengikut ketetapan sekolah","secara menyeluruh dalam bidang kurikulum, kokurikulum dan hal ehwal murid","dari semasa ke semasa"]},
+   {t:"Mengambil tindakan susulan",k:["mengikut ketetapan sekolah","secara menyeluruh dalam bidang kurikulum, kokurikulum dan hal ehwal murid","dari semasa ke semasa"]}]},
+  {kod:"1.1.7",jenis:"F",teks:"F2",sk:"PGB menangani masalah pengoperasian sekolah secara profesional dan terancang.",
+   tindakan:"Menangani masalah pengoperasian sekolah dengan mengenal pasti, mengambil tindakan dan menyelesaikan masalah/isu pengoperasian sekolah serta mengambil langkah kawalan dengan mekanisme yang sesuai, mematuhi prosedur, secara telus, serta mengikut keperluan dan kesesuaian.",
+   lead:"PGB menangani masalah pengoperasian sekolah:",item:[
+   {t:"Mengesan jangkaan masalah/isu",k:["dengan mekanisme yang sesuai","secara telus","mengikut keperluan"]},
+   {t:"Mengenal pasti punca masalah/isu",k:["dengan mekanisme yang sesuai","secara telus","mengikut keperluan"]},
+   {t:"Mengambil tindakan terhadap masalah/isu",k:["dengan mematuhi prosedur","secara telus","mengikut kesesuaian"]},
+   {t:"Menyelesaikan masalah/isu",k:["dengan mematuhi prosedur","secara telus","mengikut kesesuaian"]},
+   {t:"Mengambil langkah kawalan/tindakan pencegahan bagi memastikan masalah/isu tidak berulang",k:["dengan mematuhi prosedur","secara telus","mengikut kesesuaian"]}]}]},
+ {kod:"1.2",peranan:"PGB sebagai Pembimbing",kritikal:"PGB bertindak sebagai pembimbing untuk meningkatkan kecekapan individu dan kualiti pengurusan sekolah.",std:[
+  {kod:"1.2.1",jenis:"B",teks:"B",sk:"PGB memberi bimbingan kepada guru dan AKP secara profesional dan terancang.",
+   tindakan:"Memberi bimbingan dengan memberi input, panduan dan maklum balas kepada guru dan AKP mengikut perkembangan semasa dan kesesuaian, dari semasa ke semasa, secara jelas, berhemah, dan menyeluruh.",
+   lead:"PGB memberi bimbingan dengan:",item:[
+   {t:"Memberi taklimat/bengkel/kursus/ceramah",k:["mengikut perkembangan semasa","secara jelas","secara menyeluruh kepada semua guru dan AKP","dari semasa ke semasa"]},
+   {t:"Memberi panduan/tunjuk ajar/tunjuk cara/nasihat/penerangan",k:["mengikut kesesuaian","secara jelas dan berhemah","secara menyeluruh kepada semua guru dan AKP","dari semasa ke semasa"]},
+   {t:"Memberi maklum balas berkaitan prestasi kerja",k:["mengikut kesesuaian","secara berhemah","secara menyeluruh kepada semua guru dan AKP","dari semasa ke semasa"]}]},
+  {kod:"1.2.2",jenis:"B",teks:"B",sk:"PGB memberi bimbingan kepada barisan pemimpin yang diturunkan kuasa secara profesional dan terancang.",
+   tindakan:"Memberi bimbingan dengan memberi panduan, maklum balas dan pendedahan berkaitan dengan tugas kepada PK, GKMP (SM sahaja) dan KP mengikut kesesuaian, dari semasa ke semasa, secara jelas, berhemah dan menyeluruh.",
+   lead:"PGB memberi bimbingan:",item:[
+   {t:"Memberi panduan/tunjuk ajar/tunjuk cara/nasihat/penerangan",k:["mengikut kesesuaian","secara jelas dan berhemah","secara menyeluruh dalam semua bidang tugas","dari semasa ke semasa"]},
+   {t:"Memberi maklum balas berkaitan prestasi kerja",k:["mengikut kesesuaian","secara berhemah","secara menyeluruh dalam semua bidang tugas","dari semasa ke semasa"]},
+   {t:"Memberi pendedahan berkaitan tugas kepimpinan",k:["mengikut kesesuaian","secara jelas","secara menyeluruh dalam semua bidang tugas","dari semasa ke semasa"]}]}]},
+ {kod:"1.3",peranan:"PGB sebagai Pendorong",kritikal:"PGB bertindak sebagai pendorong untuk meningkatkan motivasi warga sekolah dalam melaksanakan tanggungjawab secara bersungguh-sungguh dan berkualiti.",std:[
+  {kod:"1.3.1",jenis:"F",teks:"F2",sk:"PGB mendorong warga sekolah dengan menjadi suri teladan secara profesional dan terancang.",
+   tindakan:"Mendorong warga sekolah dengan menjadi suri teladan dalam melaksanakan tugas berkualiti, mempamerkan penampilan diri berwibawa, bertindak sebagai pakar rujuk dan memperlihatkan komunikasi yang berkesan secara tekal, bertanggungjawab, beretika, berhemah, dan menyeluruh.",
+   lead:"PGB mendorong warga sekolah dengan menjadi suri teladan dalam:",item:[
+   {t:"Melaksanakan tugas berkualiti",k:["secara tekal","dengan bertanggungjawab","secara menyeluruh dalam semua bidang tugas"]},
+   {t:"Mempamerkan penampilan diri berwibawa",k:["secara tekal","secara beretika","secara menyeluruh dalam semua situasi"]},
+   {t:"Bertindak sebagai pakar rujuk",k:["secara tekal","dengan bertanggungjawab","secara menyeluruh dalam semua bidang tugas"]},
+   {t:"Memperlihatkan komunikasi yang berkesan",k:["secara tekal","dengan berhemah","secara menyeluruh dalam semua situasi"]}]},
+  {kod:"1.3.2",jenis:"A",teks:"A",sk:"PGB menggalakkan warga sekolah memberi input berkaitan pemajuan sekolah secara profesional dan terancang.",
+   tindakan:"Menggalakkan warga sekolah memberi input berkaitan pemajuan sekolah dengan menyediakan saluran, mendengar, menerima pandangan serta mengambil tindakan dengan sikap terbuka, secara fleksibel, berfokus, tekal, serta mengikut keperluan dan kesesuaian sekolah.",
+   lead:"PGB menggalakkan warga sekolah memberi input berkaitan pemajuan sekolah:",item:[
+   {t:"Menyediakan saluran untuk berkomunikasi",k:["secara fleksibel","secara tekal","secara berfokus"]},
+   {t:"Mendengar pandangan daripada pelbagai pihak",k:["dengan sikap terbuka","secara tekal","mengikut keperluan"]},
+   {t:"Menerima pandangan/maklum balas yang berbeza",k:["dengan sikap terbuka","secara tekal","mengikut keperluan"]},
+   {t:"Mengambil tindakan terhadap pandangan/maklum balas",k:["berfokus kepada hala tuju sekolah","secara tekal","mengikut kesesuaian"]}]},
+  {kod:"1.3.3",jenis:"A",teks:"A",sk:"PGB menggerakkan warga sekolah dalam melaksanakan tanggungjawab secara terancang.",
+   tindakan:"Menggerakkan warga sekolah dalam melaksanakan tanggungjawab dengan memberi maklum balas positif, penghargaan, menyediakan keperluan dan melibatkan diri dalam aktiviti sekolah dari semasa ke semasa, secara tekal, menyeluruh dan mengikut kesesuaian sekolah.",
+   lead:"PGB menggerakkan warga sekolah dalam melaksanakan tanggungjawab:",item:[
+   {t:"Memberi maklum balas positif berkaitan prestasi/kemajuan/pencapaian kerja",k:["dari semasa ke semasa","secara menyeluruh dalam semua bidang kurikulum, kokurikulum, hal ehwal murid, kewangan, sumber manusia, prasarana sekolah dan sumber pendidikan","mengikut kesesuaian"]},
+   {t:"Memberi penghargaan/pengiktirafan",k:["secara tekal","secara menyeluruh kepada semua warga sekolah","mengikut kesesuaian"]},
+   {t:"Menyediakan keperluan dan kemudahan",k:["dari semasa ke semasa","secara menyeluruh dalam semua bidang kurikulum, kokurikulum, hal ehwal murid, kewangan, sumber manusia, prasarana sekolah dan sumber pendidikan","mengikut kesesuaian"]},
+   {t:"Melibatkan diri dalam aktiviti sekolah",k:["dari semasa ke semasa","secara menyeluruh dalam semua bidang kurikulum, kokurikulum, hal ehwal murid, kewangan, sumber manusia, prasarana sekolah dan sumber pendidikan","mengikut kesesuaian"]}]}]}
+];
+/* ================= STANDARD 2: PENGURUSAN ORGANISASI (data borang MOEIS) ================= */
+const S2_PENYATAAN="Organisasi sekolah diurus secara cekap dengan mengambil kira potensi dan keperluan warga sekolah, kemudahan, sumber dalaman dan luaran untuk meningkatkan keberkesanan pengoperasian sekolah.";
+const S2_GURU="secara menyeluruh kepada setiap guru dan AKP";
+const S2_PROG="dengan mengambil kira perkembangan pendidikan/perkhidmatan semasa";
+const S2_SEM="dari semasa ke semasa";
+const S2_MEK="dengan mekanisme yang sesuai";
+const S2=[
+ {kod:"2.1",peranan:"Pengurusan Sumber Manusia",kritikal:"Sumber manusia diurus untuk meningkatkan kualiti kerja, kepuasan dan keseronokan bekerja serta amalan profesionalisme.",std:[
+  {kod:"2.1.1",jenis:"G",teks:"G",sk:"Sumber manusia diurus secara sistematik dan terancang.",
+   tindakan:"Mengagih, menyedia dan menyebarluaskan perincian tugas, menilai prestasi kerja serta melaksanakan urusan perkhidmatan dengan mematuhi arahan, mengikut kepakaran/keperluan dan kesesuaian, secara menyeluruh, seimbang, telus dan jelas.",
+   lead:"Mengurus sumber manusia dengan:",item:[
+   {t:"Mengagihkan tugas",k:["dengan mematuhi arahan","mengikut kepakaran/keperluan",S2_GURU,"secara seimbang"]},
+   {t:"Menyediakan perincian tugas",k:["dengan mematuhi arahan/prosedur","mengikut kesesuaian","secara menyeluruh dalam semua bidang","secara jelas"]},
+   {t:"Menyebarluaskan perincian tugas",k:["dengan mematuhi arahan","mengikut kesesuaian",S2_GURU,"secara jelas"]},
+   {t:"Menilai prestasi kerja",k:["dengan mematuhi arahan","mengikut kesesuaian",S2_GURU,"secara telus"]},
+   {t:"Melaksanakan urusan perkhidmatan (SPP/ePROPER)",k:["dengan mematuhi arahan","mengikut kesesuaian",S2_GURU,"secara telus"]}]},
+  {kod:"2.1.2",jenis:"B",teks:"B",sk:"Pembangunan sumber manusia diurus secara terancang.",
+   tindakan:"Merancang dan melaksana program pembangunan profesionalisme, menilai keberkesanan program dan mengambil tindakan susulan mengikut keperluan dan kesesuaian, mengambil kira perkembangan pendidikan/perkhidmatan semasa, secara menyeluruh, dan dari semasa ke semasa.",
+   lead:"Mengurus *pembangunan sumber manusia dengan:",item:[
+   {t:"Merancang program pembangunan profesionalisme",k:["mengikut keperluan",S2_PROG,S2_GURU,S2_SEM]},
+   {t:"Melaksanakan program pembangunan profesionalisme",k:["mengikut kesesuaian",S2_PROG,S2_GURU,S2_SEM]},
+   {t:"Menilai keberkesanan program",k:["mengikut kesesuaian",S2_PROG,S2_GURU,S2_SEM]},
+   {t:"Mengambil tindakan susulan",k:["mengikut kesesuaian",S2_PROG,S2_GURU,S2_SEM]}]}]},
+ {kod:"2.2",peranan:"Pengurusan Aset",kritikal:"Aset kerajaan diurus untuk kemudahan, keselesaan dan keselamatan warga sekolah.",std:[
+  {kod:"2.2.1",jenis:"G",teks:"G",sk:"Aset alih dan aset tak alih diurus secara sistematik dan terancang.",
+   tindakan:"Menyedia, mengguna dan menyelenggara aset alih dan aset tak alih, merekod dan mengambil tindakan susulan terhadap hasil pemeriksaan mengikut prosedur yang ditetapkan, keperluan atau kesesuaian, secara menyeluruh, optimum, dan dari semasa ke semasa.",
+   lead:"Mengurus aset alih dan aset tak alih dengan:",item:[
+   {t:"Menyediakan harta modal dan aset alih bernilai rendah",k:["mengikut prosedur yang ditetapkan","mengikut kesesuaian","secara menyeluruh",S2_SEM]},
+   {t:"Menggunakan harta modal, aset alih bernilai rendah dan infrastruktur",k:["mengikut prosedur yang ditetapkan","mengikut keperluan","secara optimum",S2_SEM]},
+   {t:"Menyelenggara harta modal dan infrastruktur",k:["mengikut prosedur yang ditetapkan","mengikut kesesuaian","secara menyeluruh",S2_SEM]},
+   {t:"Mengambil tindakan terhadap hasil pemeriksaan harta modal, aset alih bernilai rendah dan infrastruktur",k:["mengikut prosedur yang ditetapkan","mengikut kesesuaian","secara menyeluruh",S2_SEM]},
+   {t:"Merekodkan perolehan, penggunaan dan penyelenggaraan",k:["mengikut prosedur yang ditetapkan","mengikut kesesuaian","secara menyeluruh",S2_SEM]}]}]},
+ {kod:"2.3",peranan:"Pengurusan Kewangan",kritikal:"Kewangan diurus untuk memastikan setiap perbelanjaan memberi pulangan yang optimum.",std:[
+  {kod:"2.3.1",jenis:"F",teks:"F1",sk:"Kewangan diurus secara sistematik dan terancang.",
+   tindakan:"Menyediakan anggaran perbelanjaan, melaksanakan perbelanjaan dan pemantauan serta mengambil tindakan susulan dengan mematuhi ketetapan dan prosedur yang berkuat kuasa, mengikut keutamaan dan kesesuaian, secara optimum, menyeluruh, dan dari semasa ke semasa.",
+   lead:"Mengurus kewangan dengan:",item:[
+   {t:"Menyediakan anggaran perbelanjaan",k:["dengan mematuhi ketetapan dan prosedur yang berkuat kuasa","mengikut kesesuaian","secara menyeluruh dalam setiap bidang"]},
+   {t:"Melaksanakan perbelanjaan",k:["dengan mematuhi ketetapan dan prosedur yang berkuat kuasa","mengikut keutamaan","secara optimum"]},
+   {t:"Melaksanakan pemantauan perbelanjaan",k:["dengan mematuhi ketetapan dan prosedur yang berkuat kuasa","secara menyeluruh dalam setiap bidang",S2_SEM]},
+   {t:"Mengambil tindakan susulan",k:["dengan mematuhi ketetapan dan prosedur yang berkuat kuasa","secara menyeluruh dalam setiap bidang",S2_SEM]}]}]},
+ {kod:"2.4",peranan:"Pengurusan Sumber Pendidikan",kritikal:"Sumber pendidikan diurus bagi menyokong peningkatan kualiti pendidikan.",std:[
+  {kod:"2.4.1",jenis:"G",teks:"G",sk:"Sumber pendidikan diurus secara sistematik dan terancang.",
+   tindakan:"Menyedia, menyimpan, menggunakan serta melaksanakan penyeliaan terhadap sumber pendidikan mengikut ketetapan dan prosedur, berdasarkan keperluan dan kesesuaian, secara menyeluruh, optimum dan dari semasa ke semasa.",
+   lead:"Mengurus sumber pendidikan dengan:",item:[
+   {t:"Menyediakan alat/bahan, bahan cetak/elektronik dan TMK",k:["mengikut ketetapan","berdasarkan kesesuaian","secara menyeluruh",S2_SEM]},
+   {t:"Menyimpan dan menyusun atur alat/bahan, bahan cetak/elektronik dan TMK",k:["mengikut prosedur","berdasarkan kesesuaian","secara menyeluruh",S2_SEM]},
+   {t:"Menggunakan alat/bahan, bahan cetak/elektronik dan TMK",k:["mengikut prosedur","berdasarkan keperluan","secara optimum",S2_SEM]},
+   {t:"Melaksanakan penyeliaan penggunaan alat/bahan, bahan cetak/elektronik dan TMK",k:["mengikut ketetapan","berdasarkan kesesuaian","secara menyeluruh",S2_SEM]}]}]},
+ {kod:"2.5",peranan:"Iklim",kritikal:"Persekitaran dan suasana diurus supaya kondusif bagi kesejahteraan warga sekolah dalam melaksanakan tanggungjawab.",std:[
+  {kod:"2.5.1",jenis:"G",teks:"G",sk:"Persekitaran fizikal diselenggara secara sistematik dan terancang.",
+   tindakan:"Membersih, menceria dan memulihkan kawasan persekitaran fizikal serta mewujudkan ciri-ciri keselamatan dengan mekanisme yang sesuai, mengikut ketetapan dan keperluan, mematuhi prosedur, dan dari semasa ke semasa.",
+   lead:"Menyelenggara persekitaran fizikal dengan:",item:[
+   {t:"Membersihkan kawasan, bangunan dan *kemudahan sekolah",k:["mengikut ketetapan dan keperluan","dengan mematuhi prosedur",S2_MEK,S2_SEM]},
+   {t:"Menceriakan kawasan, bangunan dan *kemudahan sekolah",k:["mengikut ketetapan dan keperluan","dengan mematuhi prosedur",S2_MEK,S2_SEM]},
+   {t:"Memulihkan kawasan, bangunan dan *kemudahan sekolah",k:["mengikut ketetapan dan keperluan","dengan mematuhi prosedur",S2_MEK,S2_SEM]},
+   {t:"Mewujudkan ciri-ciri keselamatan",k:["mengikut ketetapan dan keperluan","dengan mematuhi prosedur",S2_MEK,S2_SEM]}]},
+  {kod:"2.5.2",jenis:"G",teks:"G",sk:"Suasana yang selesa dan harmoni diwujud dan dikekalkan secara sistematik dan terancang.",
+   tindakan:"Menguatkuasakan peraturan sekolah, merancang dan melaksanakan program peningkatan keakraban dengan mekanisme yang sesuai, mematuhi prosedur dan arahan yang berkuat kuasa, secara menyeluruh, dan dari semasa ke semasa.",
+   lead:"Mewujud dan mengekalkan suasana yang selesa dan harmoni dengan:",item:[
+   {t:"Menguatkuasakan ketetapan/peraturan sekolah",k:["dengan mematuhi prosedur yang ditetapkan","secara menyeluruh kepada semua warga sekolah",S2_MEK,S2_SEM]},
+   {t:"Merancang program peningkatan keakraban/semangat kepunyaan",k:["dengan mematuhi arahan yang berkuat kuasa","secara menyeluruh kepada semua warga sekolah",S2_MEK,S2_SEM]},
+   {t:"Melaksanakan program peningkatan keakraban/semangat kepunyaan",k:["dengan mematuhi prosedur yang ditetapkan","secara menyeluruh kepada semua warga sekolah",S2_MEK,S2_SEM]}]}]},
+ {kod:"2.6",peranan:"Pengurusan Perpaduan",kritikal:"Pemahaman dan penerimaan terhadap kepelbagaian masyarakat Malaysia diurus untuk memupuk perpaduan.",std:[
+  {kod:"2.6.1",jenis:"B",teks:"B",sk:"Pemahaman dan penerimaan terhadap kepelbagaian masyarakat Malaysia diurus secara terancang.",
+   tindakan:"Menyebar maklumat, merancang dan melaksanakan program yang berteraskan kepelbagaian masyarakat Malaysia dan silang budaya dengan mekanisme yang sesuai, mengikut keperluan dan kesesuaian sekolah, secara menyeluruh dan dari semasa ke semasa.",
+   lead:"Mengurus pemahaman dan penerimaan terhadap kepelbagaian masyarakat Malaysia dengan:",item:[
+   {t:"Menyebarkan maklumat tentang kepelbagaian masyarakat Malaysia",k:["mengikut kesesuaian sekolah",S2_MEK,"secara menyeluruh kepada semua warga sekolah",S2_SEM]},
+   {t:"Merancang program berteraskan perpaduan/silang budaya",k:["mengikut keperluan sekolah",S2_MEK,"secara menyeluruh dalam semua program",S2_SEM]},
+   {t:"Melaksanakan program yang berteraskan perpaduan/silang budaya",k:["mengikut kesesuaian sekolah",S2_MEK,"secara menyeluruh kepada semua warga sekolah",S2_SEM]},
+   {t:"Merancang program jaringan/jalinan berteraskan perpaduan/silang budaya",k:["mengikut keperluan sekolah",S2_MEK,"secara menyeluruh dalam semua program",S2_SEM]},
+   {t:"Melaksanakan program jaringan/jalinan berteraskan perpaduan/silang budaya",k:["mengikut kesesuaian sekolah",S2_MEK,"secara menyeluruh kepada semua warga sekolah",S2_SEM]}]}]},
+ {kod:"2.7",peranan:"Permuafakatan Strategik",kritikal:"Permuafakatan strategik diwujudkan untuk menyokong pembelajaran murid ke arah kecemerlangan.",std:[
+  {kod:"2.7.1",jenis:"B",teks:"B",sk:"Permuafakatan strategik diusahakan secara profesional dan terancang.",
+   tindakan:"Merancang dan melaksanakan program yang melibatkan ibu bapa/penjaga, komuniti dan pihak swasta, mendapatkan sumbangan serta mewujudkan rangkaian komuniti dengan mekanisme yang sesuai, mengikut keperluan dan kesesuaian, secara kreatif/inovatif, dan dari semasa ke semasa.",
+   lead:"Mengusahakan permuafakatan strategik dengan:",item:[
+   {t:"Merancang program yang melibatkan ibu bapa/penjaga, komuniti dan pihak swasta",k:["mengikut keperluan","secara kreatif/inovatif","dengan mekanisme yang sesuai (penubuhan jawatankuasa/melalui media sosial/akses dalam talian)",S2_SEM]},
+   {t:"Melaksanakan program yang melibatkan ibu bapa/penjaga, komuniti dan pihak swasta",k:["mengikut kesesuaian","secara kreatif/inovatif","dengan mekanisme yang sesuai (penubuhan jawatankuasa/melalui media sosial/akses dalam talian)",S2_SEM]},
+   {t:"Mendapatkan sumbangan/sokongan/khidmat kepakaran",k:["mengikut keperluan","secara kreatif/inovatif",S2_MEK,S2_SEM]},
+   {t:"Mewujudkan rangkaian komuniti",k:["mengikut kesesuaian","secara kreatif/inovatif",S2_MEK,S2_SEM]}]}]}
+];
+/* Jenis G (Standard 2): 4 = semua; 3 = (i) + dua perkara; 2 = (i) + satu perkara; 1 = mana-mana perkara lain; 0 = tiada */
+DESC.G=["Tidak mengambil kira mana-mana perkara","Mengambil kira mana-mana perkara (ii), (iii) atau (iv)","Mengambil kira perkara (i) dan mana-mana satu (1) perkara","Mengambil kira perkara (i) dan mana-mana dua (2) perkara","Memenuhi semua perkara (i) hingga (iv)"];
+/* ================= STANDARD 3.1: PENGURUSAN KURIKULUM (data borang MOEIS) ================= */
+const S31_PENYATAAN="Bidang kurikulum diurus secara cekap dan berkesan untuk melahirkan murid yang seimbang daripada segi intelek, rohani, emosi, jasmani dan sosial selaras dengan hala tuju sekolah.";
+const S31_MENU="secara menyeluruh dalam semua perkara seperti penubuhan panitia mata pelajaran, peruntukan kewangan, pentaksiran, penjaminan kualiti (4P), latihan/tugasan, pembelajaran digital, *PdPR/remote learning, sumber pendidikan dan jadual waktu";
+const S31_MP="secara menyeluruh meliputi semua mata pelajaran dan murid";
+const S31_PANITIA=["BAHASA MELAYU","BAHASA INGGERIS","PENDIDIKAN ISLAM","PENDIDIKAN JASMANI DAN PENDIDIKAN KESIHATAN","SEJARAH","GEOGRAFI","PERNIAGAAN","SAINS","FIZIK","KIMIA","BIOLOGI","MATEMATIK TAMBAHAN","PERTANIAN","REKA CIPTA","REKA BENTUK DAN TEKNOLOGI","MENSERVIS MOTORSIKAL","MATEMATIK","PENDIDIKAN SENI VISUAL"];
+const S31=[
+ {kod:"3.1.1",peranan:"Ketetapan Pelaksanaan Kurikulum",kritikal:"Ketetapan dibuat untuk memastikan kepatuhan dan keselarasan pelaksanaan kurikulum kebangsaan.",std:[
+  {kod:"3.1.1.1",jenis:"G",teks:"G",sk:"Pelaksanaan kurikulum diurus secara sistematik dan terancang.",
+   tindakan:"Membuat, mendokumen, menyebar luas dan menyemak semula ketetapan dengan mematuhi arahan yang berkuat kuasa dan mematuhi prosedur, mengikut keperluan dan kesesuaian sekolah, secara menyeluruh, spesifik dan jelas.",
+   lead:"Mengurus pelaksanaan kurikulum dengan:",item:[
+   {t:"Membuat ketetapan",k:["dengan mematuhi arahan yang berkuat kuasa",S31_MENU,"mengikut keperluan sekolah","secara spesifik"]},
+   {t:"Mendokumenkan ketetapan",k:["dengan mematuhi prosedur",S31_MENU,"mengikut keperluan sekolah","secara jelas"]},
+   {t:"Menyebarluaskan ketetapan",k:["dengan mematuhi arahan yang berkuat kuasa",S31_MENU,"mengikut kesesuaian sekolah","secara jelas"]},
+   {t:"Menyemak semula ketetapan",k:["dengan mematuhi arahan yang berkuat kuasa",S31_MENU,"mengikut kesesuaian sekolah","secara jelas"]}]}]},
+ {kod:"3.1.2",peranan:"Pengurusan Mata Pelajaran",panitia:{key:"_panitia",label:"Panitia Mata Pelajaran",unit:"panitia",def:S31_PANITIA},kritikal:"Mata pelajaran diurus untuk meningkatkan kualiti pembelajaran dan pengajaran.",std:[
+  {kod:"3.1.2.1",panitia:6,sk:"Pelaksanaan mata pelajaran diurus secara profesional dan terancang."},
+  {kod:"3.1.2.2",panitia:4,sk:"Program peningkatan kualiti pengajaran guru diurus secara terancang."},
+  {kod:"3.1.2.3",panitia:4,sk:"Program peningkatan pencapaian murid diurus secara profesional dan terancang."},
+  {kod:"3.1.2.4",panitia:4,sk:"Bantuan geran per kapita mata pelajaran dimanfaatkan secara sistematik dan terancang."}]},
+ {kod:"3.1.3",peranan:"Pengurusan Masa Instruksional",kritikal:"Masa instruksional diurus untuk memastikan peningkatan masa pembelajaran berkesan.",std:[
+  {kod:"3.1.3.1",jenis:"F",teks:"F3",sk:"Masa pelaksanaan PdP diurus secara sistematik dan terancang.",
+   tindakan:"Menyediakan pelbagai jadual waktu, melaksanakan PdP seperti yang dijadualkan, menyusun semula jadual waktu dan menyelaras program sekolah dengan mematuhi arahan yang berkuat kuasa, ketetapan kurikulum, dan kesesuaian.",
+   lead:"Mengurus masa pelaksanaan PdP:",item:[
+   {t:"Menyediakan jadual waktu induk, jadual waktu kelas, jadual waktu guru, jadual waktu guru ganti dan jadual penggunaan bilik khas",k:["dengan mematuhi arahan yang berkuat kuasa","mengikut ketetapan kurikulum","mengikut kesesuaian"]},
+   {t:"Melaksanakan PdP seperti yang dijadualkan",k:["dengan mematuhi arahan yang berkuat kuasa","mengikut ketetapan kurikulum","mengikut kesesuaian"]},
+   {t:"Menyusun semula jadual waktu",k:["dengan mematuhi arahan yang berkuat kuasa","mengikut ketetapan kurikulum","mengikut kesesuaian"]},
+   {t:"Menyelaras program sekolah",k:["dengan mematuhi arahan yang berkuat kuasa","mengikut ketetapan kurikulum","mengikut kesesuaian"]}]}]},
+ {kod:"3.1.4",peranan:"Pengurusan Penilaian Murid",kritikal:"Penilaian murid diurus untuk mengesan kemajuan penguasaan dan pencapaian murid.",std:[
+  {kod:"3.1.4.1",jenis:"G",teks:"G",sk:"Peperiksaan dan pentaksiran diurus secara sistematik dan terancang.",
+   tindakan:"Merancang, menyelaras dan melaksanakan peperiksaan dan pentaksiran, menganalisis data dan maklumat serta mengambil tindakan susulan mengikut arahan yang berkuat kuasa, ketetapan, keperluan, kesesuaian, secara menyeluruh, dan dari semasa ke semasa.",
+   lead:"Mengurus peperiksaan dan pentaksiran dengan:",item:[
+   {t:"Merancang peperiksaan dan pentaksiran",k:["mengikut arahan yang berkuat kuasa","mengikut keperluan",S31_MP,"dari semasa ke semasa"]},
+   {t:"Menyelaras peperiksaan dan pentaksiran",k:["mengikut ketetapan","mengikut kesesuaian",S31_MP,"dari semasa ke semasa"]},
+   {t:"Melaksanakan peperiksaan dan pentaksiran",k:["mengikut ketetapan","mengikut kesesuaian",S31_MP,"dari semasa ke semasa"]},
+   {t:"Menganalisis data dan maklumat peperiksaan dan pentaksiran",k:["mengikut arahan yang berkuat kuasa","mengikut kesesuaian",S31_MP,"dari semasa ke semasa"]},
+   {t:"Mengambil tindakan susulan/intervensi",k:["mengikut arahan yang berkuat kuasa","mengikut kesesuaian",S31_MP,"dari semasa ke semasa"]}]}]}
+];
+/* ================= STANDARD 3.2: PENGURUSAN KOKURIKULUM (data borang MOEIS) ================= */
+const S32_PENYATAAN="Bidang kokurikulum diurus secara cekap dan berkesan untuk melahirkan murid yang seimbang daripada segi intelek, rohani, emosi, jasmani dan sosial selaras dengan hala tuju sekolah.";
+const S32_MENU="secara menyeluruh dalam semua perkara seperti pendaftaran, penubuhan, keahlian, hari dan masa perjumpaan, perancangan tahunan, kewangan, pentaksiran, penjaminan kualiti (pembudayaan 4P) dan penghargaan";
+const S32_UNIT="secara menyeluruh melibatkan sekurang-kurangnya satu unit bagi setiap kelab/persatuan, badan beruniform dan sukan/permainan";
+const S32_MURID="secara menyeluruh melibatkan semua murid yang berkenaan";
+const S32_TAKSIR="secara menyeluruh meliputi setiap murid yang terlibat";
+const S32_ARAH="dengan mematuhi arahan yang berkuat kuasa";
+const S32_PAN=(key,def)=>({key,label:"Panitia Kokurikulum",unit:"unit",def});
+const S32=[
+ {kod:"3.2.1",peranan:"Ketetapan Pelaksanaan Kokurikulum",kritikal:"Ketetapan dibuat untuk memastikan kepatuhan dan keselarasan pelaksanaan kokurikulum.",std:[
+  {kod:"3.2.1.1",jenis:"G",teks:"G",sk:"Pelaksanaan kokurikulum diurus secara sistematik dan terancang.",
+   tindakan:"Membuat, mendokumen, menyebar luas dan menyemak semula ketetapan dengan mematuhi arahan yang berkuat kuasa, mematuhi prosedur, mengikut keperluan dan kesesuaian sekolah, secara menyeluruh, spesifik dan jelas.",
+   lead:"Mengurus pelaksanaan kokurikulum dengan:",item:[
+   {t:"Membuat ketetapan",k:[S32_ARAH,S32_MENU,"mengikut keperluan sekolah","secara spesifik"]},
+   {t:"Mendokumenkan ketetapan",k:["dengan mematuhi prosedur",S32_MENU,"mengikut kesesuaian sekolah","secara jelas"]},
+   {t:"Menyebarluaskan ketetapan",k:["dengan mematuhi prosedur",S32_MENU,"mengikut kesesuaian sekolah","secara jelas"]},
+   {t:"Menyemak semula ketetapan",k:[S32_ARAH,S32_MENU,"mengikut keperluan sekolah","secara spesifik"]}]}]},
+ {kod:"3.2.2",peranan:"Pengurusan Kelab/Persatuan",panitia:S32_PAN("_p322",["KELAB INOVASI/REKACIPTA/REKA BENTUK DAN TEKNOLOGI","BAHASA DAN KESUSASTERAAN","KELAB RUKUN NEGARA","KELAB PENCEGAHAN JENAYAH","KELAB SAINS, TEKNOLOGI, KEJURUTERAAN DAN MATEMATIK (STEM)/SOLAR","PERSATUAN AGAMA ISLAM","KELAB SENI VISUAL","KELAB PENGGUNA"]),
+  kritikal:"Kelab/persatuan diurus untuk mengukuhkan pembelajaran di bilik darjah, mengembangkan potensi dan memupuk nilai estetika dan sosial yang positif.",std:[
+  {kod:"3.2.2.1",panitia:5,sk:"Kelab/persatuan diurus secara sistematik dan terancang."}]},
+ {kod:"3.2.3",peranan:"Pengurusan Badan Beruniform",panitia:S32_PAN("_p323",["KADET REMAJA SEKOLAH","PERGERAKAN PUTERI ISLAM MALAYSIA (PPIM)","PERSEKUTUAN PENGAKAP MALAYSIA","KADET KOREKSIONAL","KOR KADET POLIS","KADET BOMBA DAN PENYELAMAT MALAYSIA","BULAN SABIT MERAH MALAYSIA (BSMM)"]),
+  kritikal:"Badan beruniform diurus untuk meningkatkan disiplin dan daya kepimpinan bagi pemantapan pembangunan perwatakan murid.",std:[
+  {kod:"3.2.3.1",panitia:5,sk:"Badan beruniform diurus secara sistematik dan terancang."}]},
+ {kod:"3.2.4",peranan:"Pengurusan Sukan/Permainan",panitia:S32_PAN("_p324",["BOLA TAMPAR","SEPAK TAKRAW","BOLA BALING","BOLA SEPAK","OLAHRAGA","SOFBOL","SILAT","BOLA JARING"]),
+  kritikal:"Sukan/permainan diurus untuk mengukuhkan pengetahuan, kemahiran dan memupuk nilai estetika dan sosial positif.",std:[
+  {kod:"3.2.4.1",panitia:5,sk:"Sukan/permainan diurus secara sistematik dan terancang."}]},
+ {kod:"3.2.5",peranan:"Pengurusan Program Kecemerlangan Kokurikulum",kritikal:"Program kecemerlangan kokurikulum diurus untuk mengoptimumkan bakat dan potensi murid.",std:[
+  {kod:"3.2.5.1",jenis:"B",teks:"B",sk:"Program kecemerlangan kokurikulum diurus secara profesional dan terancang.",
+   tindakan:"Merancang dan melaksanakan latihan dan program kecemerlangan kelab/persatuan, badan beruniform dan sukan/permainan mengikut keperluan dan kesesuaian, secara kreatif/inovatif, menyeluruh, dan dari semasa ke semasa.",
+   lead:"Mengurus program kecemerlangan kokurikulum dengan:",item:[
+   {t:"Merancang latihan peningkatan kemahiran",k:["mengikut keperluan",S32_UNIT,"dari semasa ke semasa","secara kreatif/inovatif"]},
+   {t:"Melaksanakan latihan peningkatan kemahiran",k:["mengikut kesesuaian",S32_UNIT,"dari semasa ke semasa","secara kreatif/inovatif"]},
+   {t:"Merancang program pemantapan",k:["mengikut keperluan",S32_UNIT,"dari semasa ke semasa","secara kreatif/inovatif"]},
+   {t:"Melaksanakan program pemantapan",k:["mengikut kesesuaian",S32_UNIT,"dari semasa ke semasa","secara kreatif/inovatif"]}]}]},
+ {kod:"3.2.6",peranan:"Pengurusan Sukan Untuk Semua",kritikal:"Sukan Untuk Semua diurus untuk memupuk budaya bersukan dan amalan gaya hidup sihat, cergas serta berdaya saing dalam kalangan murid.",std:[
+  {kod:"3.2.6.1",jenis:"G",teks:"G",sk:"Aktiviti Sukan Untuk Semua diurus secara profesional dan terancang.",
+   tindakan:"Merancang dan melaksanakan aktiviti Sukan Untuk Semua yang merangkumi kejohanan merentas desa, sukan tara, kejohanan olahraga tahunan sekolah dan pertandingan sukan/permainan dengan mematuhi arahan yang berkuat kuasa, mengikut keperluan dan kesesuaian, secara kreatif/inovatif, dan menyeluruh.",
+   lead:"Mengurus aktiviti Sukan Untuk Semua dengan:",item:[
+   {t:"Merancang kejohanan merentas desa",k:[S32_ARAH,S32_MURID,"mengikut keperluan","secara kreatif/inovatif"]},
+   {t:"Merancang sukan tara",k:[S32_ARAH,S32_MURID,"mengikut keperluan","secara kreatif/inovatif"]},
+   {t:"Merancang kejohanan olahraga tahunan sekolah",k:[S32_ARAH,S32_MURID,"mengikut keperluan","secara kreatif/inovatif"]},
+   {t:"Merancang pertandingan antara tingkatan/kelas/rumah/dorm asrama/kelab sukan sekolah",k:[S32_ARAH,S32_MURID,"mengikut keperluan","secara kreatif/inovatif"]},
+   {t:"Melaksanakan kejohanan merentas desa",k:[S32_ARAH,S32_MURID,"mengikut kesesuaian","secara kreatif/inovatif"]},
+   {t:"Melaksanakan sukan tara",k:[S32_ARAH,S32_MURID,"mengikut kesesuaian","secara kreatif/inovatif"]},
+   {t:"Melaksanakan kejohanan olahraga tahunan sekolah",k:[S32_ARAH,S32_MURID,"mengikut kesesuaian","secara kreatif/inovatif"]},
+   {t:"Melaksanakan pertandingan antara tingkatan/kelas/rumah/dorm asrama/kelab sukan sekolah",k:[S32_ARAH,S32_MURID,"mengikut kesesuaian","secara kreatif/inovatif"]}]}]},
+ {kod:"3.2.7",peranan:"Pengurusan Pentaksiran Kokurikulum",kritikal:"Pentaksiran kokurikulum diurus untuk mengesan pencapaian murid.",std:[
+  {kod:"3.2.7.1",jenis:"G",teks:"G",sk:"Pentaksiran kokurikulum dilaksanakan secara sistematik dan terancang.",
+   tindakan:"Merancang dan melaksanakan pentaksiran, menganalisis data dan maklumat kokurikulum serta mengambil tindakan susulan mengikut ketetapan dan arahan yang berkuat kuasa, keperluan dan kesesuaian, secara menyeluruh dan dari semasa ke semasa.",
+   lead:"Mengurus pentaksiran kokurikulum dengan:",item:[
+   {t:"Merancang pentaksiran",k:["mengikut arahan yang berkuat kuasa","mengikut keperluan",S32_TAKSIR,"dari semasa ke semasa"]},
+   {t:"Melaksanakan pentaksiran",k:["mengikut ketetapan","mengikut kesesuaian",S32_TAKSIR,"dari semasa ke semasa"]},
+   {t:"Menganalisis data dan maklumat pentaksiran",k:["mengikut arahan yang berkuat kuasa","mengikut kesesuaian",S32_TAKSIR,"dari semasa ke semasa"]},
+   {t:"Mengambil tindakan susulan/intervensi",k:["mengikut ketetapan","mengikut kesesuaian",S32_TAKSIR,"dari semasa ke semasa"]}]}]}
+];
+/* ================= STANDARD 3.3: PENGURUSAN HAL EHWAL MURID (data borang MOEIS) ================= */
+const S33_PENYATAAN="Bidang hal ehwal murid diurus secara cekap dan berkesan untuk melahirkan murid yang seimbang daripada segi intelek, rohani, emosi, jasmani dan sosial selaras dengan hala tuju sekolah.";
+const S33_MENU="secara menyeluruh dalam semua perkara seperti disiplin, keselamatan, kesihatan, bantuan pelajaran murid, serta perkhidmatan bimbingan dan kaunseling";
+const S33_SEM="dari semasa ke semasa", S33_MEK="dengan mekanisme yang sesuai", S33_ARAH="dengan mematuhi arahan yang berkuat kuasa";
+const S33_SIHAT="secara menyeluruh meliputi semua aspek kesihatan";
+const S33_SELAMAT="secara menyeluruh dalam semua aspek keselamatan kepada warga sekolah dan ibu bapa/komuniti";
+const S33=[
+ {kod:"3.3.1",peranan:"Ketetapan Pelaksanaan Hal Ehwal Murid",kritikal:"Ketetapan dibuat untuk memastikan kepatuhan dan keselarasan pelaksanaan hal ehwal murid.",std:[
+  {kod:"3.3.1.1",jenis:"G",teks:"G",sk:"Pelaksanaan hal ehwal murid diurus secara sistematik dan terancang.",
+   tindakan:"Membuat, mendokumen, menyebar luas dan menyemak semula ketetapan dengan mematuhi arahan yang berkuat kuasa dan prosedur, mengikut keperluan dan kesesuaian sekolah, secara menyeluruh, spesifik, dan jelas.",
+   lead:"Mengurus pelaksanaan hal ehwal murid:",item:[
+   {t:"Membuat ketetapan",k:["dengan mematuhi prosedur",S33_MENU,"mengikut keperluan sekolah","secara jelas"]},
+   {t:"Mendokumenkan ketetapan",k:["dengan mematuhi prosedur",S33_MENU,"mengikut kesesuaian sekolah","secara jelas"]},
+   {t:"Menyebarluaskan ketetapan",k:["dengan mematuhi prosedur",S33_MENU,"mengikut kesesuaian sekolah","secara jelas"]},
+   {t:"Menyemak semula ketetapan",k:[S33_ARAH,S33_MENU,"mengikut keperluan sekolah","secara spesifik"]}]}]},
+ {kod:"3.3.2",peranan:"Pengurusan Disiplin Murid",kritikal:"Disiplin murid diurus untuk membentuk sikap dan perlakuan positif dalam pembangunan sahsiah murid.",std:[
+  {kod:"3.3.2.1",jenis:"G",teks:"G",sk:"Disiplin murid diurus secara sistematik dan terancang.",
+   tindakan:"Menyebar luas dan menguatkuasakan peraturan sekolah, menganalisis data disiplin serta merancang dan melaksanakan program pendidikan disiplin dengan mekanisme yang sesuai, mematuhi prosedur, ketetapan disiplin, arahan yang berkuat kuasa, mengikut keperluan dan kesesuaian, secara menyeluruh, dan dari semasa ke semasa.",
+   lead:"Mengurus disiplin murid:",item:[
+   {t:"Menyebarluaskan peraturan sekolah",k:["dengan mematuhi prosedur","secara menyeluruh dalam semua perkara",S33_SEM,S33_MEK]},
+   {t:"Menguatkuasakan peraturan sekolah",k:["dengan mematuhi ketetapan disiplin/arahan yang berkuat kuasa","secara menyeluruh kepada semua murid",S33_SEM,S33_MEK]},
+   {t:"Menganalisis data disiplin",k:[S33_ARAH,"secara menyeluruh kepada semua murid",S33_SEM,S33_MEK]},
+   {t:"Merancang program pendidikan disiplin",k:[S33_ARAH,"secara menyeluruh kepada semua perkara",S33_SEM,"mengikut keperluan"]},
+   {t:"Melaksanakan program pendidikan disiplin",k:["dengan mematuhi ketetapan disiplin/arahan yang berkuat kuasa","secara menyeluruh kepada semua murid",S33_SEM,"mengikut kesesuaian"]}]}]},
+ {kod:"3.3.3",peranan:"Pengurusan Keselamatan Murid",kritikal:"Keselamatan murid diurus untuk memastikan murid selamat dan memupuk amalan menjaga keselamatan dalam kalangan murid.",std:[
+  {kod:"3.3.3.1",jenis:"G",teks:"G",sk:"Keselamatan murid diurus secara sistematik dan terancang.",
+   tindakan:"Menyebar luas dan menguatkuasakan peraturan dan prosedur operasi standard keselamatan, merancang dan melaksanakan program pencegahan dan kesedaran keselamatan dengan mekanisme yang sesuai, mematuhi ketetapan keselamatan dan arahan yang berkuat kuasa, mengikut keperluan dan kesesuaian, secara menyeluruh, dan dari semasa ke semasa.",
+   lead:"Mengurus keselamatan murid:",item:[
+   {t:"Menyebarluaskan peraturan dan prosedur operasi standard keselamatan",k:["dengan mematuhi ketetapan keselamatan",S33_SELAMAT,S33_SEM,S33_MEK]},
+   {t:"Menguatkuasakan peraturan dan prosedur operasi standard keselamatan",k:[S33_ARAH,"secara menyeluruh dalam semua aspek keselamatan",S33_SEM,S33_MEK]},
+   {t:"Merancang program pencegahan dan kesedaran keselamatan",k:["dengan mematuhi ketetapan keselamatan",S33_SELAMAT,S33_SEM,"mengikut keperluan"]},
+   {t:"Melaksanakan program pencegahan dan kesedaran keselamatan",k:["dengan mematuhi ketetapan keselamatan","secara menyeluruh meliputi semua warga sekolah",S33_SEM,"mengikut kesesuaian"]}]}]},
+ {kod:"3.3.4",peranan:"Pengurusan Kesihatan Murid",kritikal:"Program dan perkhidmatan kesihatan murid diurus untuk meningkatkan kualiti kesihatan dan mengamalkan gaya hidup sihat.",std:[
+  {kod:"3.3.4.1",jenis:"G",teks:"G",sk:"Program dan perkhidmatan kesihatan murid diurus secara sistematik dan terancang.",
+   tindakan:"Menyelaras pemeriksaan kesihatan, merancang dan melaksanakan program pencegahan dan kesedaran kesihatan dan mewujudkan persekitaran yang bermaklumat dengan mekanisme yang sesuai, mematuhi arahan yang berkuat kuasa, ketetapan dan prosedur, mengikut keperluan dan kesesuaian, secara menyeluruh, dan dari semasa ke semasa.",
+   lead:"Mengurus program dan perkhidmatan kesihatan:",item:[
+   {t:"Menyelaras pemeriksaan kesihatan/rawatan/imunisasi",k:[S33_ARAH,S33_SIHAT,S33_SEM,S33_MEK]},
+   {t:"Merancang program pencegahan dan kesedaran kesihatan",k:["dengan mematuhi ketetapan perkhidmatan kesihatan",S33_SIHAT,S33_SEM,"mengikut keperluan"]},
+   {t:"Melaksanakan program pencegahan dan kesedaran kesihatan",k:["dengan mematuhi prosedur","secara menyeluruh kepada semua murid",S33_SEM,"mengikut kesesuaian"]},
+   {t:"Mewujudkan persekitaran yang bermaklumat tentang kesihatan",k:[S33_ARAH,S33_SIHAT,S33_SEM,S33_MEK]}]}]},
+ {kod:"3.3.5",peranan:"Pengurusan Bantuan Pelajaran Murid",kritikal:"Bantuan pelajaran murid diurus untuk membantu memenuhi keperluan fizikal, mental dan emosi.",std:[
+  {kod:"3.3.5.1",jenis:"G",teks:"G",sk:"Bantuan pelajaran murid diurus secara sistematik dan terancang.",
+   tindakan:"Mengenal pasti jenis bantuan dan murid yang layak, merekodkan maklumat dan memantau prestasi murid dengan mekanisme yang sesuai, mematuhi arahan yang berkuat kuasa, ketetapan dan prosedur, secara menyeluruh, dan dari semasa ke semasa.",
+   lead:"Mengurus bantuan pelajaran murid:",item:[
+   {t:"Mengenal pasti jenis bantuan",k:[S33_ARAH,"secara menyeluruh kepada semua jenis bantuan",S33_SEM,S33_MEK]},
+   {t:"Mengenal pasti murid yang layak",k:["dengan mematuhi ketetapan bantuan pelajaran murid","secara menyeluruh kepada semua murid",S33_SEM,S33_MEK]},
+   {t:"Merekodkan maklumat murid yang menerima bantuan",k:["dengan mematuhi prosedur","secara menyeluruh melibatkan semua murid",S33_SEM,S33_MEK]},
+   {t:"Memantau prestasi/kemajuan murid yang menerima bantuan",k:[S33_ARAH,"secara menyeluruh melibatkan semua murid",S33_SEM,S33_MEK]}]}]},
+ {kod:"3.3.6",peranan:"Pengurusan Perkhidmatan Bimbingan dan Kaunseling",kritikal:"Pengurusan perkhidmatan bimbingan dan kaunseling diurus untuk pembangunan sahsiah, peningkatan disiplin, pendidikan kerjaya, psikososial, dan kesejahteraan mental murid.",std:[
+  {kod:"3.3.6.1",jenis:"G",teks:"G",sk:"Perkhidmatan bimbingan dan kaunseling diurus secara profesional dan terancang.",
+   tindakan:"Merancang dan melaksanakan sesi dan program bimbingan dan kaunseling dengan mekanisme yang sesuai, mematuhi arahan yang berkuat kuasa dan prosedur, mengikut/memenuhi keperluan, kesesuaian, isu semasa, dan dari semasa ke semasa.",
+   lead:"Mengurus perkhidmatan bimbingan dan kaunseling dengan:",item:[
+   {t:"Merancang sesi bimbingan/kaunseling",k:[S33_ARAH,"mengikut keperluan murid",S33_SEM,S33_MEK]},
+   {t:"Melaksanakan sesi bimbingan/kaunseling",k:["dengan mematuhi prosedur","memenuhi keperluan murid",S33_SEM,S33_MEK]},
+   {t:"Merancang program bimbingan dan kaunseling",k:[S33_ARAH,"mengikut isu semasa",S33_SEM,"mengikut keperluan"]},
+   {t:"Melaksanakan program bimbingan dan kaunseling",k:["dengan mematuhi prosedur","mengikut isu semasa",S33_SEM,"mengikut kesesuaian"]}]}]},
+ {kod:"3.3.7",peranan:"Pengurusan Pentadbiran Psikometrik",kritikal:"Pengurusan pentaksiran psikometrik diurus untuk membangun potensi diri berdasarkan personaliti, minat dan kecenderungan murid.",std:[
+  {kod:"3.3.7.1",jenis:"G",teks:"G2",sk:"Pentaksiran psikometrik diurus secara sistematik dan terancang.",
+   tindakan:"Merancang dan melaksanakan pentaksiran, menganalisis data dan maklumat serta mengambil tindakan susulan dengan mekanisme yang sesuai, mematuhi arahan yang berkuat kuasa dan prosedur, mengikut keperluan, kesesuaian, isu semasa, dan dari semasa ke semasa.",
+   lead:"Mengurus pelaksanaan pentaksiran psikometrik:",item:[
+   {t:"Merancang pentaksiran",k:[S33_ARAH,"mengikut keperluan murid",S33_SEM,S33_MEK]},
+   {t:"Melaksanakan pentaksiran",k:["dengan mematuhi prosedur","mengikut keperluan murid",S33_SEM,S33_MEK]},
+   {t:"Menganalisis data dan maklumat pentaksiran",k:[S33_ARAH,"mengikut isu semasa",S33_SEM,"mengikut keperluan"]},
+   {t:"Mengambil tindakan susulan/intervensi/konsultasi",k:["dengan mematuhi prosedur","mengikut isu semasa",S33_SEM,"mengikut kesesuaian"]}]}]}
+];
+const S1_STD=S1.flatMap(a=>a.std);
+/* Jenis F (Standard 1): 4 = semua; 3 = (i)+(ii) atau (i)+(iii); 2 = (i) sahaja; 1 = (ii)/(iii) tanpa (i); 0 = tiada */
+DESC.F=["Tidak mengambil kira mana-mana perkara","Mengambil kira perkara (ii) atau (iii) tanpa perkara (i)","Mengambil kira perkara (i) sahaja","Mengambil kira perkara (i) dan (ii) atau perkara (i) dan (iii)","Memenuhi semua perkara (i), (ii) dan (iii)"];
+const S1_TEKS={
+  F1:["","dengan mengambil kira perkara (i) dan (ii) atau perkara (i) dan (iii)","dengan mengambil kira perkara (i)","dengan mengambil kira mana-mana perkara (ii) atau (iii)","tidak mengambil kira mana-mana perkara"],
+  F2:["","dengan mengambil kira perkara (i) dan mana-mana satu (1) perkara","dengan mengambil kira perkara (i)","dengan mengambil kira mana-mana satu (1) perkara","tidak mengambil kira mana-mana perkara"],
+  E:["","dengan mengambil kira perkara (i) dan mana-mana dua (2) perkara","dengan mengambil kira perkara (i) dan mana-mana satu (1) perkara","dengan mengambil kira perkara (i)","tidak mengambil kira mana-mana perkara"],
+  B:["","dengan mengambil kira mana-mana tiga (3) perkara","dengan mengambil kira mana-mana dua (2) perkara","dengan mengambil kira mana-mana satu (1) perkara","tidak mengambil kira mana-mana perkara"],
+  A:["","dengan mengambil kira perkara (i) dan (ii) atau perkara (i) dan (iii)","dengan mengambil kira perkara (ii) dan (iii)","dengan mengambil kira mana-mana satu (1) perkara","tidak mengambil kira mana-mana perkara"],
+  F3:["","dengan mengambil kira perkara (i) dan (ii) atau perkara (i) dan (iii)","dengan mengambil kira perkara (i)","dengan mengambil kira mana-mana perkara (ii) atau (iii) atau (iv)","tidak mengambil kira mana-mana perkara"],
+  G2:["","dengan mengambil kira perkara (i) dan mana-mana dua (2) perkara","dengan mengambil kira perkara (i) dan mana-mana satu (1) perkara","dengan mengambil kira mana-mana satu (1) perkara","tidak mengambil kira mana-mana perkara"],
+  G:["","dengan mengambil kira perkara (i) dan mana-mana dua (2) perkara","dengan mengambil kira perkara (i) dan mana-mana satu (1) perkara","dengan mengambil kira mana-mana perkara (ii) atau (iii) atau (iv)","tidak mengambil kira mana-mana perkara"]
+};
+/* Standard sekolah: satu penilaian setiap tahun. disahkan = peratus skor keseluruhan sudah dipadankan dengan rumusan MOEIS. */
+const SS={
+  S1:{kod:"S1",no:1,tajuk:"STANDARD 1: KEPIMPINAN",nama:"Standard 1",penyataan:S1_PENYATAAN,aspek:S1,std:S1_STD,disahkan:true,
+      contoh:"Contoh: Analisis SWOT dibentang dalam mesyuarat Januari; RPS dimuat naik."},
+  S2:{kod:"S2",no:2,tajuk:"STANDARD 2: PENGURUSAN ORGANISASI",nama:"Standard 2",penyataan:S2_PENYATAAN,aspek:S2,std:S2.flatMap(a=>a.std),disahkan:false,
+      contoh:"Contoh: Carta organisasi dan perincian tugas diedarkan Januari; laporan pemeriksaan aset Jun.",
+      nota:"Contoh rumusan MOEIS 2025: purata 9 standard 91.94, MOEIS memaparkan 91.58."},
+  S31:{kod:"S31",no:"3.1",tajuk:"STANDARD 3.1: PENGURUSAN KURIKULUM",nama:"Standard 3.1",penyataan:S31_PENYATAAN,aspek:S31,std:S31.flatMap(a=>a.std),disahkan:false,
+      contoh:"Contoh: Ketetapan kurikulum dibentang dalam mesyuarat kurikulum Januari; analisis peperiksaan setiap penggal.",
+      nota:"Contoh rumusan MOEIS 2025: purata 7 standard 83.61, MOEIS memaparkan 83.17."},
+  S32:{kod:"S32",no:"3.2",tajuk:"STANDARD 3.2: PENGURUSAN KOKURIKULUM",nama:"Standard 3.2",penyataan:S32_PENYATAAN,aspek:S32,std:S32.flatMap(a=>a.std),disahkan:false,
+      contoh:"Contoh: Takwim kokurikulum diedarkan Januari; laporan kejohanan olahraga tahunan.",
+      nota:"Contoh rumusan MOEIS 2025: purata 7 standard 92.85, MOEIS memaparkan 92.62."},
+  S33:{kod:"S33",no:"3.3",tajuk:"STANDARD 3.3: PENGURUSAN HAL EHWAL MURID",nama:"Standard 3.3",penyataan:S33_PENYATAAN,aspek:S33,std:S33.flatMap(a=>a.std),disahkan:false,
+      contoh:"Contoh: Analisis data disiplin setiap bulan; laporan pemeriksaan kesihatan.",
+      nota:"Contoh rumusan MOEIS 2025: purata 7 standard 97.32, MOEIS memaparkan 97.15."}
+};
+const isPan=s=>!!s.panitia;
+/* Aspek berpanitia (3.1.2, 3.2.2–3.2.4): setiap standard dalamnya tahu kunci senarai panitianya */
+Object.values(SS).forEach(c=>c.aspek.forEach(a=>{ if(a.panitia) a.std.forEach(s=>{ s.pkey=a.panitia.key; }); }));
+const panAsp=()=>cur().aspek.filter(a=>a.panitia);
+/* Pengisi: pentadbir menetapkan guru bagi seluruh standard ("S33") atau bagi aspek tertentu ("S33:3.3.6"). */
+let tugasStd=[];
+const bolehStd=k=>isAdmin()||tugasStd.includes(k||ssKod);                       /* seluruh standard */
+const bolehAsp=(a,k)=>bolehStd(k)||tugasStd.includes(`${k||ssKod}:${a}`);       /* aspek tertentu */
+const bolehMana=k=>bolehStd(k)||tugasStd.some(t=>t.startsWith((k||ssKod)+":")); /* sekurang-kurangnya satu aspek */
+const lihatStd=()=>seeAll()||tugasStd.length>0;
+const stdNampak=()=>Object.values(SS).filter(c=>seeAll()||tugasStd.some(t=>t===c.kod||t.startsWith(c.kod+":")));
+const namaGuru=id=>{ const g=guruList.find(x=>x.id===id); return g?g.nama:(me&&me.id===id?me.nama:id); };
+const pengisiStd=k=>((settings.pengisi||{})[k]||[]);
+const aspStd=kod=>kod.split(".").slice(0,-1).join(".");
+let s1kotor=new Set(), s1catUbah=false;
+const panPct=(m,n)=>Math.floor((m/(4*n)*100+1e-9)*100)/100;
+let ssKod="S1";
+const cur=()=>SS[ssKod];
+/* Pengiraan seperti Rumusan Skor MOEIS: % setiap standard dipotong 2 t.p.; peratus skor = purata semua standard */
+function kiraS1(sk,cfg,krit){
+  cfg=cfg||cur();
+  const out={pct:{},peratus:0,diisi:0,total:0}; let jum=0;
+  for(const s of cfg.std){
+    const arr=sk[s.kod]||[]; let m=0,d=0,f;
+    if(isPan(s)){
+      /* setiap panitia/unit diskor berasingan; % standard = purata semua panitia */
+      const N=Math.max(1,(krit?((krit[s.pkey]||[]).length):arr.length)|0);
+      for(let i=0;i<N;i++) if(typeof arr[i]==="number"){m+=arr[i];d++;}
+      f=m/(4*s.panitia*N); out.total+=N;
+    }else{
+      const n=s.item.length;
+      for(let i=0;i<n;i++) if(typeof arr[i]==="number"){m+=arr[i];d++;}
+      f=m/(4*n); out.total+=n;
+    }
+    out.pct[s.kod]=Math.floor((f*100+1e-9)*100)/100; jum+=f; out.diisi+=d;
+  }
+  out.peratus=Math.floor((jum/cfg.std.length*100+1e-9)*100)/100;
+  return out;
+}
+const ssList={S1:[],S2:[],S31:[],S32:[],S33:[]};
+let s1skor={}, s1krit={}, s1tahun="", s1ubah=false, ssTukar=null;
+const s1Rec=(t,kod)=>(ssList[kod||ssKod]||[]).find(r=>String(r.tahun)===String(t));
+function s1Std(kod){ return cur().std.find(s=>s.kod===kod); }
+function buildS1(){
+  const cfg=cur(); let h="";
+  for(const a of cfg.aspek){
+    h+=`<div class="role" data-asp="${a.kod}"><div class="role-head"><span class="kod">Aspek ${a.kod}</span><h2>${esc(a.peranan)}</h2><span class="asp-pg" id="s1pg-${kid(a.kod)}"></span></div><div class="kritikal"><b>Kriteria kritikal</b>${esc(a.kritikal)}</div>`;
+    if(a.panitia){
+      h+=`<div class="aspek"><div class="std" style="grid-template-columns:1fr">${a.std.map(s=>`<div><b>${s.kod}</b>${esc(s.sk)}</div>`).join("")}</div>
+        <p class="lead">Masukkan skor setiap ${a.panitia.unit} seperti dalam MOEIS. Peratus ${a.std.length>1?a.std.map(s=>s.kod).join(", "):a.std[0].kod} ialah purata semua ${a.panitia.unit}.</p>
+        <div class="tbl-wrap" id="s1-pan-${kid(a.kod)}"></div></div></div>`;
+      continue;
+    }
+    for(const s of a.std){
+      h+=`<div class="aspek"><div class="aspek-head"><span class="t">${s.kod}</span><span class="w" id="s1w-${kid(s.kod)}"></span></div>
+        <div class="std"><div><b>Standard kualiti</b>${esc(s.sk)}</div><div><b>Tindakan untuk mencapai standard</b>${esc(s.tindakan)}</div></div><div class="lead">${esc(s.lead)}</div>`;
+      s.item.forEach((it,i)=>{
+        const base=`data-s1="${s.kod}" data-i="${i}"`;
+        h+=`<div class="item"><div class="item-t"><span class="h">${HURUF[i]})</span><span>${esc(it.t)}</span></div><div class="krit">`;
+        it.k.forEach((c,x)=>h+=`<button type="button" class="chip" ${base} data-k="${x}" aria-pressed="false"><span class="r">${ROMAN[x]}.</span>${esc(c)}</button>`);
+        h+=`</div><div class="skor-row"><span class="seg" role="group" aria-label="Skor ${s.kod} ${HURUF[i]}">`;
+        for(let v=4;v>=0;v--) h+=`<button type="button" ${base} data-s="${v}" aria-pressed="false">${v}</button>`;
+        h+=`</span><span class="desc" id="s1d-${kid(s.kod)}-${i}"></span></div></div>`;
+      });
+      h+=`</div>`;
+    }
+    h+=`</div>`;
+  }
+  $("s1-rubrik").innerHTML=h;
+  $("s1-h1").textContent=cfg.tajuk.replace(/^STANDARD ([\d.]+): (.*)$/,(m,n,t)=>`Standard ${n}: ${t.charAt(0)+t.slice(1).toLowerCase()}`);
+  $("s1-tajuk").textContent=cfg.tajuk; $("s1-penyataan").textContent=cfg.penyataan;
+  $("s1-catatan").placeholder=cfg.contoh;
+  $("s1-save").textContent=`Simpan ${cfg.nama}`;
+}
+function panNama(a){ const k=a.panitia.key; if(!Array.isArray(s1krit[k])) s1krit[k]=[]; return s1krit[k]; }
+function renderPan(a){
+  if(!a){ panAsp().forEach(renderPan); return; }
+  const host=$("s1-pan-"+kid(a.kod)); if(!host) return;
+  const ps=a.std, nm=panNama(a), boleh=bolehAsp(a.kod), k=kiraS1(s1skor,cur(),s1krit), u=a.panitia.unit;
+  let h=`<table class="an pan"><thead><tr><th class="c">Bil</th><th>${esc(a.panitia.label)}</th>${ps.map(s=>`<th class="num">${s.kod}</th>`).join("")}${boleh?`<th class="c">Tindakan</th>`:""}</tr></thead><tbody>`;
+  nm.forEach((n,r)=>{
+    h+=`<tr><td class="c">${r+1}</td><td><input class="pan-nm" data-a="${a.kod}" data-r="${r}" value="${esc(n)}" aria-label="Nama ${u} ${r+1}"${boleh?"":" disabled"}></td>`;
+    for(const s of ps){ const v=(s1skor[s.kod]||[])[r], mx=4*s.panitia;
+      h+=`<td class="num"><select class="pan-sk" data-k="${s.kod}" data-r="${r}" aria-label="${s.kod} ${esc(n)}"${boleh?"":" disabled"}><option value="">–</option>${Array.from({length:mx+1},(_,m)=>mx-m).map(m=>`<option value="${m}"${v===m?" selected":""}>${panPct(m,s.panitia)}%</option>`).join("")}</select></td>`; }
+    if(boleh) h+=`<td class="c"><button type="button" class="ik pan-del" data-a="${a.kod}" data-r="${r}" title="Buang ${u}" aria-label="Buang ${u} ${esc(n)}">✕</button></td>`;
+    h+=`</tr>`;
+  });
+  h+=`</tbody><tfoot><tr><td></td><td class="pan-jum">PURATA (${nm.length} ${u})</td>${ps.map(s=>`<td class="num" data-k="${s.kod}">${k.pct[s.kod].toFixed(2)}</td>`).join("")}${boleh?"<td></td>":""}</tr></tfoot></table>`;
+  if(boleh) h+=`<div style="padding:10px"><button type="button" class="btn pan-add" data-a="${a.kod}">+ Tambah ${u}</button></div>`;
+  host.innerHTML=h;
+}
+const aspOf=kod=>cur().aspek.find(a=>a.kod===kod);
+$("s1-rubrik").addEventListener("change",e=>{
+  const el=e.target;
+  if(el.classList.contains("pan-sk")){ const kod=el.dataset.k, r=+el.dataset.r; s1skor[kod]=s1skor[kod]||[]; s1skor[kod][r]=el.value===""?null:+el.value; s1kotor.add(kod); }
+  else if(el.classList.contains("pan-nm")){ const a=aspOf(el.dataset.a); panNama(a)[+el.dataset.r]=el.value.trim().toUpperCase(); a.std.forEach(x=>s1kotor.add(x.kod)); }
+  else return;
+  s1ubah=true; ssTukar=null; paintS1();
+});
+$("s1-rubrik").addEventListener("click",e=>{
+  const btn=e.target.closest(".pan-add,.pan-del"); if(!btn) return;
+  const a=aspOf(btn.dataset.a), nm=panNama(a), ps=a.std, add=btn.classList.contains("pan-add");
+  if(add){ nm.push(""); }
+  else { const r=+btn.dataset.r; nm.splice(r,1); ps.forEach(s=>{ if(Array.isArray(s1skor[s.kod])) s1skor[s.kod].splice(r,1); }); }
+  ps.forEach(s=>{ s1kotor.add(s.kod); s1skor[s.kod]=s1skor[s.kod]||[]; s1skor[s.kod].length=nm.length; for(let i=0;i<nm.length;i++) if(s1skor[s.kod][i]===undefined) s1skor[s.kod][i]=null; });
+  s1ubah=true; ssTukar=null; renderPan(a); paintS1();
+  if(add){ const ins=document.querySelectorAll(`#s1-pan-${kid(a.kod)} .pan-nm`); if(ins.length) ins[ins.length-1].focus(); }
+});
+function s1K(kod,i){ s1krit[kod]=s1krit[kod]||[]; if(!s1krit[kod][i]) s1krit[kod][i]={k:s1Std(kod).item[i].k.map(()=>false)}; return s1krit[kod][i]; }
+$("s1-rubrik").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-s1]"); if(!b||b.disabled) return;
+  const kod=b.dataset.s1,i=+b.dataset.i;
+  if(b.dataset.s!=null){ s1skor[kod]=s1skor[kod]||[]; s1skor[kod][i]=(s1skor[kod][i]===+b.dataset.s)?null:+b.dataset.s; }
+  else { const st=s1K(kod,i); st.k[+b.dataset.k]=!st.k[+b.dataset.k]; const c=cadang(s1Std(kod).jenis,st.k,null); if(c!=null){ s1skor[kod]=s1skor[kod]||[]; s1skor[kod][i]=c; } }
+  s1kotor.add(kod); s1ubah=true; ssTukar=null; paintS1();
+});
+$("s1-catatan").addEventListener("input",()=>{s1ubah=true; s1catUbah=true; ssTukar=null;});
+function paintS1(){
+  const boleh=bolehMana(), penuh=bolehStd(), cfg=cur();
+  for(const a of cfg.aspek){ const el=$("s1pg-"+kid(a.kod)); if(!el) continue;
+    const ids=pengisiStd(cfg.kod+":"+a.kod), saya=!penuh&&bolehAsp(a.kod);
+    el.innerHTML=saya?`<span class="pill t-ok">TUGASAN ANDA</span>`:(ids.length?`Pengisi: ${esc(ids.map(namaGuru).join(", "))}`:"");
+    const r=document.querySelector(`#s1-rubrik .role[data-asp="${a.kod}"]`); if(r) r.classList.toggle("asp-kunci",!penuh&&!saya&&boleh); }
+  for(const s of cfg.std) if(!isPan(s)) s.item.forEach((it,i)=>{
+    const bA=bolehAsp(aspStd(s.kod));
+    const st=(s1krit[s.kod]||[])[i], v=(s1skor[s.kod]||[])[i];
+    document.querySelectorAll(`#s1-rubrik [data-s1="${s.kod}"][data-i="${i}"]`).forEach(el=>{
+      if(el.dataset.s!=null) el.setAttribute("aria-pressed",v===+el.dataset.s?"true":"false");
+      else el.setAttribute("aria-pressed",st&&st.k[+el.dataset.k]?"true":"false");
+      el.disabled=!bA;
+    });
+    const c=st&&st.k.some(Boolean)?cadang(s.jenis,st.k,null):null;
+    let d=typeof v==="number"?esc(DESC[s.jenis][v]):"Belum diberi skor";
+    if(c!=null&&typeof v==="number"&&c!==v) d+=` · <em>kriteria yang ditanda mencadangkan skor ${c}</em>`;
+    $(`s1d-${kid(s.kod)}-${i}`).innerHTML=d;
+  });
+  const k=kiraS1(s1skor,cfg,s1krit);
+  $("s1-n").textContent=k.peratus.toFixed(2);
+  $("s1-meter").style.width=Math.min(100,k.peratus)+"%";
+  $("s1-count").textContent=`${k.diisi}/${k.total} ${cfg.std.some(isPan)?"skor diisi":"tindakan"}`;
+  $("s1-label").textContent=cfg.disahkan?`Peratus skor ${cfg.nama}`:`Anggaran peratus skor ${cfg.nama}`;
+  $("s1-nota").hidden=cfg.disahkan; $("s1-nota2").textContent=cfg.nota||"";
+  panAsp().forEach(a=>{ const host=$("s1-pan-"+kid(a.kod)); if(!host) return;
+    a.std.forEach(s=>{ const c=host.querySelector(`tfoot td[data-k="${s.kod}"]`); if(c) c.textContent=k.pct[s.kod].toFixed(2); });
+    const j=host.querySelector(".pan-jum"); if(j) j.textContent=`PURATA (${panNama(a).length} ${a.panitia.unit})`; });
+  let h="";
+  for(const a of cfg.aspek){ h+=`<div class="s1-asp">${a.kod} ${esc(a.peranan.toUpperCase())}</div>`;
+    for(const s of a.std){ h+=`<div class="brk-row s1r"><span class="k">${s.kod}</span><div class="meter"><i style="width:${k.pct[s.kod]}%"></i></div><span class="v">${k.pct[s.kod].toFixed(2)}</span></div>`;
+      if(isPan(s)) continue;
+      const x=(s1skor[s.kod]||[]).filter(v=>typeof v==="number").length; $("s1w-"+kid(s.kod)).textContent=`${x}/${s.item.length} tindakan · ${k.pct[s.kod].toFixed(2)}%`; } }
+  $("s1-brk").innerHTML=h;
+  $("s1-save").hidden=!boleh; $("s1-catatan").disabled=!penuh;
+  const rec=s1Rec(s1tahun);
+  $("s1-print").disabled=!rec;
+  const pg=pengisiStd(cfg.kod);
+  const asSaya=cfg.aspek.filter(a=>!penuh&&bolehAsp(a.kod)).map(a=>a.kod);
+  $("s1-sub").textContent=penuh?(isAdmin()?"Penilaian kendiri sekolah: satu rekod bagi setiap standard setiap tahun. Skor setiap standard dikira seperti Rumusan Skor MOEIS.":`Anda ditetapkan sebagai pengisi ${cfg.nama}. Isi semua tindakan dan tekan Simpan.`)
+    :boleh?`Anda ditetapkan mengisi Aspek ${asSaya.join(", ")} dalam ${cfg.nama}. Aspek lain dipaparkan untuk rujukan sahaja.`
+    :`Paparan sahaja. ${cfg.nama} diisi oleh ${pg.length?pg.map(namaGuru).join(", "):"pentadbir"}.`;
+  renderStatusStd();
+  $("s1-info").textContent=rec?`Disimpan ${rec.dikemaskini?String(rec.dikemaskini).slice(0,10).split("-").reverse().join("/"):""}${rec.oleh?" oleh "+namaGuru(String(rec.oleh)):""}${s1ubah?" · ada perubahan belum disimpan":""}`:(s1ubah?"Belum disimpan":"Tiada rekod bagi tahun ini");
+}
+function loadS1(tahun){
+  s1tahun=String(tahun); const rec=s1Rec(s1tahun);
+  s1skor=rec?clone(rec.skor):{}; s1krit=rec?clone(rec.kriteria):{}; $("s1-catatan").value=rec?(rec.catatan||""):""; s1ubah=false; ssTukar=null; s1kotor=new Set(); s1catUbah=false;
+  for(const a of panAsp()){ const key=a.panitia.key, ps=a.std;
+    if(!Array.isArray(s1krit[key])||!s1krit[key].length){ const n=ps.reduce((x,s)=>Math.max(x,(s1skor[s.kod]||[]).length),0); s1krit[key]=n?Array.from({length:n},(_,i)=>`${a.panitia.unit.toUpperCase()} ${i+1}`):[...a.panitia.def]; }
+    ps.forEach(s=>{ s1skor[s.kod]=Array.from({length:s1krit[key].length},(_,i)=>{const v=(s1skor[s.kod]||[])[i]; return typeof v==="number"?v:null;}); }); }
+  setMsg("s1-msg",""); renderPan(); paintS1();
+}
+function renderS1Years(){
+  const now=new Date().getFullYear(), ys=new Set([String(now),String(now-1),...(ssList[ssKod]||[]).map(r=>String(r.tahun))]);
+  const list=[...ys].sort().reverse(), sel=$("s1-tahun");
+  if(!s1tahun) s1tahun=String(now);
+  sel.innerHTML=list.map(y=>`<option${y===s1tahun?" selected":""}>${y}${s1Rec(y)?"":" (belum diisi)"}</option>`).join("");
+  [...sel.options].forEach((o,i)=>o.value=list[i]); sel.value=s1tahun;
+}
+/* Status pengisian setiap standard bagi tahun dipilih: siapa pengisi, sudah/belum diisi */
+function renderStatusStd(){
+  const host=$("s1-status"), list=stdNampak(); if(!host) return;
+  host.hidden=!list.length;
+  host.innerHTML=`<div class="label" style="margin-bottom:10px">Status pengisian tahun ${esc(s1tahun)}</div><div class="tbl-wrap" style="margin:0;border:0"><table class="an st-std"><thead><tr><th>Standard</th><th>Pengisi ditetapkan</th><th>Status</th></tr></thead><tbody>${list.map(c=>{
+    const r=s1Rec(s1tahun,c.kod), pg=pengisiStd(c.kod);
+    const pa=c.aspek.map(a=>[a,pengisiStd(c.kod+":"+a.kod)]).filter(x=>x[1].length);
+    let st;
+    if(!r) st=`<span class="pill t-bad">BELUM DIISI</span>`;
+    else { const k=kiraS1(r.skor||{},c,r.kriteria||{}), tgl=`<span class="st-oleh">${r.dikemaskini?String(r.dikemaskini).slice(0,10).split("-").reverse().join("/"):""}${r.oleh?" · "+esc(namaGuru(String(r.oleh))):""}</span>`;
+      const kurang=c.aspek.filter(a=>{ const ka=kiraS1(r.skor||{},{std:a.std},r.kriteria||{}); return ka.diisi<ka.total; }).map(a=>a.kod);
+      st=kurang.length?`<span class="pill t-warn">SEBAHAGIAN ${k.diisi}/${k.total}</span> ${tgl}<div class="st-oleh">Belum lengkap: Aspek ${kurang.join(", ")}</div>`:`<span class="pill t-ok">LENGKAP</span> ${tgl}`; }
+    const nmPg=(pg.length?pg.map(id=>esc(namaGuru(id))).join("<br>"):(pa.length?"":'<span style="color:var(--muted)">Pentadbir sahaja</span>'))
+      +pa.map(([a,ids])=>`<div class="st-oleh"><b>${a.kod}</b> ${ids.map(id=>esc(namaGuru(id))).join(", ")}</div>`).join("");
+    return `<tr${c.kod===ssKod?' class="st-kini"':""}><td><button type="button" class="st-pilih" data-k="${c.kod}">${esc(c.nama)}</button></td><td>${nmPg}</td><td>${st}</td></tr>`;}).join("")}</tbody></table></div>`;
+}
+$("s1-status").addEventListener("click",e=>{
+  const b=e.target.closest(".st-pilih"); if(!b||b.dataset.k===ssKod) return;
+  const sel=$("s1-std"); sel.value=b.dataset.k; sel.dispatchEvent(new Event("change"));
+});
+function renderS1Std(){
+  const list=stdNampak(); if(list.length&&!list.some(c=>c.kod===ssKod)){ ssKod=list[0].kod; buildS1(); }
+  $("s1-std").innerHTML=list.map(c=>`<option value="${c.kod}"${c.kod===ssKod?" selected":""}>${esc(c.tajuk.charAt(0)+c.tajuk.slice(1).toLowerCase().replace(/standard ([\d.]+): (.)/,(m,n,ch)=>`Standard ${n}: ${ch.toUpperCase()}`))}</option>`).join("");
+}
+/* Ada perubahan belum disimpan: pilihan pertama dibatalkan dengan amaran; pilihan yang sama sekali lagi meneruskan. */
+function bolehTukar(sasaran,sel,asal){
+  if(!s1ubah||ssTukar===sasaran) return true;
+  ssTukar=sasaran; sel.value=asal;
+  setMsg("s1-msg","Ada perubahan belum disimpan. Tekan Simpan dahulu, atau pilih sekali lagi untuk teruskan tanpa menyimpan.","err");
+  return false;
+}
+$("s1-tahun").addEventListener("change",()=>{ const v=$("s1-tahun").value; if(!bolehTukar("t"+v,$("s1-tahun"),s1tahun)) return; loadS1(v); });
+$("s1-std").addEventListener("change",()=>{
+  const v=$("s1-std").value; if(!bolehTukar("s"+v,$("s1-std"),ssKod)) return;
+  ssKod=v; buildS1(); renderS1Years(); loadS1(s1tahun);
+});
+$("s1-save").onclick=async()=>{
+  const cfg=cur(), k=kiraS1(s1skor,cfg,s1krit);
+  /* hanya standard yang diubah dihantar; pelayan menggabungkannya dengan rekod semasa (pengisi lain tidak tertindih) */
+  const ubah=cfg.std.map(s=>s.kod).filter(x=>s1kotor.has(x)&&bolehAsp(aspStd(x)));
+  if(!ubah.length&&!s1catUbah){ setMsg("s1-msg","Tiada perubahan untuk disimpan."); return; }
+  for(const a of panAsp()){ if(!a.std.some(s=>ubah.includes(s.kod))) continue; const nm=panNama(a), u=a.panitia.unit;
+    if(!nm.length){ setMsg("s1-msg",`Aspek ${a.kod}: sekurang-kurangnya satu ${u} diperlukan.`,"err"); return; }
+    if(nm.some(n=>!n)){ setMsg("s1-msg",`Aspek ${a.kod}: nama ${u} tidak boleh kosong.`,"err"); return; } }
+  const btn=$("s1-save"); btn.disabled=true; btn.textContent="Menyimpan…";
+  try{
+    const isi={kod:cfg.kod,tahun:s1tahun,skor:s1skor,kriteria:s1krit,catatan:$("s1-catatan").value,ubah:ubah,ubahCatatan:s1catUbah&&bolehStd()};
+    const d=await call("simpanStd",isi);
+    s1ubah=false; applyData(d);
+    const kb=kiraS1((s1Rec(s1tahun)||{}).skor||{},cfg,(s1Rec(s1tahun)||{}).kriteria||{}), baki=kb.total-kb.diisi;
+    setMsg("s1-msg",`${cfg.nama} tahun ${s1tahun} disimpan · ${kb.peratus.toFixed(2)}%${baki?` · ${baki} ${panAsp().length?"skor":"tindakan"} masih belum diisi`:""}`,"ok"); }
+  catch(e){ if(!handled(e)) setMsg("s1-msg","Tidak disimpan: "+errText(e),"err"); }
+  finally{ btn.disabled=false; btn.textContent=`Simpan ${cfg.nama}`; }
+};
+function renderStd1(){
+  $("navS1").hidden=!lihatStd();
+  if(!lihatStd()) return;
+  renderS1Std(); renderS1Years();
+  if(!s1ubah) loadS1(s1tahun); else paintS1();
+}
+/* ---------- cetakan standard sekolah (format MOEIS) ---------- */
+function cetakS1Body(rec,cfg){
+  cfg=cfg||cur();
+  const k=kiraS1(rec.skor||{},cfg), cb=on=>`<span class="cb${on?" on":""}"></span>`;
+  let h=`<div class="ct"><div class="pg md"><img class="md-logo" src="${LOGO}" alt="Logo sekolah">
+   <div class="md-tajuk">${esc(cfg.tajuk)}<br>PENILAIAN KENDIRI SEKOLAH (SKPMg2)</div>
+   <table class="md-tbl"><tr><td>TAHUN</td><td>:</td><td>${esc(rec.tahun)}</td></tr><tr><td>KOD SEKOLAH</td><td>:</td><td>${esc(settings.kodSekolah)}</td></tr><tr><td>NAMA SEKOLAH</td><td>:</td><td>${esc(settings.namaSekolah)}</td></tr></table>
+   <div class="asp" style="margin-top:10mm">RUMUSAN SKOR</div>
+   <table class="s1-rum"><tr><th style="width:12%">NO. ITEM</th><th>ASPEK</th><th class="num" style="width:14%">SKOR (%)</th></tr>`;
+  for(const a of cfg.aspek){ h+=`<tr class="ra"><td>${a.kod}</td><td colspan="2">${esc(a.peranan.toUpperCase())}</td></tr>`;
+    for(const s of a.std) h+=`<tr><td>${s.kod}</td><td>${esc(s.sk)}</td><td class="num">${k.pct[s.kod].toFixed(2)}</td></tr>`; }
+  h+=`<tr class="rj"><td colspan="2" style="text-align:right">PERATUS SKOR</td><td class="num">${cfg.disahkan?k.peratus.toFixed(2):"Rujuk MOEIS"}</td></tr></table></div>`;
+  h+=`<div class="pg"><div class="tajuk">${esc(cfg.tajuk)}</div><table class="std" style="margin-top:4px"><tr><td style="width:22%"><b>PENYATAAN STANDARD</b></td><td><span>${esc(cfg.penyataan)}</span></td></tr></table>
+   <div class="arahan">ARAHAN: SILA TANDAKAN ( / ) PADA KOTAK SKOR PILIHAN ANDA MENGIKUT PERNYATAAN PENSKORAN YANG TERTERA.</div>`;
+  for(const a of cfg.aspek){ if(a.panitia){
+    const nm=((rec.kriteria||{})[a.panitia.key])||[];
+    h+=`<div class="kepala"><div class="asp">Aspek ${a.kod}: ${esc(a.peranan.toUpperCase())}</div><div class="krit">KRITERIA KRITIKAL:<br>${esc(a.kritikal)}</div></div>
+     <table class="s1-rum"><tr><th style="width:6%">BIL</th><th>${esc(a.panitia.label.toUpperCase())}</th>${a.std.map(s=>`<th class="num" style="width:12%">${s.kod}</th>`).join("")}</tr>
+     ${nm.map((n,r)=>`<tr><td>${r+1}</td><td>${esc(n)}</td>${a.std.map(s=>{const v=((rec.skor||{})[s.kod]||[])[r];return `<td class="num">${typeof v==="number"?panPct(v,s.panitia)+"%":""}</td>`;}).join("")}</tr>`).join("")}
+     <tr class="rj"><td colspan="2" style="text-align:right">PURATA</td>${a.std.map(s=>`<td class="num">${k.pct[s.kod].toFixed(2)}</td>`).join("")}</tr></table>`;
+    continue; }
+  a.std.forEach((s,si)=>{
+    h+=`<div class="kepala">`;
+    if(si===0) h+=`<div class="asp">Aspek ${a.kod}: ${esc(a.peranan.toUpperCase())}</div><div class="krit">KRITERIA KRITIKAL:<br>${esc(a.kritikal)}</div>`;
+    h+=`<div class="kod">${s.kod}</div><table class="std"><tr><td><b>STANDARD KUALITI</b><span>${esc(s.sk)}</span></td><td><b>TINDAKAN UNTUK MENCAPAI STANDARD</b><span>${esc(s.tindakan)}</span></td></tr></table></div>
+     <table class="pk"><colgroup><col style="width:20%"><col style="width:20%"><col style="width:15%"><col style="width:15%"><col style="width:15%"><col style="width:15%"></colgroup>
+     <thead><tr class="h1"><td>TINDAKAN</td><td colspan="5">PENSKORAN</td></tr><tr class="h2"><td>${esc(s.lead)}</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td></tr></thead>`;
+    s.item.forEach((it,i)=>{ const v=((rec.skor||{})[s.kod]||[])[i];
+      h+=`<tbody><tr class="it"><td>${HURUF[i]}) ${esc(it.t)}</td><td class="l">${it.k.map((t,x)=>`${ROMAN[x]}. ${esc(t)}`).join("<br>")}</td>${[1,2,3,4].map(x=>`<td class="c">${S1_TEKS[s.teks][x]}</td>`).join("")}</tr>
+       <tr class="sk"><td>SKOR SEKOLAH</td>${[4,3,2,1,0].map(x=>`<td>${cb(v===x)}</td>`).join("")}</tr></tbody>`; });
+    h+=`</table>`;
+  }); }
+  h+=`${rec.catatan?`<div style="margin-top:6mm;font-weight:bold;font-size:10pt">ULASAN</div><div class="ul">${esc(rec.catatan)}</div>`:""}
+   <div class="ttd"><div>Disediakan oleh<br>Nama:<br>Tarikh:</div><div>Disahkan oleh (PGB)<br>Nama:<br>Tarikh:</div></div>
+   <div class="kaki">Dijana daripada e-Tapak pada ${fmtTarikh(today())}</div></div></div>`;
+  return h;
+}
+$("s1-print").onclick=()=>{
+  const cfg=cur(), rec=s1Rec(s1tahun); if(!rec) return;
+  const nm=cfg.tajuk.replace(/^STANDARD ([\d.]+): /,"Standard $1 ");
+  const doc=`<!DOCTYPE html><html lang="ms"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(nm)} ${esc(rec.tahun)}</title><style>body{margin:0;background:#fff}${CETAK_CSS}</style></head><body>
+<div class="ct-bar"><button type="button" onclick="window.print()">Cetak / Simpan PDF</button><span>Untuk PDF, pilih <b>Simpan sebagai PDF</b> dalam tetingkap cetak.</span></div>
+<div style="padding:12px">${cetakS1Body(rec,cfg)}</div></body></html>`;
+  let win=null;
+  try{ const url=URL.createObjectURL(new Blob([doc],{type:"text/html"})); win=window.open(url,"_blank"); setTimeout(()=>URL.revokeObjectURL(url),60000); }catch(e){ win=null; }
+  if(!win){ $("cetak").innerHTML=`<style>${CETAK_CSS}</style>${cetakS1Body(rec,cfg)}`; try{ window.print(); }catch(e){} }
+};
+
 /* ---------- navigasi ---------- */
-const VIEWS=["baharu","rekod","rumusan","tetapan"];
+const VIEWS=["baharu","rekod","rumusan","std1","tetapan"];
 function route(){
   if(!me){
     VIEWS.forEach(x=>$("v-"+x).hidden=true); $("v-masuk").hidden=false; $("nav").hidden=true; return;
@@ -1183,6 +1991,7 @@ function route(){
   $("v-masuk").hidden=true; $("nav").hidden=false;
   let v=VIEWS.includes(view)?view:"baharu";
   if(v==="tetapan"&&!isAdmin()) v="baharu";
+  if(v==="std1"&&!lihatStd()) v="baharu";
   VIEWS.forEach(x=>$("v-"+x).hidden=x!==v);
   document.querySelectorAll("nav.tabs a").forEach(a=>{ if(a.dataset.v===v) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
 }
@@ -1196,7 +2005,7 @@ $("btnSave").onclick=save;
 $("btnCetak").onclick=()=>cetak(); $("btnCetak2").onclick=()=>cetak();
 $("btnReset").onclick=()=>{ draftClear(); resetForm(false); };
 F.forEach(k=>$("f-"+k).addEventListener("input",draftSave));
-buildRubrik(); initRubrikEvents(); resetForm(false); renderSettings(); renderList(); renderRumusan(); route();
+buildRubrik(); initRubrikEvents(); buildS1(); resetForm(false); renderSettings(); renderList(); renderRumusan(); route();
 $("f-kelas").addEventListener("change",()=>setBorang(jenisBorang($("f-kelas").value)));
 (async()=>{
   if(!hasApi()){ status("Pautan pelayan (API_URL) belum ditetapkan dalam fail ini.","warn"); return; }
